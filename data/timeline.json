@@ -1,0 +1,758 @@
+{
+  "intro": "Cómo ha evolucionado el desarrollo de software, leído por carriles paralelos. Una etapa nueva rara vez sustituye a la anterior: casi todas siguen vigentes y se apoyan unas en otras.",
+  "lanes": [
+    {
+      "id": "foundations",
+      "short": "Programación",
+      "name": "Programación e ingeniería",
+      "description": "Los cimientos, que siguen en uso."
+    },
+    {
+      "id": "tooling",
+      "short": "Herramientas",
+      "name": "IDEs y control de versiones",
+      "description": "Con qué se escribe y se versiona el código."
+    },
+    {
+      "id": "process",
+      "short": "Metodologías",
+      "name": "Metodologías",
+      "description": "Cómo se organiza el trabajo."
+    },
+    {
+      "id": "delivery",
+      "short": "DevOps y nube",
+      "name": "DevOps, CI/CD y Cloud Native",
+      "description": "Cómo se entrega y opera el software."
+    },
+    {
+      "id": "ai-tools",
+      "short": "Herramientas IA",
+      "name": "Herramientas de IA para programar",
+      "description": "Del autocompletado a los agentes."
+    },
+    {
+      "id": "ai-concepts",
+      "short": "Prácticas IA",
+      "name": "Agentes y prácticas emergentes",
+      "description": "Ideas y términos; varios aún en discusión."
+    }
+  ],
+  "events": [
+    {
+      "id": "traditional-programming",
+      "lane": "foundations",
+      "name": "Programación tradicional",
+      "start": 1957,
+      "end": null,
+      "dateLabel": "Desde 1957 (FORTRAN)",
+      "precision": "exact",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "FORTRAN, entregado por IBM en 1957, se cita a menudo como el primer lenguaje de alto nivel de amplia difusión. Permitió escribir programas en una notación cercana a las matemáticas en vez de en ensamblador.",
+      "importance": "Inició la tendencia que todavía sigue: subir el nivel de abstracción con el que las personas expresan lo que quieren de una máquina.",
+      "technologies": [
+        "FORTRAN",
+        "C",
+        "Java",
+        "Python"
+      ],
+      "relatedConcepts": [
+        "programming-paradigms"
+      ],
+      "sources": [
+        {
+          "title": "IBM: Fortran",
+          "url": "https://www.ibm.com/history/fortran"
+        }
+      ]
+    },
+    {
+      "id": "software-engineering-term",
+      "lane": "foundations",
+      "name": "Ingeniería de software como disciplina",
+      "start": 1968,
+      "end": null,
+      "dateLabel": "Desde 1968",
+      "precision": "exact",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "En 1968, una conferencia de la OTAN en Garmisch puso en circulación el término “software engineering”, en un contexto de proyectos que se retrasaban y fallaban.",
+      "importance": "Planteó que construir software requiere métodos sistemáticos. Muchos de sus problemas siguen presentes, también al trabajar con agentes.",
+      "technologies": [
+        "Diseño",
+        "Arquitectura",
+        "Pruebas"
+      ],
+      "relatedConcepts": [
+        "design-patterns",
+        "clean-architecture"
+      ],
+      "sources": [
+        {
+          "title": "Actas de las conferencias de la OTAN",
+          "url": "http://homepages.cs.ncl.ac.uk/brian.randell/NATO/"
+        }
+      ]
+    },
+    {
+      "id": "ides",
+      "lane": "tooling",
+      "name": "IDEs y herramientas de desarrollo",
+      "start": 1985,
+      "end": null,
+      "dateLabel": "Aprox. años 80 en adelante",
+      "precision": "approximate",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "Los entornos integrados reunieron edición, compilación y depuración. Más tarde añadieron refactorización y análisis semántico. Visual Studio Code, presentado en 2015, popularizó el modelo de editor ligero con extensiones.",
+      "importance": "Definieron el puesto de trabajo del desarrollador y son la superficie donde hoy se integran muchos agentes.",
+      "technologies": [
+        "Visual Studio",
+        "Eclipse",
+        "IntelliJ IDEA",
+        "VS Code"
+      ],
+      "relatedConcepts": [
+        "ides",
+        "code-editors"
+      ],
+      "sources": [
+        {
+          "title": "Visual Studio Code: Documentation",
+          "url": "https://code.visualstudio.com/docs"
+        }
+      ]
+    },
+    {
+      "id": "git",
+      "lane": "tooling",
+      "name": "Git",
+      "start": 2005,
+      "end": null,
+      "dateLabel": "Desde 2005",
+      "precision": "exact",
+      "status": "verified",
+      "lastVerified": "2026-11-05",
+      "description": "La comunidad del kernel de Linux creó Git en 2005, con Linus Torvalds al frente, tras perder el uso gratuito de BitKeeper. Se diseñó para ser rápido y soportar miles de ramas paralelas.",
+      "importance": "Su modelo de ramas baratas hizo posible GitHub Flow, los pull requests y, hoy, el trabajo aislado de varios agentes mediante worktrees.",
+      "technologies": [
+        "Git",
+        "GitHub",
+        "GitLab"
+      ],
+      "relatedConcepts": [
+        "git-fundamentals",
+        "git-worktrees"
+      ],
+      "sources": [
+        {
+          "title": "Pro Git: A Short History of Git",
+          "url": "https://git-scm.com/book/en/v2/Getting-Started-A-Short-History-of-Git"
+        },
+        {
+          "title": "Git: git-worktree",
+          "url": "https://git-scm.com/docs/git-worktree"
+        }
+      ]
+    },
+    {
+      "id": "agile",
+      "lane": "process",
+      "name": "Metodologías ágiles",
+      "start": 2001,
+      "end": null,
+      "dateLabel": "Desde 2001 (Manifiesto)",
+      "precision": "exact",
+      "status": "verified",
+      "lastVerified": "2026-11-05",
+      "description": "El Manifiesto Ágil, de 2001, prioriza a las personas y sus interacciones, el software que funciona, la colaboración con el cliente y la respuesta al cambio. Recogió prácticas de métodos ya existentes como Scrum y XP.",
+      "importance": "Convirtió la entrega iterativa en la norma. Sus ciclos cortos de feedback encajan con cómo se trabaja bien con agentes.",
+      "technologies": [
+        "Scrum",
+        "XP",
+        "Kanban"
+      ],
+      "relatedConcepts": [
+        "tdd",
+        "ci-cd"
+      ],
+      "sources": [
+        {
+          "title": "Manifesto for Agile Software Development",
+          "url": "https://agilemanifesto.org/"
+        }
+      ],
+      "coexists": "No sustituyó de golpe a otros procesos: en sectores regulados conviven enfoques más formales."
+    },
+    {
+      "id": "cicd",
+      "lane": "delivery",
+      "name": "CI y entrega continua",
+      "start": 2000,
+      "end": null,
+      "dateLabel": "Años 2000; libro de referencia en 2010",
+      "precision": "approximate",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "La integración continua se difundió con XP y con el artículo de Martin Fowler. El libro *Continuous Delivery* (2010), de Jez Humble y David Farley, sistematizó la idea de tener siempre el software listo para desplegar.",
+      "importance": "Automatizó la verificación. Hoy, esa misma infraestructura es el sensor que comprueba el trabajo de los agentes.",
+      "technologies": [
+        "Jenkins",
+        "GitLab CI",
+        "GitHub Actions"
+      ],
+      "relatedConcepts": [
+        "ci-cd",
+        "regression-testing"
+      ],
+      "sources": [
+        {
+          "title": "Martin Fowler: Continuous Integration",
+          "url": "https://martinfowler.com/articles/continuousIntegration.html"
+        },
+        {
+          "title": "Martin Fowler: Continuous Delivery",
+          "url": "https://martinfowler.com/bliki/ContinuousDelivery.html"
+        }
+      ]
+    },
+    {
+      "id": "cloud",
+      "lane": "delivery",
+      "name": "Computación en la nube",
+      "start": 2006,
+      "end": null,
+      "dateLabel": "Desde 2006 (AWS S3 y EC2)",
+      "precision": "exact",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "AWS lanzó S3 y EC2 en 2006, y popularizó el acceso a infraestructura bajo demanda. El NIST publicó en 2011 una definición que sigue siendo referencia.",
+      "importance": "Cambió la infraestructura de compra a servicio, y permitió automatizarla mediante API.",
+      "technologies": [
+        "AWS",
+        "Azure",
+        "Google Cloud"
+      ],
+      "relatedConcepts": [
+        "cloud-computing",
+        "aws"
+      ],
+      "sources": [
+        {
+          "title": "NIST SP 800-145: The NIST Definition of Cloud Computing",
+          "url": "https://csrc.nist.gov/pubs/sp/800/145/final"
+        },
+        {
+          "title": "AWS: What is AWS?",
+          "url": "https://aws.amazon.com/what-is-aws/"
+        }
+      ]
+    },
+    {
+      "id": "devops",
+      "lane": "delivery",
+      "name": "DevOps",
+      "start": 2009,
+      "end": null,
+      "dateLabel": "Desde 2009",
+      "precision": "approximate",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "El movimiento surgió para reducir la separación entre desarrollo y operaciones. Se suele situar su origen en torno a los primeros DevOpsDays, celebrados en Gante en 2009.",
+      "importance": "Hizo de la automatización y la responsabilidad compartida una práctica cultural, no solo una herramienta.",
+      "technologies": [
+        "Infraestructura como código",
+        "Monitorización"
+      ],
+      "relatedConcepts": [
+        "ci-cd",
+        "infrastructure-as-code",
+        "observability"
+      ],
+      "sources": [
+        {
+          "title": "DevOpsDays",
+          "url": "https://devopsdays.org/"
+        }
+      ]
+    },
+    {
+      "id": "cloud-native",
+      "lane": "delivery",
+      "name": "Contenedores y Cloud Native",
+      "start": 2013,
+      "end": null,
+      "dateLabel": "Desde 2013 (Docker); 2014 (Kubernetes)",
+      "precision": "exact",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "Docker popularizó los contenedores en 2013. Google anunció Kubernetes en 2014, y su versión 1.0, de julio de 2015, se presentó junto con la creación de la CNCF.",
+      "importance": "Estandarizó cómo empaquetar y operar aplicaciones, y dio una vía cómoda de aislar procesos, incluidos los agentes.",
+      "technologies": [
+        "Docker",
+        "Kubernetes",
+        "CNCF"
+      ],
+      "relatedConcepts": [
+        "docker",
+        "kubernetes",
+        "microservices"
+      ],
+      "sources": [
+        {
+          "title": "Kubernetes: 10 Years of Kubernetes",
+          "url": "https://kubernetes.io/blog/2024/06/06/10-Years-of-Kubernetes/"
+        },
+        {
+          "title": "Docker Docs: Docker overview",
+          "url": "https://docs.docker.com/get-started/docker-overview/"
+        }
+      ]
+    },
+    {
+      "id": "dev-automation",
+      "lane": "delivery",
+      "name": "Automatización del desarrollo",
+      "start": 2018,
+      "end": null,
+      "dateLabel": "Aprox. desde 2018",
+      "precision": "approximate",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "Las plataformas de código integraron la automatización: workflows disparados por eventos del repositorio, como GitHub Actions, además de actualización de dependencias y análisis automáticos.",
+      "importance": "Acercó la automatización al repositorio, y creó los puntos de enganche que hoy usan los agentes para actuar en cada PR.",
+      "technologies": [
+        "GitHub Actions",
+        "GitLab CI"
+      ],
+      "relatedConcepts": [
+        "github-actions",
+        "automated-code-review"
+      ],
+      "sources": [
+        {
+          "title": "GitHub Docs: Understanding GitHub Actions",
+          "url": "https://docs.github.com/en/actions/get-started/understand-github-actions"
+        }
+      ]
+    },
+    {
+      "id": "copilot",
+      "lane": "ai-tools",
+      "name": "GitHub Copilot y AI-assisted coding",
+      "start": 2021.5,
+      "end": null,
+      "dateLabel": "Junio de 2021 (vista previa); junio de 2022 (GA)",
+      "precision": "exact",
+      "status": "verified",
+      "lastVerified": "2026-11-05",
+      "description": "GitHub anunció Copilot como vista previa técnica el 29 de junio de 2021, y lo publicó de forma general el 21 de junio de 2022. Llevó las sugerencias de un modelo de lenguaje al editor.",
+      "importance": "Normalizó programar junto a un modelo, y abrió el mercado de los asistentes de código.",
+      "technologies": [
+        "GitHub Copilot",
+        "VS Code"
+      ],
+      "relatedConcepts": [
+        "ai-assisted-development",
+        "ai-coding-assistants"
+      ],
+      "sources": [
+        {
+          "title": "GitHub Blog: Copilot is generally available",
+          "url": "https://github.blog/2022-06-21-github-copilot-is-generally-available-to-all-developers/",
+          "note": "21 de junio de 2022"
+        },
+        {
+          "title": "GitHub Docs: What is GitHub Copilot?",
+          "url": "https://docs.github.com/en/copilot/get-started/what-is-github-copilot"
+        }
+      ],
+      "coexists": "El autocompletado sigue siendo muy útil: los agentes lo complementan, no lo eliminan."
+    },
+    {
+      "id": "ai-assistants",
+      "lane": "ai-tools",
+      "name": "AI coding assistants conversacionales",
+      "start": 2022.9,
+      "end": null,
+      "dateLabel": "Desde finales de 2022",
+      "precision": "approximate",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "Tras el lanzamiento de ChatGPT, en noviembre de 2022, programar conversando con un modelo se generalizó. Aparecieron editores y extensiones que integran el chat con el código.",
+      "importance": "Cambió la interacción de sugerencias en línea a peticiones en lenguaje natural.",
+      "technologies": [
+        "ChatGPT",
+        "Cursor",
+        "Aider",
+        "Cline"
+      ],
+      "relatedConcepts": [
+        "ai-coding-assistants",
+        "prompt-engineering"
+      ],
+      "sources": [
+        {
+          "title": "OpenAI: Introducing ChatGPT",
+          "url": "https://openai.com/index/chatgpt/",
+          "note": "Contrastar a mano"
+        },
+        {
+          "title": "Aider: Documentation",
+          "url": "https://aider.chat/docs/"
+        }
+      ]
+    },
+    {
+      "id": "devin",
+      "lane": "ai-tools",
+      "name": "Agentes de software presentados como producto",
+      "start": 2024.2,
+      "end": null,
+      "dateLabel": "Marzo de 2024 (Devin)",
+      "precision": "exact",
+      "status": "verified",
+      "lastVerified": "2026-11-05",
+      "description": "El 12 de marzo de 2024, Cognition presentó Devin como “the first AI software engineer”, con su propio entorno de herramientas. Esa descripción es una afirmación de marketing de la empresa.",
+      "importance": "Dio visibilidad a la idea de delegar tareas completas de ingeniería en un agente.",
+      "technologies": [
+        "Devin"
+      ],
+      "relatedConcepts": [
+        "autonomous-agents",
+        "agentic-coding"
+      ],
+      "sources": [
+        {
+          "title": "Cognition: Introducing Devin",
+          "url": "https://cognition.com/blog/introducing-devin"
+        }
+      ]
+    },
+    {
+      "id": "claude-code",
+      "lane": "ai-tools",
+      "name": "Agentes de código en terminal",
+      "start": 2025.15,
+      "end": null,
+      "dateLabel": "Febrero de 2025 (Claude Code)",
+      "precision": "exact",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "Anthropic lanzó Claude Code en vista previa de investigación el 24 de febrero de 2025, y le dio disponibilidad general en mayo de ese año. Codex CLI, Gemini CLI y otros agentes de terminal llevan el mismo enfoque a otros modelos.",
+      "importance": "Acercó el bucle completo de agente al entorno habitual del desarrollador, y extendió el uso de instrucciones, skills y hooks.",
+      "technologies": [
+        "Claude Code",
+        "Codex CLI",
+        "Gemini CLI",
+        "Aider"
+      ],
+      "relatedConcepts": [
+        "agentic-coding",
+        "terminal-agents"
+      ],
+      "sources": [
+        {
+          "title": "Claude Code: notas de versión",
+          "url": "https://docs.anthropic.com/en/release-notes/claude-code"
+        },
+        {
+          "title": "Claude Code: overview",
+          "url": "https://code.claude.com/docs/en/overview"
+        },
+        {
+          "title": "Gemini CLI: Documentation",
+          "url": "https://geminicli.com/docs/"
+        }
+      ],
+      "coexists": "Aider ya trabajaba en terminal antes de esa fecha: no es un inicio absoluto de la categoría."
+    },
+    {
+      "id": "ai-agents",
+      "lane": "ai-concepts",
+      "name": "AI agents",
+      "start": 2022.75,
+      "end": null,
+      "dateLabel": "Desde 2022–2023",
+      "precision": "approximate",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "La idea de agente es muy anterior a los LLM. En su forma actual, trabajos como ReAct (octubre de 2022) y el function calling de los modelos (2023) hicieron práctico alternar razonamiento y acción.",
+      "importance": "Sentaron la base técnica: un modelo que usa herramientas en bucle.",
+      "technologies": [
+        "ReAct",
+        "Function calling",
+        "Tool use"
+      ],
+      "relatedConcepts": [
+        "ai-agents",
+        "tool-calling"
+      ],
+      "sources": [
+        {
+          "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+          "url": "https://arxiv.org/abs/2210.03629",
+          "note": "arXiv, octubre de 2022"
+        },
+        {
+          "title": "OpenAI API: Function calling",
+          "url": "https://platform.openai.com/docs/guides/function-calling"
+        }
+      ]
+    },
+    {
+      "id": "multi-agent",
+      "lane": "ai-concepts",
+      "name": "Multi-agent systems",
+      "start": 2023.6,
+      "end": null,
+      "dateLabel": "Desde 2023 con LLM",
+      "precision": "approximate",
+      "status": "verified",
+      "lastVerified": "2026-11-05",
+      "description": "Los sistemas multiagente son un campo antiguo. Con LLM, trabajos como AutoGen (agosto de 2023) popularizaron la colaboración entre agentes. Hoy lo más común es la jerarquía orquestador-subagentes.",
+      "importance": "Permitió superar los límites de una sola ventana de contexto, a costa de bastantes más tokens: Anthropic estima unas 15 veces los de un chat.",
+      "technologies": [
+        "AutoGen",
+        "LangGraph",
+        "Subagentes"
+      ],
+      "relatedConcepts": [
+        "multi-agent-systems",
+        "subagents",
+        "orchestrators"
+      ],
+      "sources": [
+        {
+          "title": "AutoGen: Next-Gen LLM Applications via Multi-Agent Conversation",
+          "url": "https://arxiv.org/abs/2308.08155",
+          "note": "arXiv, agosto de 2023"
+        },
+        {
+          "title": "Anthropic: How we built our multi-agent research system",
+          "url": "https://www.anthropic.com/engineering/multi-agent-research-system"
+        }
+      ]
+    },
+    {
+      "id": "mcp",
+      "lane": "ai-concepts",
+      "name": "Model Context Protocol",
+      "start": 2024.9,
+      "end": null,
+      "dateLabel": "Noviembre de 2024",
+      "precision": "exact",
+      "status": "verified",
+      "lastVerified": "2026-11-05",
+      "description": "Anthropic publicó MCP como estándar abierto el 25 de noviembre de 2024. En diciembre de 2025 pasó a la Agentic AI Foundation de la Linux Foundation, junto con AGENTS.md y goose.",
+      "importance": "Dio a la industria una forma común de conectar agentes con herramientas y datos.",
+      "technologies": [
+        "MCP",
+        "JSON-RPC"
+      ],
+      "relatedConcepts": [
+        "mcp",
+        "mcp-servers"
+      ],
+      "sources": [
+        {
+          "title": "Anthropic: Introducing the Model Context Protocol",
+          "url": "https://www.anthropic.com/news/model-context-protocol",
+          "note": "25 de noviembre de 2024"
+        },
+        {
+          "title": "Linux Foundation: formation of the Agentic AI Foundation",
+          "url": "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation",
+          "note": "9 de diciembre de 2025"
+        },
+        {
+          "title": "MCP Specification 2026-07-28: Architecture",
+          "url": "https://modelcontextprotocol.io/specification/2026-07-28/architecture"
+        }
+      ]
+    },
+    {
+      "id": "agentic-coding",
+      "lane": "ai-concepts",
+      "name": "Agentic coding",
+      "start": 2025,
+      "end": null,
+      "dateLabel": "Aprox. desde 2025",
+      "precision": "approximate",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "El término se generalizó al hacerse habituales los agentes que editan, ejecutan y verifican. No tiene una fecha de origen clara ni un autor: es una descripción que se difundió en el sector.",
+      "importance": "Desplaza el trabajo de escribir código a especificar, supervisar y revisar.",
+      "technologies": [
+        "Claude Code",
+        "Codex",
+        "Cursor"
+      ],
+      "relatedConcepts": [
+        "agentic-coding"
+      ],
+      "sources": [
+        {
+          "title": "Claude Code: overview",
+          "url": "https://code.claude.com/docs/en/overview"
+        },
+        {
+          "title": "Anthropic: Building effective agents",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents",
+          "note": "19 de diciembre de 2024"
+        }
+      ]
+    },
+    {
+      "id": "vibe-coding",
+      "lane": "ai-concepts",
+      "name": "Vibe coding",
+      "start": 2025.1,
+      "end": null,
+      "dateLabel": "Febrero de 2025",
+      "precision": "exact",
+      "status": "verified",
+      "lastVerified": "2026-11-05",
+      "description": "Andrej Karpathy acuñó el término el 6 de febrero de 2025 para describir construir software con un LLM sin revisar el código.",
+      "importance": "Puso nombre a un uso real, útil en prototipos. También ha generado confusión al aplicarse a cualquier programación con IA.",
+      "technologies": [
+        "LLM"
+      ],
+      "relatedConcepts": [
+        "vibe-coding"
+      ],
+      "sources": [
+        {
+          "title": "Simon Willison: Not all AI-assisted programming is vibe coding",
+          "url": "https://simonwillison.net/2025/Mar/19/vibe-coding/"
+        }
+      ]
+    },
+    {
+      "id": "context-engineering",
+      "lane": "ai-concepts",
+      "name": "Context engineering",
+      "start": 2025.5,
+      "end": null,
+      "dateLabel": "Se difunde en 2025",
+      "precision": "approximate",
+      "status": "verified",
+      "lastVerified": "2026-11-05",
+      "description": "A lo largo de 2025 se extendió este término para referirse a gestionar toda la información que recibe un modelo. Anthropic publicó el 29 de septiembre de 2025 una guía de referencia.",
+      "importance": "Amplió la atención del prompt al estado completo del contexto en agentes de larga duración.",
+      "technologies": [
+        "Compactación",
+        "Memoria",
+        "Subagentes"
+      ],
+      "relatedConcepts": [
+        "context-engineering",
+        "context-management"
+      ],
+      "sources": [
+        {
+          "title": "Anthropic: Effective context engineering for AI agents",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+          "note": "29 de septiembre de 2025"
+        }
+      ],
+      "coexists": "No sustituye a la ingeniería de prompts: la engloba."
+    },
+    {
+      "id": "agents-md",
+      "lane": "ai-concepts",
+      "name": "AGENTS.md y estandarización",
+      "start": 2025.6,
+      "end": null,
+      "dateLabel": "Aprox. 2025; AAIF en diciembre de 2025",
+      "precision": "approximate",
+      "status": "verified",
+      "lastVerified": "2026-11-05",
+      "description": "AGENTS.md surgió como convención común de instrucciones para agentes, y OpenAI lo aportó a la Agentic AI Foundation, anunciada el 9 de diciembre de 2025.",
+      "importance": "Muestra que el ecosistema empieza a converger en formatos abiertos.",
+      "technologies": [
+        "AGENTS.md",
+        "AAIF"
+      ],
+      "relatedConcepts": [
+        "agents-md"
+      ],
+      "sources": [
+        {
+          "title": "AGENTS.md",
+          "url": "https://agents.md/",
+          "note": "Sitio oficial del formato"
+        },
+        {
+          "title": "Linux Foundation: formation of the Agentic AI Foundation",
+          "url": "https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation",
+          "note": "9 de diciembre de 2025"
+        }
+      ]
+    },
+    {
+      "id": "agentic-engineering",
+      "lane": "ai-concepts",
+      "name": "Agentic engineering",
+      "start": 2026.1,
+      "end": null,
+      "dateLabel": "Comienzos de 2026",
+      "precision": "approximate",
+      "status": "needs-review",
+      "lastVerified": null,
+      "description": "A comienzos de 2026, crónicas del sector atribuyen a Andrej Karpathy la propuesta de este término como sucesor profesional del vibe coding. Las fuentes secundarias consultadas discrepan en la fecha exacta.",
+      "importance": "Refleja el paso de experimentar con agentes a tratarlos como parte de una práctica profesional.",
+      "technologies": [
+        "Orquestación",
+        "Revisión",
+        "Evals"
+      ],
+      "relatedConcepts": [
+        "agentic-engineering"
+      ],
+      "sources": [
+        {
+          "title": "The New Stack: Vibe coding is passé",
+          "url": "https://thenewstack.io/vibe-coding-is-passe/",
+          "note": "Fuente secundaria"
+        }
+      ]
+    },
+    {
+      "id": "harness-engineering",
+      "lane": "ai-concepts",
+      "name": "Harness engineering",
+      "start": 2026.1,
+      "end": null,
+      "dateLabel": "Febrero–abril de 2026",
+      "precision": "approximate",
+      "status": "verified",
+      "lastVerified": "2026-11-05",
+      "description": "OpenAI publicó un artículo sobre esta práctica a comienzos de 2026, y Birgitta Böckeler la analizó el 2 de abril de 2026 en martinfowler.com, organizándola en guías y sensores.",
+      "importance": "Pone el foco en el sistema que rodea al agente, no solo en el modelo.",
+      "technologies": [
+        "Linters",
+        "Tests",
+        "Hooks"
+      ],
+      "relatedConcepts": [
+        "harness-engineering",
+        "agentic-harness"
+      ],
+      "sources": [
+        {
+          "title": "Birgitta Böckeler: Harness engineering for coding agent users",
+          "url": "https://martinfowler.com/articles/exploring-gen-ai/harness-engineering.html",
+          "note": "martinfowler.com, 2 de abril de 2026"
+        },
+        {
+          "title": "OpenAI: Harness engineering",
+          "url": "https://openai.com/index/harness-engineering/",
+          "note": "Fuente primaria; bloqueó la lectura automática, contrastar a mano"
+        }
+      ],
+      "coexists": "Complementa a la ingeniería de contexto. No es una etapa que la reemplace."
+    }
+  ]
+}

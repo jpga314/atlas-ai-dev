@@ -1,0 +1,79 @@
+@media (max-width: 1500px) {
+  .lab-stage { grid-template-columns: minmax(0, 1fr); }
+  .node-panel { border-left: 0; border-top: 1px solid var(--line); min-height: 0; }
+}
+
+@media (max-width: 1180px) {
+  .art-layout { grid-template-columns: minmax(0, 1fr); }
+  .art-body { max-width: 760px; }
+  .toc { display: none; }
+  .tool-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tool-strip li:nth-child(3n + 1) a { padding-left: 0; border-left: 0; }
+  .tool-strip li:nth-child(n + 4) { border-top: 1px solid var(--line); }
+  .timeline { --tl-label: 230px; }
+}
+
+@media (max-width: 960px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .sidebar {
+    position: fixed; z-index: 40; left: 0; top: 0; width: min(300px, 86vw);
+    transform: translateX(-100%); visibility: hidden;
+    transition: transform .22s var(--ease), visibility .22s;
+  }
+  .sidebar.open { transform: none; visibility: visible; box-shadow: 8px 0 32px rgba(8, 6, 30, .5); }
+  .sidebar-backdrop { display: block; position: fixed; inset: 0; z-index: 35; background: rgba(8, 6, 30, .55); }
+  .sidebar-backdrop[hidden] { display: none; }
+  .menu-toggle { display: inline-flex; }
+  .split { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .side-col { flex-direction: row; flex-wrap: wrap; }
+  .side-col > * { flex: 1 1 260px; }
+  .tool-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .path-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .row-link { grid-template-columns: 44px minmax(0, 1fr) 130px; }
+  .lab-foot { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+}
+
+@media (max-width: 680px) {
+  :root { --topbar-h: 58px; }
+  .search-kbd { display: none; }
+  .search-box input { padding-right: 12px; }
+  .hero { padding-top: 12px; }
+  .featured { grid-template-columns: minmax(0, 1fr); }
+  .featured-lead { padding: 20px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .featured-rest a { padding-left: 0; }
+  .path-list, .path-list-full, .example-list { grid-template-columns: minmax(0, 1fr); }
+  .tool-grid { grid-template-columns: minmax(0, 1fr); }
+  .tool-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tool-strip li a { padding-left: 0; border-left: 0; }
+  .tool-strip li + li a { padding-left: 0; border-left: 0; }
+  .tool-strip li:nth-child(n + 3) { border-top: 1px solid var(--line); }
+  .row-link { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 12px 4px; }
+  .row-code { line-height: 1.4; }
+  .row-meta { flex-direction: row; align-items: center; justify-content: flex-start; gap: 12px; padding-top: 4px; }
+  .library-rows .row-link { grid-template-columns: minmax(0, 1fr); }
+  .atlas-index a { grid-template-columns: 28px minmax(0, 1fr) 28px; }
+  .atlas-progress { display: none; }
+  .relations li { grid-template-columns: minmax(0, 1fr); }
+  .art-lede { font-size: 1.125rem; }
+  .pager { grid-template-columns: minmax(0, 1fr); }
+  .pager-next { justify-content: flex-start; text-align: left; }
+  .filters { gap: 10px; }
+  .filter-text { max-width: none; flex-basis: 100%; }
+  .compare-list a { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .vs-defs { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .vs-head { display: none; }
+  .vs-row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .vs-aspect { color: var(--accent-text); }
+  .vs-mobile-name { display: block; font: 700 0.8125rem/1.5 var(--font-display); }
+  .parts > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .progress-cats li { grid-template-columns: minmax(0, 1fr) 40px; }
+  .progress-cats .progress { grid-column: 1 / -1; grid-row: 2; }
+  .compare-bar { flex-wrap: wrap; }
+
+  /* La timeline apila nombre y barra; el eje se simplifica para que no se solapen años. */
+  .tl-axis { grid-template-columns: minmax(0, 1fr); }
+  .tl-axis-spacer { display: none; }
+  .tl-tick:nth-child(2), .tl-tick:nth-child(4), .tl-tick:nth-child(6), .tl-tick:nth-child(7) { display: none; }
+  .tl-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .tl-detail { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+}

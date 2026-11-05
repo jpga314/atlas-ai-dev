@@ -1,0 +1,953 @@
+[
+  {
+    "id": "assistant-vs-agent",
+    "title": "AI Assistant vs AI Agent",
+    "status": "verified",
+    "summary": "Un asistente responde y la persona dirige cada paso. Un agente recibe un objetivo y decide los pasos por sí mismo.",
+    "a": {
+      "name": "AI Assistant",
+      "concept": "assistants-vs-agents",
+      "what": "Sistema que responde a peticiones o sugiere: autocompletado, chat. Cada paso lo inicia y aplica una persona.",
+      "goal": "Acelerar a la persona, que mantiene el control paso a paso.",
+      "pros": [
+        "Supervisión sencilla.",
+        "Coste bajo por interacción.",
+        "Riesgo limitado."
+      ],
+      "cons": [
+        "La persona hace de intermediaria.",
+        "Poco útil en tareas largas."
+      ],
+      "chooseWhen": [
+        "Quieres controlar cada cambio.",
+        "La tarea es pequeña o exploratoria."
+      ],
+      "example": "Pides que explique un error y aplicas tú la corrección."
+    },
+    "b": {
+      "name": "AI Agent",
+      "concept": "ai-agents",
+      "what": "Sistema en el que el modelo dirige su propio proceso y usa herramientas en bucle hasta alcanzar un objetivo.",
+      "goal": "Completar una tarea de varios pasos con poca intervención.",
+      "pros": [
+        "Autonomía en tareas abiertas.",
+        "Puede comprobar su trabajo.",
+        "Permite delegar y paralelizar."
+      ],
+      "cons": [
+        "Más coste: unas 4 veces los tokens de un chat, según Anthropic.",
+        "Más difícil de predecir.",
+        "Actuar en sistemas reales conlleva riesgo."
+      ],
+      "chooseWhen": [
+        "Los pasos dependen de lo que se descubra.",
+        "Hay forma de verificar el resultado."
+      ],
+      "example": "Le pides que corrija un test: lo ejecuta, investiga, edita y repite hasta que pase."
+    },
+    "differences": [
+      {
+        "aspect": "Quién decide el siguiente paso",
+        "a": "La persona.",
+        "b": "El modelo."
+      },
+      {
+        "aspect": "Capacidad de actuar",
+        "a": "Generalmente propone.",
+        "b": "Ejecuta herramientas y observa el resultado."
+      },
+      {
+        "aspect": "Forma de interacción",
+        "a": "Petición y respuesta.",
+        "b": "Bucle hasta completar un objetivo."
+      },
+      {
+        "aspect": "Punto de revisión",
+        "a": "Cada paso.",
+        "b": "Puntos de control o resultado final."
+      }
+    ],
+    "together": "Es un espectro, y muchos productos ofrecen ambos modos. La pregunta útil es cuánto control delegas en cada tarea.",
+    "sources": [
+      {
+        "title": "Anthropic: Building effective agents",
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "note": "19 de diciembre de 2024"
+      },
+      {
+        "title": "Anthropic: How we built our multi-agent research system",
+        "url": "https://www.anthropic.com/engineering/multi-agent-research-system"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "agent-vs-subagent",
+    "title": "Agent vs Subagent",
+    "status": "verified",
+    "summary": "Técnicamente, un subagente es un agente. La diferencia es su posición: trabaja por encargo de otro, con contexto propio, y le devuelve un resultado.",
+    "a": {
+      "name": "Agent",
+      "concept": "ai-agents",
+      "what": "Sistema que recibe el objetivo y conversa con la persona, manteniendo el contexto principal de la tarea.",
+      "goal": "Alcanzar el objetivo global y responder ante el usuario.",
+      "pros": [
+        "Tiene la visión completa.",
+        "Conversación continua."
+      ],
+      "cons": [
+        "Su contexto se llena.",
+        "Una sola línea de trabajo."
+      ],
+      "chooseWhen": [
+        "La tarea es pequeña o muy acoplada.",
+        "Necesitas ir decidiendo en conversación."
+      ],
+      "example": "Una sesión de Claude Code en la que trabajas una funcionalidad."
+    },
+    "b": {
+      "name": "Subagent",
+      "concept": "subagents",
+      "what": "Agente al que otro delega una tarea, con ventana de contexto, instrucciones y herramientas propias, que devuelve un resumen.",
+      "goal": "Resolver una subtarea sin ensuciar el contexto principal.",
+      "pros": [
+        "Aísla contexto.",
+        "Permisos mínimos por tarea.",
+        "Modelo más barato si procede.",
+        "Permite paralelismo."
+      ],
+      "cons": [
+        "Arranca sin contexto: requiere un buen encargo.",
+        "Suma tokens.",
+        "El resumen puede ocultar problemas."
+      ],
+      "chooseWhen": [
+        "La subtarea genera mucha salida.",
+        "Quieres restringir herramientas, como en un revisor."
+      ],
+      "example": "Un subagente de solo lectura revisa el diff y devuelve los hallazgos."
+    },
+    "differences": [
+      {
+        "aspect": "Quién le da el objetivo",
+        "a": "La persona.",
+        "b": "Otro agente."
+      },
+      {
+        "aspect": "Contexto",
+        "a": "El de la conversación.",
+        "b": "Propio y separado."
+      },
+      {
+        "aspect": "Qué devuelve",
+        "a": "Responde al usuario.",
+        "b": "Un resultado al agente que lo lanzó."
+      },
+      {
+        "aspect": "Herramientas",
+        "a": "Generalmente, el conjunto completo.",
+        "b": "Suele estar restringido."
+      }
+    ],
+    "sources": [
+      {
+        "title": "Claude Code: Subagents",
+        "url": "https://code.claude.com/docs/en/sub-agents"
+      },
+      {
+        "title": "Anthropic: Effective context engineering for AI agents",
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "note": "29 de septiembre de 2025"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "skills-vs-subagents",
+    "title": "Skills vs Subagents",
+    "status": "verified",
+    "summary": "Una skill aporta conocimiento al contexto actual; un subagente aporta un contexto aparte. Responden a problemas distintos, y se pueden combinar.",
+    "a": {
+      "name": "Skills",
+      "concept": "skills",
+      "what": "Instrucciones empaquetadas que se cargan en la conversación solo cuando hacen falta.",
+      "goal": "Reutilizar un procedimiento o conocimiento sin cargarlo siempre.",
+      "pros": [
+        "Mínimo coste hasta usarse.",
+        "Acceso a toda la conversación.",
+        "Reutilizables y versionables."
+      ],
+      "cons": [
+        "Una vez cargada, ocupa contexto en los turnos siguientes.",
+        "Comparte los permisos de la sesión, salvo ajustes."
+      ],
+      "chooseWhen": [
+        "La tarea necesita el contexto de la conversación.",
+        "Quieres un procedimiento repetible."
+      ],
+      "example": "`/deploy-staging` guía los pasos de despliegue dentro de tu sesión."
+    },
+    "b": {
+      "name": "Subagents",
+      "concept": "subagents",
+      "what": "Agentes separados con su propio contexto, herramientas y modelo.",
+      "goal": "Aislar trabajo y mantener limpio el contexto principal.",
+      "pros": [
+        "No ensucian el contexto.",
+        "Permiten restringir herramientas.",
+        "Ejecución en paralelo."
+      ],
+      "cons": [
+        "No ven la conversación.",
+        "Más tokens en total."
+      ],
+      "chooseWhen": [
+        "La tarea genera mucha salida.",
+        "Necesitas otra perspectiva o menos permisos."
+      ],
+      "example": "Un subagente explora 100 archivos y devuelve tres rutas relevantes."
+    },
+    "differences": [
+      {
+        "aspect": "Dónde se ejecuta",
+        "a": "En el contexto actual.",
+        "b": "En un contexto separado."
+      },
+      {
+        "aspect": "Qué aporta",
+        "a": "Conocimiento e instrucciones.",
+        "b": "Aislamiento y paralelismo."
+      },
+      {
+        "aspect": "Acceso a la conversación",
+        "a": "Sí.",
+        "b": "No; recibe un encargo."
+      },
+      {
+        "aspect": "Definición en Claude Code",
+        "a": "`.claude/skills/<nombre>/SKILL.md`",
+        "b": "`.claude/agents/<nombre>.md`"
+      }
+    ],
+    "together": "Se combinan: un subagente puede precargar skills con su campo `skills`, y una skill puede ejecutarse en un subagente con `context: fork`.",
+    "sources": [
+      {
+        "title": "Claude Code: Skills",
+        "url": "https://code.claude.com/docs/en/skills"
+      },
+      {
+        "title": "Claude Code: Subagents",
+        "url": "https://code.claude.com/docs/en/sub-agents"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "agentsmd-vs-skills",
+    "title": "AGENTS.md vs Skills",
+    "status": "verified",
+    "summary": "AGENTS.md es lo que el agente debe saber siempre. Una skill es lo que debe saber a veces.",
+    "a": {
+      "name": "AGENTS.md",
+      "concept": "agents-md",
+      "what": "Archivo Markdown de instrucciones del proyecto, en un formato abierto que leen muchas herramientas.",
+      "goal": "Dar el contexto mínimo para trabajar en el repositorio.",
+      "pros": [
+        "Compatible con muchas herramientas.",
+        "Sin configuración.",
+        "Siempre disponible."
+      ],
+      "cons": [
+        "Consume contexto en cada sesión.",
+        "Un archivo largo pierde eficacia."
+      ],
+      "chooseWhen": [
+        "Es un hecho que importa en casi toda tarea.",
+        "Son comandos, estructura y convenciones."
+      ],
+      "example": "“Los tests se ejecutan con `pnpm test`”."
+    },
+    "b": {
+      "name": "Skills",
+      "concept": "skills",
+      "what": "Paquetes de instrucciones y recursos que se cargan bajo demanda.",
+      "goal": "Hacer disponibles procedimientos largos sin coste permanente.",
+      "pros": [
+        "Pueden ser extensos.",
+        "Incluyen scripts y referencias.",
+        "Invocables a mano o automáticamente."
+      ],
+      "cons": [
+        "La activación automática puede fallar.",
+        "Campos no totalmente portables."
+      ],
+      "chooseWhen": [
+        "Es un procedimiento de varios pasos.",
+        "Solo importa en ciertas tareas."
+      ],
+      "example": "Un procedimiento de 200 líneas para crear una migración de base de datos."
+    },
+    "differences": [
+      {
+        "aspect": "Cuándo se carga",
+        "a": "Al trabajar en el proyecto.",
+        "b": "Solo el nombre y la descripción; el resto al usarla."
+      },
+      {
+        "aspect": "Tamaño razonable",
+        "a": "Corto.",
+        "b": "Largo, con archivos de apoyo."
+      },
+      {
+        "aspect": "Contenido típico",
+        "a": "Hechos y reglas.",
+        "b": "Procedimientos."
+      },
+      {
+        "aspect": "Portabilidad",
+        "a": "Alta.",
+        "b": "Depende de la herramienta."
+      }
+    ],
+    "sources": [
+      {
+        "title": "AGENTS.md",
+        "url": "https://agents.md/",
+        "note": "Sitio oficial del formato"
+      },
+      {
+        "title": "Claude Code: Skills",
+        "url": "https://code.claude.com/docs/en/skills"
+      },
+      {
+        "title": "Claude Code: How Claude remembers your project",
+        "url": "https://code.claude.com/docs/en/memory"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "mcp-vs-api",
+    "title": "MCP vs API",
+    "status": "verified",
+    "summary": "No compiten: una API expone un servicio para cualquier software; MCP estandariza cómo una aplicación de IA descubre y usa capacidades. Un servidor MCP suele envolver una API.",
+    "a": {
+      "name": "MCP",
+      "concept": "mcp",
+      "what": "Protocolo abierto sobre JSON-RPC para conectar aplicaciones de IA con herramientas, recursos y prompts.",
+      "goal": "Una integración común para muchas aplicaciones de IA.",
+      "pros": [
+        "Descubrimiento de capacidades.",
+        "Reutilizable entre clientes.",
+        "Descripciones pensadas para modelos."
+      ],
+      "cons": [
+        "Otra capa que mantener.",
+        "Las definiciones consumen contexto.",
+        "Riesgos propios, como la inyección por contenido."
+      ],
+      "chooseWhen": [
+        "Un agente debe usar el sistema.",
+        "Quieres que varias aplicaciones de IA lo reutilicen."
+      ],
+      "example": "Un servidor MCP de tickets expone `create_ticket` a cualquier cliente compatible."
+    },
+    "b": {
+      "name": "API",
+      "concept": "api-design",
+      "what": "Interfaz general con la que un software usa otro, como una API REST o GraphQL.",
+      "goal": "Exponer funcionalidad a programas en general.",
+      "pros": [
+        "Estándar universal, con mucha infraestructura.",
+        "Control preciso.",
+        "No depende de IA."
+      ],
+      "cons": [
+        "Cada integración es a medida.",
+        "Un modelo necesita que le describan cómo usarla."
+      ],
+      "chooseWhen": [
+        "Los consumidores son programas normales.",
+        "Controlas el código de la integración."
+      ],
+      "example": "Tu frontend llama a `POST /tickets`."
+    },
+    "differences": [
+      {
+        "aspect": "Consumidor previsto",
+        "a": "Aplicaciones de IA.",
+        "b": "Cualquier software."
+      },
+      {
+        "aspect": "Descubrimiento",
+        "a": "El cliente lista las capacidades.",
+        "b": "Según la API: documentación u OpenAPI."
+      },
+      {
+        "aspect": "Formato",
+        "a": "JSON-RPC, con primitivas definidas.",
+        "b": "Libre: REST, GraphQL, gRPC…"
+      },
+      {
+        "aspect": "Relación",
+        "a": "Suele envolver una API.",
+        "b": "Puede estar detrás de un servidor MCP."
+      }
+    ],
+    "together": "Lo habitual es tener ambos: la API sigue siendo la interfaz del sistema, y el servidor MCP la adapta para los agentes.",
+    "sources": [
+      {
+        "title": "MCP Specification 2026-07-28: Architecture",
+        "url": "https://modelcontextprotocol.io/specification/2026-07-28/architecture"
+      },
+      {
+        "title": "Anthropic: Introducing the Model Context Protocol",
+        "url": "https://www.anthropic.com/news/model-context-protocol",
+        "note": "25 de noviembre de 2024"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "mcp-vs-tool-calling",
+    "title": "MCP vs Tool Calling",
+    "status": "verified",
+    "summary": "Tool calling es cómo el modelo pide usar una herramienta. MCP es cómo la aplicación obtiene y ejecuta herramientas externas. Operan en capas distintas.",
+    "a": {
+      "name": "MCP",
+      "concept": "mcp",
+      "what": "Protocolo entre la aplicación de IA y servidores externos.",
+      "goal": "Estandarizar el acceso a herramientas y datos.",
+      "pros": [
+        "Herramientas reutilizables.",
+        "Separa el agente del integrador."
+      ],
+      "cons": [
+        "Requiere cliente y servidor.",
+        "Superficie de riesgo adicional."
+      ],
+      "chooseWhen": [
+        "Las herramientas viven fuera de tu aplicación.",
+        "Quieres compartirlas."
+      ],
+      "example": "El host conecta con un servidor de base de datos y obtiene sus herramientas."
+    },
+    "b": {
+      "name": "Tool Calling",
+      "concept": "tool-calling",
+      "what": "Capacidad del modelo de emitir una petición estructurada de herramienta, que la aplicación ejecuta.",
+      "goal": "Permitir que el modelo decida acciones de forma validable.",
+      "pros": [
+        "Simple y directo.",
+        "Sin infraestructura adicional."
+      ],
+      "cons": [
+        "Cada aplicación define e implementa sus herramientas.",
+        "El formato varía según el proveedor."
+      ],
+      "chooseWhen": [
+        "Las herramientas son propias de tu aplicación.",
+        "Basta una integración simple."
+      ],
+      "example": "Tu app define `get_weather` y la ejecuta cuando el modelo la pide."
+    },
+    "differences": [
+      {
+        "aspect": "Capa",
+        "a": "Aplicación ↔ servidor.",
+        "b": "Modelo ↔ aplicación."
+      },
+      {
+        "aspect": "Quién lo implementa",
+        "a": "Host y servidores.",
+        "b": "Proveedor del modelo y tu aplicación."
+      },
+      {
+        "aspect": "Estandarización",
+        "a": "Protocolo abierto.",
+        "b": "Propia de cada API de modelo."
+      },
+      {
+        "aspect": "¿Sustituye al otro?",
+        "a": "No: el modelo sigue usando tool calling.",
+        "b": "No: puede usar herramientas de MCP."
+      }
+    ],
+    "together": "Flujo típico: el host obtiene herramientas por MCP, las presenta al modelo, este emite una llamada por tool calling y el host la ejecuta por MCP.",
+    "sources": [
+      {
+        "title": "MCP Specification 2026-07-28: Architecture",
+        "url": "https://modelcontextprotocol.io/specification/2026-07-28/architecture"
+      },
+      {
+        "title": "Claude API: Tool use",
+        "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "branch-vs-worktree",
+    "title": "Git Branch vs Git Worktree",
+    "status": "verified",
+    "summary": "Una rama es una línea de historia; un worktree es un directorio donde tener una rama activa. No son alternativas: un worktree usa una rama.",
+    "a": {
+      "name": "Git Branch",
+      "concept": "git-branches",
+      "what": "Puntero móvil a un commit, que representa una línea de trabajo.",
+      "goal": "Aislar cambios en la historia.",
+      "pros": [
+        "Muy ligera.",
+        "Base de todo flujo de Git."
+      ],
+      "cons": [
+        "Sin worktrees, solo hay una activa por directorio.",
+        "Cambiar de rama interrumpe lo que esté en marcha."
+      ],
+      "chooseWhen": [
+        "Trabajas en una cosa cada vez.",
+        "Quieres aislar un cambio en la historia."
+      ],
+      "example": "`git switch -c feature/search`"
+    },
+    "b": {
+      "name": "Git Worktree",
+      "concept": "git-worktrees",
+      "what": "Directorio de trabajo adicional enlazado al mismo repositorio, con sus archivos, su `HEAD` y su `index`.",
+      "goal": "Tener varias ramas activas a la vez.",
+      "pros": [
+        "Trabajo simultáneo real.",
+        "Aislamiento de archivos para varios agentes.",
+        "Comparte historia."
+      ],
+      "cons": [
+        "Cada uno necesita sus dependencias.",
+        "Más directorios que limpiar.",
+        "Una rama no puede estar activa en dos."
+      ],
+      "chooseWhen": [
+        "Varios agentes o tareas en paralelo.",
+        "Revisar un PR sin interrumpir tu trabajo."
+      ],
+      "example": "`git worktree add ../app-auth -b feature/auth`"
+    },
+    "differences": [
+      {
+        "aspect": "Qué es",
+        "a": "Una referencia en la historia.",
+        "b": "Un directorio en disco."
+      },
+      {
+        "aspect": "Ocupa",
+        "a": "Casi nada.",
+        "b": "Una copia de los archivos de trabajo."
+      },
+      {
+        "aspect": "Simultaneidad",
+        "a": "Una activa por directorio.",
+        "b": "Una por worktree."
+      },
+      {
+        "aspect": "Evita",
+        "a": "Mezclar historia.",
+        "b": "Pisar archivos en disco."
+      }
+    ],
+    "together": "Ninguno evita los conflictos al integrar: los worktrees solo los trasladan al momento del merge.",
+    "sources": [
+      {
+        "title": "Git: git-worktree",
+        "url": "https://git-scm.com/docs/git-worktree"
+      },
+      {
+        "title": "Pro Git: Basic Branching and Merging",
+        "url": "https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "assisted-vs-agentic",
+    "title": "AI-assisted coding vs Agentic coding",
+    "summary": "La diferencia es quién mantiene el bucle de trabajo: en la asistencia, la persona; en agentic coding, el agente, con la persona supervisando.",
+    "a": {
+      "name": "AI-assisted coding",
+      "concept": "ai-assisted-development",
+      "what": "Programar con ayuda de un modelo que sugiere o responde; la persona ejecuta y decide cada paso.",
+      "goal": "Acelerar la escritura y la comprensión del código.",
+      "pros": [
+        "Control detallado.",
+        "Coste bajo.",
+        "Se integra sin cambiar de hábitos."
+      ],
+      "cons": [
+        "Hay que copiar errores y aplicar cambios.",
+        "Rinde menos en cambios amplios."
+      ],
+      "chooseWhen": [
+        "Código crítico que quieres escribir paso a paso.",
+        "Estás aprendiendo una tecnología."
+      ],
+      "example": "Autocompletado y preguntas puntuales mientras programas."
+    },
+    "b": {
+      "name": "Agentic coding",
+      "concept": "agentic-coding",
+      "what": "Delegar tareas en un agente que edita, ejecuta y verifica de forma autónoma.",
+      "goal": "Delegar el ciclo completo de una tarea.",
+      "pros": [
+        "Cambios multiarchivo.",
+        "Verificación autónoma.",
+        "Trabajo en paralelo."
+      ],
+      "cons": [
+        "Revisar diffs grandes.",
+        "Más tokens.",
+        "Mayor riesgo sin buenos controles."
+      ],
+      "chooseWhen": [
+        "La tarea tiene un criterio de éxito verificable.",
+        "Tienes tests y puedes revisar el resultado."
+      ],
+      "example": "“Migra estos 30 archivos a la API nueva y haz pasar los tests”."
+    },
+    "differences": [
+      {
+        "aspect": "Ciclo editar-ejecutar-corregir",
+        "a": "Lo hace la persona.",
+        "b": "Lo hace el agente."
+      },
+      {
+        "aspect": "Unidad de trabajo",
+        "a": "Línea, función.",
+        "b": "Tarea."
+      },
+      {
+        "aspect": "Rol de la persona",
+        "a": "Autora.",
+        "b": "Supervisora y revisora."
+      }
+    ],
+    "together": "No hay por qué elegir: un mismo día se pueden usar ambos según la tarea.",
+    "sources": [
+      {
+        "title": "Anthropic: Building effective agents",
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "note": "19 de diciembre de 2024"
+      },
+      {
+        "title": "Claude Code: overview",
+        "url": "https://code.claude.com/docs/en/overview"
+      },
+      {
+        "title": "Simon Willison: Not all AI-assisted programming is vibe coding",
+        "url": "https://simonwillison.net/2025/Mar/19/vibe-coding/"
+      }
+    ],
+    "status": "needs-review",
+    "lastVerified": null
+  },
+  {
+    "id": "rag-vs-memory",
+    "title": "RAG vs Persistent Memory",
+    "summary": "RAG busca en un corpus de conocimiento para responder. La memoria persistente conserva lo que el agente aprende al trabajar. Se parecen por fuera, porque ambos inyectan texto en el contexto.",
+    "a": {
+      "name": "RAG",
+      "what": "Retrieval-Augmented Generation: recuperar fragmentos relevantes de una base documental y añadirlos al contexto.",
+      "goal": "Responder con conocimiento externo y actualizable.",
+      "pros": [
+        "Escala a corpus grandes.",
+        "Permite citar las fuentes."
+      ],
+      "cons": [
+        "La calidad depende de la recuperación.",
+        "Infraestructura de indexado."
+      ],
+      "chooseWhen": [
+        "Hay mucha documentación o datos ya existentes.",
+        "El conocimiento lo gestiona otro proceso."
+      ],
+      "example": "Un asistente que responde a partir de manuales internos."
+    },
+    "b": {
+      "name": "Persistent Memory",
+      "concept": "persistent-memory",
+      "what": "Información que el agente, o una persona, guarda entre sesiones a partir de su experiencia.",
+      "goal": "Dar continuidad y evitar repetir errores.",
+      "pros": [
+        "Mejora con el uso.",
+        "Sencilla si se basa en archivos."
+      ],
+      "cons": [
+        "Las notas envejecen.",
+        "Puede guardar errores o datos sensibles."
+      ],
+      "chooseWhen": [
+        "Se trata de preferencias y aprendizajes de trabajo.",
+        "Se trabaja repetidamente en el mismo proyecto."
+      ],
+      "example": "Una nota: “los tests de integración requieren Docker en marcha”."
+    },
+    "differences": [
+      {
+        "aspect": "Quién escribe",
+        "a": "Un proceso de ingesta.",
+        "b": "El agente o una persona durante el trabajo."
+      },
+      {
+        "aspect": "Qué contiene",
+        "a": "Conocimiento externo.",
+        "b": "Experiencia y preferencias."
+      },
+      {
+        "aspect": "Cómo se recupera",
+        "a": "Búsqueda, a menudo semántica.",
+        "b": "Índice cargado al inicio o lectura directa."
+      }
+    ],
+    "together": "No se excluyen. Una memoria grande puede usar técnicas de búsqueda, y un agente puede combinar ambas.",
+    "sources": [
+      {
+        "title": "Claude Code: How Claude remembers your project",
+        "url": "https://code.claude.com/docs/en/memory"
+      },
+      {
+        "title": "Anthropic: Effective context engineering for AI agents",
+        "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+        "note": "29 de septiembre de 2025"
+      }
+    ],
+    "status": "needs-review",
+    "lastVerified": null
+  },
+  {
+    "id": "monolith-vs-microservices-cmp",
+    "title": "Monolith vs Microservices",
+    "summary": "El monolito se despliega como una unidad; los microservicios, por separado. Estos últimos cambian complejidad interna por complejidad operativa.",
+    "a": {
+      "name": "Monolith",
+      "concept": "monolith-vs-microservices",
+      "what": "Aplicación desplegada como una sola unidad, que puede estar bien modularizada.",
+      "goal": "Simplicidad de desarrollo y operación.",
+      "pros": [
+        "Despliegue y depuración sencillos.",
+        "Transacciones simples.",
+        "Menos infraestructura."
+      ],
+      "cons": [
+        "Todo se despliega a la vez.",
+        "Puede degradarse sin disciplina modular."
+      ],
+      "chooseWhen": [
+        "Equipo pequeño.",
+        "Dominio aún poco claro."
+      ],
+      "example": "Una aplicación Django con módulos bien separados."
+    },
+    "b": {
+      "name": "Microservices",
+      "concept": "microservices",
+      "what": "Servicios pequeños, desplegables por separado, que se comunican por red.",
+      "goal": "Autonomía de equipos y despliegue independiente.",
+      "pros": [
+        "Escalado por partes.",
+        "Equipos autónomos."
+      ],
+      "cons": [
+        "Sistema distribuido: fallos parciales, latencia, consistencia.",
+        "Requiere plataforma madura."
+      ],
+      "chooseWhen": [
+        "Varios equipos con dominios claros.",
+        "Partes con necesidades de escala muy distintas."
+      ],
+      "example": "Pagos y Catálogo como servicios separados."
+    },
+    "differences": [
+      {
+        "aspect": "Despliegue",
+        "a": "Conjunto.",
+        "b": "Independiente."
+      },
+      {
+        "aspect": "Comunicación",
+        "a": "Llamadas en proceso.",
+        "b": "Red."
+      },
+      {
+        "aspect": "Datos",
+        "a": "Suele ser una base compartida.",
+        "b": "Por servicio."
+      },
+      {
+        "aspect": "Depuración",
+        "a": "Más directa.",
+        "b": "Requiere observabilidad."
+      }
+    ],
+    "together": "Fowler propone en *Monolith First* empezar por un monolito, por lo difícil que es acertar con los límites al principio. El monolito modular es un punto intermedio.",
+    "sources": [
+      {
+        "title": "Martin Fowler: Monolith First",
+        "url": "https://martinfowler.com/bliki/MonolithFirst.html"
+      },
+      {
+        "title": "James Lewis y Martin Fowler: Microservices",
+        "url": "https://martinfowler.com/articles/microservices.html"
+      }
+    ],
+    "status": "needs-review",
+    "lastVerified": null
+  },
+  {
+    "id": "ci-vs-cd",
+    "title": "CI vs CD",
+    "summary": "CI integra y verifica cada cambio. CD lleva esos cambios a un estado listo para desplegar, o los despliega.",
+    "a": {
+      "name": "CI",
+      "concept": "ci-cd",
+      "what": "Integración continua: integrar a menudo en la rama principal, con compilación y tests automáticos.",
+      "goal": "Detectar pronto los problemas de integración.",
+      "pros": [
+        "Conflictos más pequeños.",
+        "Feedback rápido."
+      ],
+      "cons": [
+        "Requiere buenos tests.",
+        "Un pipeline lento perjudica."
+      ],
+      "chooseWhen": [
+        "Siempre que haya más de una línea de trabajo."
+      ],
+      "example": "Cada PR ejecuta lint y tests."
+    },
+    "b": {
+      "name": "CD",
+      "concept": "deployment-strategies",
+      "what": "Entrega continua (siempre desplegable) o despliegue continuo (se despliega de forma automática).",
+      "goal": "Publicar de forma frecuente, segura y rutinaria.",
+      "pros": [
+        "Publicaciones pequeñas.",
+        "Menos riesgo por cambio."
+      ],
+      "cons": [
+        "Requiere automatización y observabilidad.",
+        "Exige prácticas de despliegue seguro."
+      ],
+      "chooseWhen": [
+        "Quieres reducir el tiempo hasta producción.",
+        "Tienes buena verificación automática."
+      ],
+      "example": "Al fusionar en `main`, se despliega en staging y luego en producción."
+    },
+    "differences": [
+      {
+        "aspect": "Termina en",
+        "a": "Un cambio verificado.",
+        "b": "Un cambio listo o desplegado."
+      },
+      {
+        "aspect": "Pregunta que responde",
+        "a": "¿Funciona integrado?",
+        "b": "¿Se puede publicar?"
+      },
+      {
+        "aspect": "Prerrequisito",
+        "a": "Tests automáticos.",
+        "b": "CI sólida."
+      }
+    ],
+    "together": "CD depende de CI: sin verificación fiable, automatizar el despliegue solo acelera los fallos.",
+    "sources": [
+      {
+        "title": "Martin Fowler: Continuous Integration",
+        "url": "https://martinfowler.com/articles/continuousIntegration.html"
+      },
+      {
+        "title": "Martin Fowler: Continuous Delivery",
+        "url": "https://martinfowler.com/bliki/ContinuousDelivery.html"
+      }
+    ],
+    "status": "needs-review",
+    "lastVerified": null
+  },
+  {
+    "id": "unit-vs-integration",
+    "title": "Unit Testing vs Integration Testing",
+    "summary": "Los tests unitarios comprueban piezas aisladas y son rápidos. Los de integración comprueban que las piezas funcionan juntas, y dan otro tipo de confianza.",
+    "a": {
+      "name": "Unit Testing",
+      "concept": "unit-testing",
+      "what": "Pruebas rápidas de una unidad de código, generalmente aislada.",
+      "goal": "Verificar la lógica y localizar errores con precisión.",
+      "pros": [
+        "Muy rápidos.",
+        "Fallos fáciles de localizar."
+      ],
+      "cons": [
+        "No detectan errores entre componentes."
+      ],
+      "chooseWhen": [
+        "Lógica con reglas y casos límite."
+      ],
+      "example": "Comprobar el cálculo de un descuento."
+    },
+    "b": {
+      "name": "Integration Testing",
+      "concept": "integration-testing",
+      "what": "Pruebas de varios componentes juntos, como un servicio y su base de datos.",
+      "goal": "Verificar las fronteras y la configuración.",
+      "pros": [
+        "Detectan errores de contrato y consultas.",
+        "Más cercanas a la realidad."
+      ],
+      "cons": [
+        "Más lentos.",
+        "Pueden ser inestables."
+      ],
+      "chooseWhen": [
+        "Interacción con bases de datos, colas o APIs."
+      ],
+      "example": "Guardar y leer un pedido en una base de datos real en un contenedor."
+    },
+    "differences": [
+      {
+        "aspect": "Alcance",
+        "a": "Una unidad.",
+        "b": "Varios componentes."
+      },
+      {
+        "aspect": "Velocidad",
+        "a": "Milisegundos.",
+        "b": "Segundos o más."
+      },
+      {
+        "aspect": "Dependencias",
+        "a": "Sustituidas o inexistentes.",
+        "b": "Reales o muy cercanas."
+      },
+      {
+        "aspect": "Cantidad típica",
+        "a": "Muchos.",
+        "b": "Menos."
+      }
+    ],
+    "together": "Se complementan, tal como sugiere la pirámide de tests. Con agentes, los unitarios dan feedback rápido, y los de integración evitan que un mock oculte un problema.",
+    "sources": [
+      {
+        "title": "Martin Fowler: Unit Test",
+        "url": "https://martinfowler.com/bliki/UnitTest.html"
+      },
+      {
+        "title": "Martin Fowler: Integration Test",
+        "url": "https://martinfowler.com/bliki/IntegrationTest.html"
+      },
+      {
+        "title": "Martin Fowler: Test Pyramid",
+        "url": "https://martinfowler.com/bliki/TestPyramid.html"
+      }
+    ],
+    "status": "needs-review",
+    "lastVerified": null
+  }
+]

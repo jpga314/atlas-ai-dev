@@ -1,0 +1,795 @@
+[
+  {
+    "id": "agents-md-monorepo",
+    "title": "AGENTS.md para un monorepo",
+    "topic": "AGENTS.md",
+    "objective": "Dar a cualquier agente de código las instrucciones mínimas para trabajar en un monorepo, con reglas específicas para un paquete.",
+    "context": "Un monorepo con frontend y API. El equipo usa más de una herramienta, así que no quiere mantener un archivo de instrucciones por producto.",
+    "implementation": "Coloca un archivo breve en la raíz y otro más específico en cada paquete que lo necesite. Incluye solo lo que el agente no puede deducir del código y lo que no comprueba ya una herramienta.",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "language": "markdown",
+        "code": "# Instrucciones para agentes\n\n## Estructura\n- `packages/web`: frontend en React.\n- `packages/api`: API en Node.js. Tiene su propio AGENTS.md.\n\n## Comandos\n- Instalar: `pnpm install`\n- Tests de un paquete: `pnpm --filter <paquete> test`\n- Lint: `pnpm lint`\n\n## Antes de terminar\n- Ejecuta los tests de los paquetes que hayas modificado.\n- No edites `pnpm-lock.yaml` a mano; regenéralo con `pnpm install`.\n\n## Pull requests\n- Título: `[paquete] descripción`.\n- Explica en la descripción cómo has probado el cambio."
+      },
+      {
+        "path": "packages/api/AGENTS.md",
+        "language": "markdown",
+        "code": "# API\n\n- Las migraciones van en `migrations/` y nunca se editan una vez fusionadas.\n- Los tests de integración necesitan Docker en marcha: `pnpm test:integration`.\n- Las rutas no acceden a la base de datos: usan servicios de `src/services`."
+      }
+    ],
+    "parts": [
+      {
+        "label": "Estructura",
+        "text": "Un mapa breve evita que el agente gaste contexto explorando."
+      },
+      {
+        "label": "Comandos",
+        "text": "Es lo más valioso: comandos exactos, que el agente puede ejecutar para comprobar su trabajo."
+      },
+      {
+        "label": "Antes de terminar",
+        "text": "Define qué significa “terminado”. Recuerda que es una instrucción, no una garantía."
+      },
+      {
+        "label": "packages/api/AGENTS.md",
+        "text": "Según agents.md, los agentes leen el archivo más cercano en el árbol de directorios, y ese tiene prioridad. El grado de soporte varía según la herramienta."
+      }
+    ],
+    "expected": "Un agente que trabaja en `packages/api` conoce los comandos, sabe que debe ejecutar los tests y respeta la regla de las migraciones sin que nadie se lo repita.",
+    "whenToUse": "En cualquier repositorio donde se usen agentes, sobre todo si el equipo utiliza varias herramientas.",
+    "limitations": [
+      "No se hace cumplir: lo crítico debe ir también en un hook o en CI.",
+      "En Claude Code, si hay un `CLAUDE.md`, este tiene prioridad salvo que importe `AGENTS.md`.",
+      "Hay que mantenerlo al día cuando cambien los comandos."
+    ],
+    "concepts": [
+      "agents-md",
+      "claude-md",
+      "context-engineering"
+    ],
+    "sources": [
+      {
+        "title": "AGENTS.md",
+        "url": "https://agents.md/",
+        "note": "Sitio oficial del formato"
+      },
+      {
+        "title": "Claude Code: How Claude remembers your project",
+        "url": "https://code.claude.com/docs/en/memory"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "skill-release-notes",
+    "title": "Skill para redactar notas de versión",
+    "topic": "Skills",
+    "objective": "Empaquetar un procedimiento repetible que solo se cargue cuando alguien lo pida.",
+    "context": "Cada versión requiere resumir los commits con el formato del equipo. Son demasiadas instrucciones para llevarlas en `AGENTS.md`, y solo se usan de vez en cuando.",
+    "implementation": "Crea un directorio de skill con su `SKILL.md`. El comando entre `!` y comillas invertidas se ejecuta antes de que el modelo vea la skill, y su salida ocupa ese lugar. Al escribir un archivo, se puede dejar que el modelo la active o reservarla para invocación manual.",
+    "files": [
+      {
+        "path": ".claude/skills/release-notes/SKILL.md",
+        "language": "markdown",
+        "code": "---\ndescription: Redacta notas de versión a partir de los commits desde la última etiqueta. Úsala cuando pidan notas de versión o un changelog.\ndisable-model-invocation: true\nallowed-tools: Bash(git log *), Bash(git describe *)\n---\n\n## Commits desde la última etiqueta\n\n!`git log $(git describe --tags --abbrev=0)..HEAD --oneline`\n\n## Instrucciones\n\n1. Agrupa los cambios en: Novedades, Correcciones y Otros.\n2. Redacta para personas usuarias: explica el efecto, no el detalle interno.\n3. Omite los commits que solo afecten a tests o a formato.\n4. Si no ves claro un cambio, indícalo en lugar de suponer qué hace."
+      }
+    ],
+    "parts": [
+      {
+        "label": "description",
+        "text": "Es lo único que se ve hasta invocar la skill. De ella depende que se active en el momento adecuado."
+      },
+      {
+        "label": "disable-model-invocation",
+        "text": "Solo tú la lanzas, con `/release-notes`. Conviene si no quieres que se ejecute por iniciativa del modelo."
+      },
+      {
+        "label": "allowed-tools",
+        "text": "Herramientas que se pueden usar sin pedir permiso durante el turno en que se invoca la skill."
+      },
+      {
+        "label": "!`git log …`",
+        "text": "Inyección de comando: el modelo recibe la salida, no el comando, por lo que parte de datos reales en vez de suponerlos."
+      },
+      {
+        "label": "Instrucciones",
+        "text": "Están redactadas como reglas permanentes. Claude no vuelve a leer el archivo en turnos posteriores."
+      }
+    ],
+    "expected": "Al escribir `/release-notes`, Claude Code recibe los commits reales y devuelve unas notas agrupadas con el formato del equipo.",
+    "whenToUse": "Con procedimientos de varios pasos que se repiten pero no se usan en cada sesión. Si tiene efectos secundarios, reserva su invocación para personas.",
+    "limitations": [
+      "Necesita al menos una etiqueta de Git; si no, `git describe` falla.",
+      "Fuera de Claude Code, campos como `disable-model-invocation` no son portables.",
+      "Una vez cargada, sigue ocupando contexto en esa sesión."
+    ],
+    "concepts": [
+      "skills",
+      "context-engineering",
+      "workflows"
+    ],
+    "sources": [
+      {
+        "title": "Claude Code: Skills",
+        "url": "https://code.claude.com/docs/en/skills"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "subagent-reviewer",
+    "title": "Subagente revisor de solo lectura",
+    "topic": "Subagents",
+    "objective": "Revisar cambios con una mirada independiente y con la garantía de que el revisor no puede modificar nada.",
+    "context": "Quien acaba de escribir un código tiende a validarlo. Un agente con contexto limpio, que no ha visto cómo se escribió, puede encontrar otros problemas. La documentación de Claude Code advierte de que un revisor al que se le pide buscar problemas siempre encontrará algo, así que conviene orientarlo a fallos reales.",
+    "implementation": "Define el subagente con una lista cerrada de herramientas. Claude Code aplica ese límite: no es una petición en un prompt. Pídele después que revise el diff actual.",
+    "files": [
+      {
+        "path": ".claude/agents/reviewer.md",
+        "language": "markdown",
+        "code": "---\nname: reviewer\ndescription: Revisa los cambios en busca de errores reales. Úsalo después de implementar un cambio y antes de abrir un PR.\ntools: Read, Grep, Glob\nmodel: sonnet\n---\n\nEres un revisor de código. No has participado en la implementación.\n\nRevisa solo lo que te indiquen y comunica únicamente problemas que puedan\nprovocar un fallo. Omite las cuestiones de estilo y las preferencias.\n\nPor cada hallazgo indica:\n- Archivo y línea.\n- Un escenario concreto en el que falla.\n- Cómo lo has comprobado.\n\nSi no encuentras nada, dilo: no inventes hallazgos para justificar la revisión."
+      },
+      {
+        "path": "prompt",
+        "language": "text",
+        "code": "Usa el subagente reviewer para revisar los archivos que devuelve\n\"git diff main --name-only\". Te paso el objetivo del cambio:\nevitar que un carrito vacío genere un error 500 en /orders."
+      }
+    ],
+    "parts": [
+      {
+        "label": "name / description",
+        "text": "Son los únicos campos obligatorios. El agente principal usa `description` para decidir cuándo delegar."
+      },
+      {
+        "label": "tools",
+        "text": "Lista permitida. Sin `Edit`, `Write` ni `Bash`, no puede modificar archivos. Sin `Bash` tampoco puede lanzar `git diff`, y por eso el encargo le indica qué revisar."
+      },
+      {
+        "label": "model",
+        "text": "Permite elegir un modelo según el coste de la tarea."
+      },
+      {
+        "label": "prompt del sistema",
+        "text": "El cuerpo del archivo. Pedir un escenario de fallo reduce los falsos positivos."
+      },
+      {
+        "label": "encargo",
+        "text": "El subagente no ve la conversación: hay que darle el objetivo y el alcance."
+      }
+    ],
+    "expected": "El subagente devuelve una lista corta de hallazgos con archivo, línea y escenario, o indica que no encuentra problemas. Los resultados intermedios no llenan el contexto principal.",
+    "whenToUse": "Antes de abrir un PR, en cambios de cierto riesgo o cuando el agente principal lleva una sesión larga con ese código.",
+    "limitations": [
+      "No sustituye a los tests ni a la revisión humana.",
+      "Sin `Bash` no puede ejecutar tests para confirmar sus hipótesis; añadirlo amplía sus permisos.",
+      "Añade coste en tokens."
+    ],
+    "concepts": [
+      "subagents",
+      "automated-code-review",
+      "code-reviews",
+      "permissions"
+    ],
+    "sources": [
+      {
+        "title": "Claude Code: Subagents",
+        "url": "https://code.claude.com/docs/en/sub-agents"
+      },
+      {
+        "title": "Claude Code: Best practices",
+        "url": "https://code.claude.com/docs/en/best-practices"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "mcp-project-config",
+    "title": "Configuración MCP compartida por el equipo",
+    "topic": "MCP",
+    "objective": "Conectar un servidor MCP remoto y uno local para todo el equipo, sin escribir credenciales en el repositorio.",
+    "context": "El equipo quiere que el agente consulte una base de datos de desarrollo y un servicio remoto. Claude Code lee `.mcp.json` en la raíz del proyecto, y ese archivo se puede versionar.",
+    "implementation": "Declara los servidores en `.mcp.json` y usa expansión de variables de entorno para los secretos. Cada persona define esas variables en su entorno. Los URL de ejemplo deben sustituirse por los de tus servidores.",
+    "files": [
+      {
+        "path": ".mcp.json",
+        "language": "json",
+        "code": "{\n  \"mcpServers\": {\n    \"docs\": {\n      \"type\": \"http\",\n      \"url\": \"https://mcp.example.com/mcp\",\n      \"headers\": { \"Authorization\": \"Bearer ${DOCS_TOKEN}\" }\n    },\n    \"database-tools\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@bytebase/dbhub\", \"--dsn\", \"${DB_URL}\"]\n    }\n  }\n}"
+      },
+      {
+        "path": "terminal",
+        "language": "bash",
+        "code": "# Alternativa: añadirlo por CLI con ámbito de proyecto\nclaude mcp add --transport http docs --scope project https://mcp.example.com/mcp\n\n# Comprobar\nclaude mcp list"
+      }
+    ],
+    "parts": [
+      {
+        "label": "\"type\": \"http\"",
+        "text": "Transporte recomendado para servidores remotos. Si hay `url` pero no `type`, Claude Code lo trata como error de configuración y lo omite."
+      },
+      {
+        "label": "${DOCS_TOKEN}",
+        "text": "Se expande desde el entorno. Admite también `${VAR:-valor}`. Así, el secreto no llega al repositorio."
+      },
+      {
+        "label": "\"command\" / \"args\"",
+        "text": "Servidor local por stdio: el cliente lanza el proceso. `npx -y` descarga y ejecuta un paquete, por lo que debes confiar en él."
+      },
+      {
+        "label": "--scope project",
+        "text": "Guarda la configuración en `.mcp.json`. Los ámbitos son `local` (por defecto), `project` y `user`."
+      }
+    ],
+    "expected": "Dentro de una sesión, `/mcp` muestra ambos servidores conectados, y sus herramientas están disponibles para el agente.",
+    "whenToUse": "Cuando todo el equipo necesita las mismas integraciones. Para credenciales o herramientas personales, usa el ámbito `user` o `local`.",
+    "limitations": [
+      "Un servidor de terceros es código con acceso a tus sistemas: revísalo antes.",
+      "Cada servidor añade definiciones que consumen contexto.",
+      "El contenido devuelto puede contener inyecciones de prompt.",
+      "Da al servidor credenciales de mínimo privilegio, por ejemplo de solo lectura."
+    ],
+    "concepts": [
+      "mcp",
+      "mcp-servers",
+      "permissions"
+    ],
+    "sources": [
+      {
+        "title": "Claude Code: MCP",
+        "url": "https://code.claude.com/docs/en/mcp"
+      },
+      {
+        "title": "MCP Specification 2026-07-28: Architecture",
+        "url": "https://modelcontextprotocol.io/specification/2026-07-28/architecture"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "persistent-memory-layers",
+    "title": "Memoria persistente por capas",
+    "topic": "Persistent Memory",
+    "objective": "Separar lo que escribe el equipo, lo que aprende el agente y lo que recuerda un subagente concreto.",
+    "context": "Tras varias sesiones, el agente sigue preguntando lo mismo y repite errores. Pero meterlo todo en `CLAUDE.md` lo haría demasiado largo.",
+    "implementation": "Deja las reglas de equipo en `CLAUDE.md`, que puede importar `AGENTS.md`. Deja que la auto memory recoja las correcciones. Y, si un subagente acumula conocimiento propio, actívale el campo `memory`. Trata la memoria como cualquier otro contenido: léela y corrígela.",
+    "files": [
+      {
+        "path": "CLAUDE.md",
+        "language": "markdown",
+        "code": "@AGENTS.md\n\n## Memoria\n- Las decisiones de arquitectura van en `docs/decisions/`, no en notas de memoria.\n- No guardes secretos ni datos de clientes en memoria."
+      },
+      {
+        "path": ".claude/agents/code-reviewer.md",
+        "language": "markdown",
+        "code": "---\nname: code-reviewer\ndescription: Revisa código según las convenciones del proyecto. Úsalo tras implementar un cambio.\ntools: Read, Grep, Glob\nmemory: project\n---\n\nConsulta tu memoria antes de revisar. Al terminar, guarda en ella solo las\nconvenciones o los errores recurrentes que hayas confirmado en el código,\ncon la ruta del archivo donde se ven. Corrige las notas que ya no sean ciertas."
+      },
+      {
+        "path": ".gitignore",
+        "language": "text",
+        "code": "CLAUDE.local.md\n.claude/agent-memory-local/"
+      }
+    ],
+    "parts": [
+      {
+        "label": "CLAUDE.md",
+        "text": "Instrucciones que escribe una persona y se cargan en cada sesión."
+      },
+      {
+        "label": "@AGENTS.md",
+        "text": "Importa el archivo compartido en lugar de duplicarlo."
+      },
+      {
+        "label": "auto memory",
+        "text": "No aparece en los archivos: son notas que Claude escribe por repositorio, compartidas entre worktrees. Se cargan las primeras 200 líneas o 25 KB."
+      },
+      {
+        "label": "memory: project",
+        "text": "El subagente guarda en `.claude/agent-memory/code-reviewer/`, y se puede versionar. Activarlo le concede automáticamente Read, Write y Edit."
+      },
+      {
+        "label": ".gitignore",
+        "text": "Excluye lo personal: `CLAUDE.local.md` y la memoria de ámbito `local`."
+      }
+    ],
+    "expected": "El agente deja de repetir errores ya corregidos, `CLAUDE.md` sigue siendo breve y puedes consultar qué ha aprendido leyendo unos archivos.",
+    "whenToUse": "En proyectos en los que trabajas de forma repetida. No lo necesitas para tareas puntuales.",
+    "limitations": [
+      "Una nota incorrecta sigue influyendo en sesiones futuras.",
+      "`memory` no tiene efecto si la auto memory está desactivada.",
+      "Al concederle Write y Edit, ese revisor deja de ser de solo lectura.",
+      "Una memoria no garantiza un comportamiento: lo obligatorio va en un hook."
+    ],
+    "concepts": [
+      "persistent-memory",
+      "claude-md",
+      "subagents",
+      "context-management"
+    ],
+    "sources": [
+      {
+        "title": "Claude Code: How Claude remembers your project",
+        "url": "https://code.claude.com/docs/en/memory"
+      },
+      {
+        "title": "Claude Code: Subagents",
+        "url": "https://code.claude.com/docs/en/sub-agents"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "spec-plan-build-workflow",
+    "title": "Workflow de especificación, construcción y revisión",
+    "topic": "Workflows",
+    "objective": "Llevar una funcionalidad de una idea a un PR con puntos de control claros, separando las fases en sesiones distintas.",
+    "context": "Pedir directamente “construye X” da diffs difíciles de revisar. Las buenas prácticas de Claude Code sugieren escribir la especificación y empezar luego una sesión limpia para construir a partir de ella.",
+    "implementation": "Primera sesión: el agente te ayuda a escribir `SPEC.md` sin programar. Segunda sesión, limpia: construye a partir del archivo, con una comprobación que ejecutar. Por último, un revisor sin contexto contrasta el resultado con la especificación.",
+    "files": [
+      {
+        "path": "SPEC.md",
+        "language": "markdown",
+        "code": "# Exportar pedidos a CSV\n\n## Objetivo\nQue una persona administradora pueda descargar los pedidos de un rango de fechas.\n\n## Criterios de aceptación\n- GET /admin/orders.csv?from=&to= devuelve text/csv.\n- Sin permiso de administración devuelve 403.\n- Rango de más de 366 días devuelve 400.\n\n## Fuera de alcance\n- Exportaciones programadas.\n\n## Cómo comprobarlo\n- pnpm --filter api test orders-export"
+      },
+      {
+        "path": "prompts.txt",
+        "language": "text",
+        "code": "# Sesión 1: especificar\nVoy a añadir una exportación de pedidos a CSV. Hazme preguntas sobre lo que\nno esté claro y redacta SPEC.md. No escribas código.\n\n# Sesión 2 (nueva): construir\nImplementa SPEC.md. Escribe primero los tests de los criterios de aceptación\ny confirma que fallan. Después implementa hasta que pasen.\nNo amplíes el alcance.\n\n# Sesión 2: revisar\nUsa el subagente reviewer para contrastar el diff con SPEC.md.\nInforma solo de criterios incumplidos y de errores que puedan provocar un fallo."
+      }
+    ],
+    "parts": [
+      {
+        "label": "Criterios de aceptación",
+        "text": "Comprobables: cada uno se convierte en un test. Es la “definición de terminado” del agente."
+      },
+      {
+        "label": "Fuera de alcance",
+        "text": "Frena la tendencia a añadir más de lo pedido."
+      },
+      {
+        "label": "Cómo comprobarlo",
+        "text": "Da al agente un comando que puede ejecutar, en vez de tener que creer que ha terminado."
+      },
+      {
+        "label": "Sesión nueva",
+        "text": "Empieza con un contexto limpio y una definición por escrito, sin el ruido de la conversación anterior."
+      },
+      {
+        "label": "Confirmar que fallan",
+        "text": "Un test que nunca ha fallado puede no estar comprobando nada."
+      }
+    ],
+    "expected": "Un PR pequeño, con tests ligados a criterios concretos y una revisión independiente contra la especificación.",
+    "whenToUse": "En funcionalidades de cierta entidad. Para un arreglo de una línea, este proceso sobra.",
+    "limitations": [
+      "Escribir y revisar la especificación lleva tiempo.",
+      "Si la especificación es incorrecta, el resultado será correctamente incorrecto.",
+      "Hay que actualizarla si cambia de rumbo la implementación."
+    ],
+    "concepts": [
+      "ai-development-workflows",
+      "spec-driven-development",
+      "tdd",
+      "subagents"
+    ],
+    "sources": [
+      {
+        "title": "Claude Code: Best practices",
+        "url": "https://code.claude.com/docs/en/best-practices"
+      },
+      {
+        "title": "GitHub Spec Kit",
+        "url": "https://github.com/github/spec-kit"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "hooks-guard-format",
+    "title": "Hooks: bloquear comandos peligrosos y formatear",
+    "topic": "Hooks",
+    "tested": "Script del hook ejecutado con entradas de prueba; la integración con Claude Code no se ha ejecutado.",
+    "objective": "Garantizar dos reglas sin depender del modelo: impedir comandos destructivos y formatear cada archivo editado.",
+    "context": "Una instrucción como “no hagas force push” es una petición. Un hook se ejecuta siempre. El script está en Node para que funcione igual en Windows, macOS y Linux, sin depender de `jq`.",
+    "implementation": "Registra los hooks en `.claude/settings.json` y guarda el script en el repositorio para que lo revise el equipo. Adapta el comando de formateo a tu proyecto.",
+    "files": [
+      {
+        "path": ".claude/settings.json",
+        "language": "json",
+        "code": "{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          { \"type\": \"command\", \"command\": \"node \\\"${CLAUDE_PROJECT_DIR}/.claude/hooks/guard-bash.mjs\\\"\" }\n        ]\n      }\n    ],\n    \"PostToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          { \"type\": \"command\", \"command\": \"npx prettier --write --ignore-unknown .\" }\n        ]\n      }\n    ]\n  }\n}"
+      },
+      {
+        "path": ".claude/hooks/guard-bash.mjs",
+        "language": "javascript",
+        "code": "// PreToolUse: recibe la llamada en JSON por stdin. Exit 2 bloquea y stderr llega al modelo.\nlet input = '';\nfor await (const chunk of process.stdin) input += chunk;\n\nconst command = JSON.parse(input).tool_input?.command ?? '';\nconst forbidden = [/\\brm\\s+-[a-z]*r[a-z]*f/i, /\\bgit\\s+push\\b.*--force/];\n\nif (forbidden.some((rule) => rule.test(command))) {\n  console.error(`Bloqueado por política del proyecto: ${command}`);\n  process.exit(2);\n}"
+      },
+      {
+        "path": "prueba manual",
+        "language": "bash",
+        "code": "echo '{\"tool_input\":{\"command\":\"rm -rf build\"}}' | node .claude/hooks/guard-bash.mjs\necho $?   # 2: bloqueado\n\necho '{\"tool_input\":{\"command\":\"npm test\"}}' | node .claude/hooks/guard-bash.mjs\necho $?   # 0: permitido"
+      }
+    ],
+    "parts": [
+      {
+        "label": "PreToolUse",
+        "text": "Se ejecuta antes de la herramienta y puede impedirla."
+      },
+      {
+        "label": "matcher",
+        "text": "Filtra por herramienta. `Edit|Write` coincide con cualquiera de las dos."
+      },
+      {
+        "label": "process.exit(2)",
+        "text": "Solo el código 2 bloquea. **Un exit 1 no bloquea:** la acción continúa. Es un error frecuente."
+      },
+      {
+        "label": "console.error",
+        "text": "Con exit 2, stderr llega al modelo como motivo, y puede cambiar de enfoque."
+      },
+      {
+        "label": "PostToolUse",
+        "text": "La herramienta ya se ejecutó, así que no puede impedirla. Sirve para reaccionar, por ejemplo formateando."
+      },
+      {
+        "label": "prettier .",
+        "text": "Formatea todo el proyecto en cada edición: es sencillo, pero lento en repositorios grandes. Se puede leer la ruta editada del JSON de entrada para formatear solo ese archivo."
+      }
+    ],
+    "expected": "Si el agente intenta `rm -rf build`, la llamada no se ejecuta y recibe el motivo. Tras cada edición, el código queda formateado.",
+    "whenToUse": "Para reglas sin excepciones. Si la regla requiere criterio, usa una instrucción o un revisor.",
+    "limitations": [
+      "Filtrar comandos por texto no es una frontera de seguridad: otra forma de escribirlo puede eludirlo, por ejemplo un script que borre archivos. Combínalo con permisos y aislamiento.",
+      "Los hooks se ejecutan con tus permisos: revísalos como código de producción.",
+      "Un hook lento frena cada acción."
+    ],
+    "concepts": [
+      "hooks",
+      "guardrails",
+      "permissions",
+      "agentic-harness"
+    ],
+    "sources": [
+      {
+        "title": "Claude Code: Hooks reference",
+        "url": "https://code.claude.com/docs/en/hooks"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "git-worktrees-basics",
+    "title": "Git Worktrees paso a paso",
+    "topic": "Git Worktrees",
+    "tested": "Comandos ejecutados en un repositorio de prueba con Git en Windows.",
+    "objective": "Tener dos ramas activas a la vez en directorios distintos, entender sus reglas y limpiar al terminar.",
+    "context": "Estás en mitad de un trabajo y aparece otra tarea. O quieres que un agente trabaje sin tocar tu directorio. Con un worktree no hace falta `git stash` ni un segundo clon.",
+    "implementation": "Ejecútalo desde el repositorio principal. Los worktrees se crean fuera de él, como carpetas hermanas, para que no aparezcan como archivos sin seguimiento.",
+    "files": [
+      {
+        "path": "terminal",
+        "language": "bash",
+        "code": "# Crear dos worktrees, cada uno con una rama nueva\ngit worktree add ../app-auth -b feature/auth\ngit worktree add ../app-billing -b feature/billing\n\n# Ver qué hay activo\ngit worktree list\n\n# Una rama no puede estar activa en dos sitios (esto falla)\ngit worktree add ../otra feature/auth\n\n# Un commit en un worktree es visible desde los demás\n(cd ../app-auth && git add . && git commit -m \"Añade auth\")\ngit log --oneline feature/auth -1\n\n# Limpiar: falla si hay cambios sin commitear, salvo con --force\ngit worktree remove ../app-auth\ngit worktree remove --force ../app-billing\n\n# La rama sigue existiendo y se puede integrar\ngit merge feature/auth"
+      }
+    ],
+    "parts": [
+      {
+        "label": "worktree add <ruta> -b <rama>",
+        "text": "Crea el directorio y una rama nueva a partir de `HEAD`. Sin `-b`, usa una rama existente."
+      },
+      {
+        "label": "worktree list",
+        "text": "Muestra cada directorio, su commit y su rama."
+      },
+      {
+        "label": "fatal: already checked out",
+        "text": "Comportamiento esperado. Se resuelve con una rama nueva o con `--detach`."
+      },
+      {
+        "label": "worktree remove",
+        "text": "Elimina el directorio, pero **no la rama**: los commits siguen ahí. Si había cambios sin commitear, `--force` los pierde."
+      },
+      {
+        "label": "git worktree prune",
+        "text": "Si borras una carpeta a mano, limpia los metadatos que quedan."
+      }
+    ],
+    "expected": "Tres directorios con ramas distintas y un mismo historial. Al eliminar los worktrees, las ramas siguen disponibles para integrarse.",
+    "whenToUse": "Para tareas paralelas, hotfixes sin interrumpir tu trabajo, revisar un PR o aislar a un agente.",
+    "limitations": [
+      "Un worktree es una copia limpia: sin `node_modules` ni `.env`. Instala dependencias en cada uno.",
+      "No evita los conflictos al integrar.",
+      "Varios servidores de desarrollo pueden chocar en el mismo puerto."
+    ],
+    "concepts": [
+      "git-worktrees",
+      "git-branches",
+      "parallel-development"
+    ],
+    "sources": [
+      {
+        "title": "Git: git-worktree",
+        "url": "https://git-scm.com/docs/git-worktree"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "parallel-agents-worktrees",
+    "title": "Agentes en paralelo con worktrees",
+    "topic": "Parallel Agents",
+    "status": "needs-review",
+    "objective": "Lanzar varias tareas independientes con agentes a la vez, y luego revisarlas e integrarlas de una en una.",
+    "context": "Tienes dos tareas que tocan áreas distintas. Claude Code puede crear un worktree por sesión con `--worktree`. En modo no interactivo (`-p`) no limpia sus worktrees al terminar, y por eso hay un paso explícito de limpieza.",
+    "implementation": "Comprueba primero que las tareas no tocan los mismos archivos. Lanza una sesión por tarea, revisa cada rama y fusiona en orden, ejecutando los tests tras cada merge. Como esos worktrees se bloquean durante la ejecución, puede que debas desbloquearlos antes de eliminarlos.",
+    "files": [
+      {
+        "path": "parallel.sh",
+        "language": "bash",
+        "code": "#!/usr/bin/env bash\nset -euo pipefail\n\n# Una sesión aislada por tarea; cada una crea su worktree y su rama\nclaude -p --worktree rate-limit \"Añade rate limiting a /login con tests. Ejecuta los tests antes de terminar.\" > rate-limit.log &\nclaude -p --worktree api-docs \"Actualiza docs/api.md según las rutas actuales. No modifiques código.\" > api-docs.log &\nwait\n\ngit worktree list"
+      },
+      {
+        "path": "integración",
+        "language": "bash",
+        "code": "# Revisar lo que ha hecho cada agente\ngit diff main...worktree-rate-limit\ngit diff main...worktree-api-docs\n\n# Integrar de una en una, comprobando cada paso\ngit merge worktree-api-docs\nnpm test\ngit merge worktree-rate-limit\nnpm test\n\n# Limpiar\ngit worktree remove .claude/worktrees/rate-limit\ngit worktree remove .claude/worktrees/api-docs"
+      },
+      {
+        "path": ".gitignore",
+        "language": "text",
+        "code": ".claude/worktrees/"
+      }
+    ],
+    "parts": [
+      {
+        "label": "--worktree <nombre>",
+        "text": "Crea `.claude/worktrees/<nombre>/`, en una rama `worktree-<nombre>`."
+      },
+      {
+        "label": "-p",
+        "text": "No interactivo. Interactivamente, Claude pregunta al salir si conserva el worktree; con `-p`, no."
+      },
+      {
+        "label": "> *.log &",
+        "text": "Ejecuta cada sesión en segundo plano y guarda su salida para revisarla."
+      },
+      {
+        "label": "wait",
+        "text": "Espera a que terminen todas."
+      },
+      {
+        "label": "git diff main...rama",
+        "text": "Muestra solo lo que ha cambiado esa rama desde que divergió de main."
+      },
+      {
+        "label": "npm test tras cada merge",
+        "text": "Dos ramas correctas por separado pueden fallar juntas. Es la única forma de detectar conflictos semánticos."
+      },
+      {
+        "label": ".gitignore",
+        "text": "La documentación recomienda ignorar `.claude/worktrees/` para que no aparezca como archivos sin seguimiento."
+      }
+    ],
+    "expected": "Dos ramas independientes, con sus logs. Tras revisarlas, `main` las integra con los tests en verde.",
+    "whenToUse": "Con tareas realmente independientes y buenos tests. Si las dos tocan el mismo módulo, hazlas en serie.",
+    "limitations": [
+      "Este ejemplo se basa en la documentación y **no se ha ejecutado**, porque consume tokens de una cuenta real.",
+      "Los permisos: en modo no interactivo no hay quien apruebe; configúralos antes o las acciones se denegarán.",
+      "Si la rama base no es la esperada, revisa `worktree.baseRef`; por defecto parte de la rama por defecto del remoto.",
+      "El límite real es tu capacidad de revisar los diffs."
+    ],
+    "concepts": [
+      "parallel-agent-development",
+      "git-worktrees",
+      "conflict-resolution",
+      "shared-file-conflicts"
+    ],
+    "sources": [
+      {
+        "title": "Claude Code: Run parallel sessions with worktrees",
+        "url": "https://code.claude.com/docs/en/worktrees"
+      }
+    ],
+    "lastVerified": null
+  },
+  {
+    "id": "cicd-github-actions",
+    "title": "Pipeline de CI con GitHub Actions",
+    "topic": "CI/CD",
+    "status": "needs-review",
+    "objective": "Comprobar automáticamente cada pull request, lo haya escrito una persona o un agente.",
+    "context": "CI es un verificador que no depende de quien escribió el código. Si un agente dice que “todo funciona”, el pipeline lo comprueba de forma independiente.",
+    "implementation": "Guarda el workflow en `.github/workflows/`. Después, en la configuración del repositorio, exige este check con una regla de protección de rama para que no se pueda fusionar sin pasarlo.",
+    "files": [
+      {
+        "path": ".github/workflows/ci.yml",
+        "language": "yaml",
+        "code": "name: CI\n\non:\n  pull_request:\n  push:\n    branches: [main]\n\npermissions:\n  contents: read\n\njobs:\n  lint:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 22\n          cache: npm\n      - run: npm ci\n      - run: npm run lint\n\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 22\n          cache: npm\n      - run: npm ci\n      - run: npm test"
+      }
+    ],
+    "parts": [
+      {
+        "label": "on",
+        "text": "El evento que dispara el workflow: cada PR y cada push a `main`."
+      },
+      {
+        "label": "permissions",
+        "text": "Reduce los permisos del token al mínimo. Es buena práctica, sobre todo si ejecutas código generado."
+      },
+      {
+        "label": "jobs",
+        "text": "`lint` y `test` se ejecutan en paralelo, porque no se han declarado dependencias entre ellos."
+      },
+      {
+        "label": "runs-on",
+        "text": "El runner: aquí, una máquina virtual alojada por GitHub."
+      },
+      {
+        "label": "uses",
+        "text": "Una action reutilizable. Para mayor seguridad, fija las de terceros a un commit concreto."
+      },
+      {
+        "label": "run",
+        "text": "Un comando de shell. `npm ci` instala exactamente lo que indica el lockfile."
+      }
+    ],
+    "expected": "Cada PR muestra dos checks. Si uno falla, el PR queda marcado y, con protección de rama, no se puede fusionar.",
+    "whenToUse": "En todo repositorio de GitHub con tests. Es lo primero que conviene tener antes de delegar en agentes.",
+    "limitations": [
+      "YAML revisado, pero no ejecutado en un repositorio real.",
+      "Comprueba las versiones vigentes de las actions y de Node.",
+      "Requiere que existan los scripts `lint` y `test` en `package.json`.",
+      "Solo detecta lo que comprueban tus tests."
+    ],
+    "concepts": [
+      "ci-cd",
+      "github-actions",
+      "regression-testing",
+      "pull-requests"
+    ],
+    "sources": [
+      {
+        "title": "GitHub Docs: Understanding GitHub Actions",
+        "url": "https://docs.github.com/en/actions/get-started/understand-github-actions"
+      }
+    ],
+    "lastVerified": null
+  },
+  {
+    "id": "testing-regression-node",
+    "title": "Tests de regresión con el runner de Node.js",
+    "topic": "Testing",
+    "tested": "Código ejecutado con Node.js 24: 2 de 2 tests correctos.",
+    "objective": "Capturar un bug con un test, de modo que no pueda volver a aparecer, sin instalar dependencias.",
+    "context": "Un cálculo de IVA devolvía `24.187900000000003` por la aritmética de coma flotante. Este flujo es también un buen encargo para un agente: primero el test, después el arreglo.",
+    "implementation": "Escribe el test de regresión, confirma que falla con el código antiguo, corrige y ejecuta toda la suite con `node --test`.",
+    "files": [
+      {
+        "path": "iva.js",
+        "language": "javascript",
+        "code": "export const conIva = (importe, tipo = 21) => Math.round(importe * (100 + tipo)) / 100;"
+      },
+      {
+        "path": "iva.test.js",
+        "language": "javascript",
+        "code": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport { conIva } from './iva.js';\n\ntest('añade el 21% por defecto', () => {\n  assert.equal(conIva(100), 121);\n});\n\n// Regresión: 19.99 * 1.21 producía 24.187900000000003.\ntest('redondea a céntimos', () => {\n  assert.equal(conIva(19.99), 24.19);\n});"
+      },
+      {
+        "path": "terminal",
+        "language": "bash",
+        "code": "node --test"
+      }
+    ],
+    "parts": [
+      {
+        "label": "node:test",
+        "text": "Runner incluido en Node.js, sin dependencias."
+      },
+      {
+        "label": "assert/strict",
+        "text": "Comparaciones estrictas: `equal` se comporta como `===`."
+      },
+      {
+        "label": "Comentario de regresión",
+        "text": "Explica por qué existe el test, para que nadie lo borre por parecer redundante."
+      },
+      {
+        "label": "Math.round(...) / 100",
+        "text": "Trabaja la operación en céntimos. En un sistema de cobro real conviene usar enteros o una biblioteca decimal."
+      }
+    ],
+    "expected": "`node --test` informa de 2 tests superados. Si alguien reintroduce el error, CI fallará.",
+    "whenToUse": "Cada vez que corrijas un bug. Con un agente, pídele que muestre el test fallando antes de arreglarlo.",
+    "limitations": [
+      "Solo cubre el caso probado.",
+      "Si el mismo agente escribe código y test, ambos pueden compartir la misma idea errónea.",
+      "No comprueba la integración con otros componentes."
+    ],
+    "concepts": [
+      "unit-testing",
+      "regression-testing",
+      "tdd",
+      "ai-generated-code-testing"
+    ],
+    "sources": [
+      {
+        "title": "Node.js: Test runner",
+        "url": "https://nodejs.org/api/test.html"
+      },
+      {
+        "title": "Martin Fowler: Test Pyramid",
+        "url": "https://martinfowler.com/bliki/TestPyramid.html"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "agent-eval-minimal",
+    "title": "Evaluación mínima de un agente",
+    "topic": "Testing",
+    "status": "needs-review",
+    "objective": "Medir con datos si un cambio de instrucciones o de modelo mejora a un agente, en lugar de juzgarlo por impresión.",
+    "context": "Sigue el enfoque de *Demystifying evals*: empezar con pocas tareas reales, evaluar el resultado final y no la secuencia de pasos, y repetir cada tarea porque el resultado varía.",
+    "implementation": "Cada tarea tiene un prompt y un comando que puntúa el resultado. El script crea un worktree limpio por intento, lanza el agente y ejecuta el grader. Empieza con los fallos reales de tu proyecto.",
+    "files": [
+      {
+        "path": "evals/tasks.json",
+        "language": "json",
+        "code": "[\n  {\n    \"id\": \"issue-142\",\n    \"prompt\": \"El endpoint /orders devuelve 500 con el carrito vacío. Corrígelo.\",\n    \"grader\": \"npm test -- tests/regression/issue-142.test.js\"\n  }\n]"
+      },
+      {
+        "path": "evals/run.sh",
+        "language": "bash",
+        "code": "#!/usr/bin/env bash\n# Uso: evals/run.sh <id> \"<prompt>\" \"<grader>\" [intentos]\nid=$1; prompt=$2; grader=$3; trials=${4:-3}\npass=0\n\nfor i in $(seq 1 \"$trials\"); do\n  dir=\"../eval-$id-$i\"\n  git worktree add -q --detach \"$dir\" HEAD\n  (\n    cd \"$dir\"\n    npm ci --silent\n    claude -p \"$prompt\" > transcript.txt\n    eval \"$grader\"\n  ) && pass=$((pass + 1))\n  git worktree remove --force \"$dir\"\ndone\n\necho \"$id: $pass/$trials\""
+      }
+    ],
+    "parts": [
+      {
+        "label": "grader",
+        "text": "Grader por código: comprueba el *outcome*, no lo que el agente dice haber hecho."
+      },
+      {
+        "label": "trials",
+        "text": "Varios intentos, porque un agente no da siempre el mismo resultado."
+      },
+      {
+        "label": "--detach",
+        "text": "Cada intento parte del mismo commit sin crear ramas: entorno limpio y reproducible."
+      },
+      {
+        "label": "transcript.txt",
+        "text": "Conservarlo antes de borrar el worktree ayuda a entender por qué ha fallado; este script mínimo lo descarta, así que cópialo si lo necesitas."
+      },
+      {
+        "label": "pass/trials",
+        "text": "Compara este número antes y después de un cambio, siempre con las mismas tareas."
+      }
+    ],
+    "expected": "Una línea por tarea, como `issue-142: 2/3`. Las tareas que pasen siempre se pueden trasladar a un conjunto de regresión.",
+    "whenToUse": "Antes de cambiar de modelo o de instrucciones en un agente de uso habitual.",
+    "limitations": [
+      "Script ilustrativo: no se ha ejecutado, porque consume tokens de una cuenta real.",
+      "`eval` ejecuta el texto del grader: usa solo tareas de confianza.",
+      "Con pocos intentos, una diferencia pequeña puede ser ruido.",
+      "No evalúa aspectos subjetivos, como la calidad del código; para eso hace falta un grader por modelo o humano."
+    ],
+    "concepts": [
+      "agent-evaluation",
+      "regression-testing",
+      "git-worktrees"
+    ],
+    "sources": [
+      {
+        "title": "Anthropic: Demystifying evals for AI agents",
+        "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
+      }
+    ],
+    "lastVerified": null
+  }
+]

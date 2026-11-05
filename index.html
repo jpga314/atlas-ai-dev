@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Dev Atlas</title>
+  <meta name="description" content="Enciclopedia interactiva del desarrollo de software y del ecosistema de desarrollo asistido por IA.">
+  <meta name="theme-color" content="#14123D">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@500;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+  <div class="app" id="app">
+    <aside class="sidebar" id="sidebar" aria-label="Navegación principal"></aside>
+    <div class="sidebar-backdrop" id="sidebar-backdrop" hidden></div>
+    <div class="workspace">
+      <header class="topbar" id="topbar"></header>
+      <main class="main" id="main" tabindex="-1">
+        <nav class="crumbs" id="crumbs" aria-label="Migas de pan"></nav>
+        <div id="view"><p class="boot">Cargando el atlas…</p></div>
+      </main>
+    </div>
+  </div>
+  <div class="sr-only" id="announcer" aria-live="polite"></div>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <noscript><p class="boot">AI Dev Atlas necesita JavaScript para funcionar.</p></noscript>
+  <script>
+    // Los navegadores bloquean por CORS los módulos ES en file://: ahí se usa el bundle clásico.
+    (function () {
+      var script = document.createElement('script');
+      if (location.protocol === 'file:') {
+        script.src = 'js/standalone.js';
+        script.onerror = function () {
+          document.getElementById('view').innerHTML = '<p class="boot">Falta js/standalone.js. Genéralo con: node scripts/build-standalone.mjs</p>';
+        };
+      } else {
+        script.type = 'module';
+        script.src = 'js/app.js';
+      }
+      document.body.appendChild(script);
+    })();
+  </script>
+</body>
+</html>

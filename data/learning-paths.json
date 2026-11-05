@@ -1,0 +1,222 @@
+[
+  {
+    "id": "agents-from-zero",
+    "title": "Agentes de IA desde cero",
+    "level": "Beginner",
+    "description": "Qué es un agente, qué lo distingue de un asistente y cómo se configura para trabajar en un repositorio.",
+    "steps": [
+      {
+        "concept": "ai-assisted-development",
+        "why": "El marco general."
+      },
+      {
+        "concept": "ai-agents",
+        "why": "La definición central y el bucle de trabajo."
+      },
+      {
+        "concept": "assistants-vs-agents",
+        "why": "Cuánto control delegas en cada caso."
+      },
+      {
+        "concept": "tool-calling",
+        "why": "Cómo actúa de verdad un modelo."
+      },
+      {
+        "concept": "tools-agent",
+        "why": "Qué tiene a su alcance."
+      },
+      {
+        "concept": "agents-md",
+        "why": "Tu primera configuración, sencilla y útil."
+      },
+      {
+        "concept": "permissions",
+        "why": "Cómo limitar lo que puede hacer."
+      },
+      {
+        "concept": "agentic-coding",
+        "why": "Cómo es trabajar así en el día a día."
+      }
+    ]
+  },
+  {
+    "id": "configure-repo",
+    "title": "Prepara tu repositorio para agentes",
+    "level": "Intermediate",
+    "description": "Instrucciones, skills, subagentes, memoria, hooks y MCP: qué poner en cada sitio y por qué.",
+    "steps": [
+      {
+        "concept": "context-management",
+        "why": "El recurso que todo lo demás administra."
+      },
+      {
+        "concept": "agents-md",
+        "why": "Lo que debe saberse siempre."
+      },
+      {
+        "concept": "rules",
+        "why": "Lo que solo aplica a una parte."
+      },
+      {
+        "concept": "skills",
+        "why": "Los procedimientos que se cargan bajo demanda."
+      },
+      {
+        "concept": "subagents",
+        "why": "Las tareas que conviene aislar."
+      },
+      {
+        "concept": "persistent-memory",
+        "why": "Lo que el agente aprende."
+      },
+      {
+        "concept": "hooks",
+        "why": "Lo que no puede quedar a su criterio."
+      },
+      {
+        "concept": "mcp",
+        "why": "Conexión con sistemas externos."
+      }
+    ]
+  },
+  {
+    "id": "parallel-worktrees",
+    "title": "Agentes en paralelo con Git Worktrees",
+    "level": "Intermediate",
+    "description": "Del modelo de ramas de Git a coordinar varios agentes sin que se pisen.",
+    "steps": [
+      {
+        "concept": "git-fundamentals",
+        "why": "El modelo de Git."
+      },
+      {
+        "concept": "git-branches",
+        "why": "Líneas de trabajo."
+      },
+      {
+        "concept": "git-worktrees",
+        "why": "Varias ramas activas a la vez."
+      },
+      {
+        "concept": "shared-file-conflicts",
+        "why": "Qué evitan los worktrees y qué no."
+      },
+      {
+        "concept": "conflict-resolution",
+        "why": "Cómo integrar."
+      },
+      {
+        "concept": "parallel-agent-development",
+        "why": "El proceso completo."
+      },
+      {
+        "concept": "code-reviews",
+        "why": "El verdadero límite del paralelismo."
+      }
+    ]
+  },
+  {
+    "id": "harness-quality",
+    "title": "Fiabilidad: harness, tests y evals",
+    "level": "Advanced",
+    "description": "Cómo conseguir que el trabajo de un agente sea fiable y cómo medirlo.",
+    "steps": [
+      {
+        "concept": "context-engineering",
+        "why": "Qué ve el agente."
+      },
+      {
+        "concept": "agentic-harness",
+        "why": "Todo lo que rodea al modelo."
+      },
+      {
+        "concept": "harness-engineering",
+        "why": "Mejorarlo de forma sistemática."
+      },
+      {
+        "concept": "static-analysis",
+        "why": "Sensores deterministas."
+      },
+      {
+        "concept": "guardrails",
+        "why": "Controles en capas."
+      },
+      {
+        "concept": "ai-generated-code-testing",
+        "why": "Riesgos de verificar código generado."
+      },
+      {
+        "concept": "agent-evaluation",
+        "why": "Medir para decidir."
+      }
+    ]
+  },
+  {
+    "id": "multi-agent",
+    "title": "Orquestación y sistemas multiagente",
+    "level": "Advanced",
+    "description": "Cuándo compensa usar varios agentes y cómo coordinarlos.",
+    "steps": [
+      {
+        "concept": "workflows",
+        "why": "Empieza por la opción más simple."
+      },
+      {
+        "concept": "agent-orchestration",
+        "why": "Las opciones de coordinación."
+      },
+      {
+        "concept": "orchestrators",
+        "why": "La pieza que coordina."
+      },
+      {
+        "concept": "multi-agent-systems",
+        "why": "Beneficios y costes."
+      },
+      {
+        "concept": "agent-communication",
+        "why": "Cómo intercambian información."
+      },
+      {
+        "concept": "parallel-agent-development",
+        "why": "Aplicación a un repositorio."
+      }
+    ]
+  },
+  {
+    "id": "engineering-basics",
+    "title": "Fundamentos de ingeniería",
+    "level": "Beginner",
+    "description": "Los principios que deciden la calidad de un sistema, lo escriba quien lo escriba.",
+    "steps": [
+      {
+        "concept": "programming-paradigms",
+        "why": "Formas de pensar el código."
+      },
+      {
+        "concept": "oop",
+        "why": "Un paradigma muy extendido."
+      },
+      {
+        "concept": "functional-programming",
+        "why": "Una alternativa que se combina bien."
+      },
+      {
+        "concept": "solid",
+        "why": "Principios de diseño."
+      },
+      {
+        "concept": "design-patterns",
+        "why": "Un vocabulario compartido."
+      },
+      {
+        "concept": "unit-testing",
+        "why": "Comprobar lo que se escribe."
+      },
+      {
+        "concept": "ci-cd",
+        "why": "Entregar con frecuencia."
+      }
+    ]
+  }
+]

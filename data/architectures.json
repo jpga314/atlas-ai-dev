@@ -1,0 +1,1343 @@
+[
+  {
+    "id": "coding-agent",
+    "short": "AI Coding Agent",
+    "title": "Arquitectura de un AI Coding Agent",
+    "status": "verified",
+    "summary": "Un modelo que decide, un bucle que ejecuta y un harness que aporta contexto, herramientas y controles.",
+    "viewBox": "0 0 860 520",
+    "groups": [
+      {
+        "label": "Harness",
+        "x": 200,
+        "y": 20,
+        "w": 450,
+        "h": 480
+      },
+      {
+        "label": "Entorno",
+        "x": 680,
+        "y": 150,
+        "w": 170,
+        "h": 280
+      }
+    ],
+    "nodes": [
+      {
+        "id": "user",
+        "label": "Persona",
+        "x": 20,
+        "y": 210,
+        "w": 150,
+        "h": 64,
+        "kind": "default",
+        "description": "Define el objetivo, aprueba acciones de riesgo y revisa el resultado. No desaparece del proceso: se traslada a la especificación y a la revisión."
+      },
+      {
+        "id": "loop",
+        "label": "Bucle del agente",
+        "x": 340,
+        "y": 210,
+        "w": 170,
+        "h": 64,
+        "kind": "accent",
+        "description": "El corazón del agente: envía el contexto al modelo, ejecuta las herramientas pedidas, añade el resultado y repite hasta una condición de parada.",
+        "concept": "agent-lifecycle"
+      },
+      {
+        "id": "model",
+        "label": "Modelo (LLM)",
+        "x": 340,
+        "y": 60,
+        "w": 170,
+        "h": 64,
+        "kind": "primary",
+        "description": "Decide la siguiente acción a partir del contexto. No ejecuta nada ni recuerda nada entre llamadas: todo lo demás lo pone el harness.",
+        "concept": "model-providers"
+      },
+      {
+        "id": "context",
+        "label": "Contexto",
+        "x": 220,
+        "y": 370,
+        "w": 130,
+        "h": 64,
+        "kind": "default",
+        "description": "Lo que el modelo ve en cada llamada: instrucciones, historial, archivos leídos y resultados. Es limitado, y hay que gestionarlo.",
+        "concept": "context-engineering"
+      },
+      {
+        "id": "instructions",
+        "label": "Instrucciones",
+        "x": 220,
+        "y": 60,
+        "w": 100,
+        "h": 64,
+        "kind": "store",
+        "description": "AGENTS.md, CLAUDE.md y reglas. Se cargan como contexto; orientan al modelo, pero no lo obligan.",
+        "concept": "agents-md"
+      },
+      {
+        "id": "perms",
+        "label": "Permisos y hooks",
+        "x": 510,
+        "y": 370,
+        "w": 125,
+        "h": 64,
+        "kind": "default",
+        "description": "Se interponen antes y después de cada acción. Son el control determinista: lo que no puede quedar a criterio del modelo.",
+        "concept": "hooks"
+      },
+      {
+        "id": "memory",
+        "label": "Memoria",
+        "x": 365,
+        "y": 370,
+        "w": 125,
+        "h": 64,
+        "kind": "store",
+        "description": "Notas fuera de la ventana de contexto, que sobreviven entre sesiones y se reinyectan.",
+        "concept": "persistent-memory"
+      },
+      {
+        "id": "tools",
+        "label": "Herramientas",
+        "x": 695,
+        "y": 275,
+        "w": 140,
+        "h": 56,
+        "kind": "primary",
+        "description": "Leer, editar, buscar, ejecutar comandos. Aquí es donde el agente deja de hablar y empieza a actuar.",
+        "concept": "tools-agent"
+      },
+      {
+        "id": "repo",
+        "label": "Repositorio y terminal",
+        "x": 695,
+        "y": 190,
+        "w": 140,
+        "h": 56,
+        "kind": "default",
+        "description": "El entorno real. Ejecutar tests aquí da al agente un resultado objetivo con el que corregirse.",
+        "concept": "git-worktrees"
+      },
+      {
+        "id": "mcp",
+        "label": "Servidores MCP",
+        "x": 695,
+        "y": 355,
+        "w": 140,
+        "h": 56,
+        "kind": "default",
+        "description": "Sistemas externos conectados con un protocolo común.",
+        "concept": "mcp"
+      }
+    ],
+    "edges": [
+      {
+        "from": "user",
+        "to": "loop",
+        "label": "objetivo",
+        "both": true,
+        "ly": -14
+      },
+      {
+        "from": "loop",
+        "to": "model",
+        "label": "contexto ↔ decisión",
+        "both": true,
+        "lx": 2
+      },
+      {
+        "from": "instructions",
+        "to": "model",
+        "dashed": true
+      },
+      {
+        "from": "context",
+        "to": "loop"
+      },
+      {
+        "from": "memory",
+        "to": "loop",
+        "dashed": true
+      },
+      {
+        "from": "loop",
+        "to": "perms",
+        "label": "valida"
+      },
+      {
+        "from": "perms",
+        "to": "tools",
+        "label": "ejecuta",
+        "lx": -6,
+        "ly": -4
+      },
+      {
+        "from": "tools",
+        "to": "repo"
+      },
+      {
+        "from": "tools",
+        "to": "mcp",
+        "dashed": true
+      }
+    ],
+    "notes": "Fíjate en cuántas piezas no son el modelo. Por eso dos productos con el mismo modelo pueden comportarse de forma muy diferente, y por eso se habla de [[agentic-harness|harness]].\n\nEl diagrama es un modelo conceptual, no el diseño interno de un producto concreto: cada herramienta organiza estas piezas a su manera.",
+    "sources": [
+      {
+        "title": "Anthropic: Building effective agents",
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "note": "19 de diciembre de 2024"
+      },
+      {
+        "title": "Birgitta Böckeler: Harness engineering for coding agent users",
+        "url": "https://martinfowler.com/articles/exploring-gen-ai/harness-engineering.html",
+        "note": "martinfowler.com, 2 de abril de 2026"
+      },
+      {
+        "title": "Claude Code: overview",
+        "url": "https://code.claude.com/docs/en/overview"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "multi-agent",
+    "short": "Sistema multiagente",
+    "title": "Arquitectura de un sistema multiagente",
+    "status": "verified",
+    "summary": "Un orquestador divide el trabajo, varios agentes lo ejecutan con su propio contexto y un punto común integra los resultados.",
+    "viewBox": "0 0 860 480",
+    "groups": [
+      {
+        "label": "Contextos aislados",
+        "x": 40,
+        "y": 165,
+        "w": 780,
+        "h": 130
+      }
+    ],
+    "nodes": [
+      {
+        "id": "objective",
+        "label": "Objetivo",
+        "x": 345,
+        "y": 15,
+        "w": 170,
+        "h": 50,
+        "kind": "default",
+        "description": "La tarea global, tal como la plantea una persona."
+      },
+      {
+        "id": "orch",
+        "label": "Orquestador",
+        "x": 345,
+        "y": 95,
+        "w": 170,
+        "h": 54,
+        "kind": "accent",
+        "description": "Descompone el objetivo, decide qué se hace en paralelo y da a cada trabajador objetivo, formato, herramientas y límites.",
+        "concept": "orchestrators"
+      },
+      {
+        "id": "w1",
+        "label": "Agente de investigación",
+        "x": 60,
+        "y": 205,
+        "w": 210,
+        "h": 70,
+        "kind": "primary",
+        "description": "Explora y resume. Puede usar un modelo barato y herramientas de solo lectura.",
+        "concept": "subagents"
+      },
+      {
+        "id": "w2",
+        "label": "Agente de implementación",
+        "x": 325,
+        "y": 205,
+        "w": 210,
+        "h": 70,
+        "kind": "primary",
+        "description": "Modifica el código. Es el que más necesita aislamiento y verificación.",
+        "concept": "subagents"
+      },
+      {
+        "id": "w3",
+        "label": "Agente de revisión",
+        "x": 590,
+        "y": 205,
+        "w": 210,
+        "h": 70,
+        "kind": "primary",
+        "description": "Lee los cambios con un contexto limpio, sin haber visto cómo se escribieron. Solo lectura.",
+        "concept": "automated-code-review"
+      },
+      {
+        "id": "state",
+        "label": "Estado compartido",
+        "x": 60,
+        "y": 345,
+        "w": 210,
+        "h": 60,
+        "kind": "store",
+        "description": "Planes, archivos y ramas: el canal por el que los agentes se pasan información sin compartir conversación.",
+        "concept": "agent-communication"
+      },
+      {
+        "id": "synth",
+        "label": "Síntesis e integración",
+        "x": 325,
+        "y": 345,
+        "w": 210,
+        "h": 60,
+        "kind": "accent",
+        "description": "Combina los resultados. Dos resultados correctos por separado pueden no serlo en conjunto: hay que comprobar el total.",
+        "concept": "orchestrators"
+      },
+      {
+        "id": "verify",
+        "label": "Verificación",
+        "x": 590,
+        "y": 345,
+        "w": 210,
+        "h": 60,
+        "kind": "default",
+        "description": "Tests, CI y revisión humana del resultado global.",
+        "concept": "ci-cd"
+      }
+    ],
+    "edges": [
+      {
+        "from": "objective",
+        "to": "orch"
+      },
+      {
+        "from": "orch",
+        "to": "w1",
+        "label": "encargo",
+        "lx": -10,
+        "ly": -6
+      },
+      {
+        "from": "orch",
+        "to": "w2",
+        "label": "encargo",
+        "lx": 34
+      },
+      {
+        "from": "orch",
+        "to": "w3",
+        "label": "encargo",
+        "lx": 10,
+        "ly": -6
+      },
+      {
+        "from": "w1",
+        "to": "state",
+        "both": true,
+        "dashed": true
+      },
+      {
+        "from": "w1",
+        "to": "synth",
+        "label": "resumen",
+        "lx": -14,
+        "ly": 4
+      },
+      {
+        "from": "w2",
+        "to": "synth",
+        "label": "resultado",
+        "lx": 36
+      },
+      {
+        "from": "w3",
+        "to": "synth",
+        "label": "hallazgos",
+        "lx": 14,
+        "ly": 4
+      },
+      {
+        "from": "synth",
+        "to": "verify"
+      }
+    ],
+    "notes": "Anthropic informa de que sus sistemas multiagente usan unas 15 veces los tokens de un chat, por lo que solo compensan en tareas de alto valor.\n\nTambién observó que los encargos vagos hacían que los subagentes duplicaran trabajo o dejaran huecos. La calidad de la delegación importa tanto como el número de agentes.",
+    "sources": [
+      {
+        "title": "Anthropic: How we built our multi-agent research system",
+        "url": "https://www.anthropic.com/engineering/multi-agent-research-system"
+      },
+      {
+        "title": "Anthropic: Building effective agents",
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "note": "19 de diciembre de 2024"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "config-relations",
+    "short": "AGENTS.md, Skills, Subagents, Memory",
+    "title": "Relación entre AGENTS.md, Skills, Subagents y Memory",
+    "status": "verified",
+    "summary": "Todas compiten por una misma ventana de contexto, pero se cargan en momentos distintos y las escriben actores distintos.",
+    "viewBox": "0 0 860 470",
+    "groups": [
+      {
+        "label": "Ventana de contexto del agente principal",
+        "x": 240,
+        "y": 172,
+        "w": 380,
+        "h": 163
+      }
+    ],
+    "nodes": [
+      {
+        "id": "agents",
+        "label": "AGENTS.md / CLAUDE.md",
+        "x": 20,
+        "y": 40,
+        "w": 200,
+        "h": 64,
+        "kind": "primary",
+        "description": "**Siempre.** Lo escribes tú, y contiene lo que importa en casi cualquier tarea. Cuanto más breve, mejor.",
+        "concept": "agents-md",
+        "sublabel": "se carga siempre"
+      },
+      {
+        "id": "memory",
+        "label": "Memoria persistente",
+        "x": 20,
+        "y": 200,
+        "w": 200,
+        "h": 64,
+        "kind": "store",
+        "description": "**Al inicio, y parcial.** La escribe el agente con lo que aprende. Claude Code carga las primeras 200 líneas o 25 KB del índice.",
+        "concept": "persistent-memory",
+        "sublabel": "la escribe el agente"
+      },
+      {
+        "id": "skills",
+        "label": "Skills",
+        "x": 640,
+        "y": 40,
+        "w": 200,
+        "h": 64,
+        "kind": "primary",
+        "description": "**Bajo demanda.** Al inicio solo se ve el nombre y la descripción; el contenido se carga al usarse, y entonces permanece en contexto.",
+        "concept": "skills",
+        "sublabel": "se carga al usarse"
+      },
+      {
+        "id": "sub",
+        "label": "Subagents",
+        "x": 640,
+        "y": 200,
+        "w": 200,
+        "h": 64,
+        "kind": "accent",
+        "description": "**Contexto aparte.** Trabajan en su propia ventana, y solo su resultado vuelve a la principal.",
+        "concept": "subagents",
+        "sublabel": "contexto propio"
+      },
+      {
+        "id": "ctx",
+        "label": "Contexto activo",
+        "x": 335,
+        "y": 205,
+        "w": 190,
+        "h": 70,
+        "kind": "accent",
+        "description": "El recurso compartido. Lo que entra aquí influye en cada decisión del modelo, y al llenarse hay que compactar.",
+        "concept": "context-management"
+      },
+      {
+        "id": "hooks",
+        "label": "Hooks",
+        "x": 335,
+        "y": 385,
+        "w": 190,
+        "h": 60,
+        "kind": "default",
+        "description": "**Fuera del contexto.** Los ejecuta el harness. Por eso son el único elemento de este diagrama que no depende de que el modelo obedezca.",
+        "concept": "hooks",
+        "sublabel": "deterministas"
+      },
+      {
+        "id": "submem",
+        "label": "Memoria del subagente",
+        "x": 640,
+        "y": 370,
+        "w": 200,
+        "h": 64,
+        "kind": "store",
+        "description": "Un subagente puede tener su propia memoria con el campo `memory`.",
+        "concept": "persistent-memory"
+      }
+    ],
+    "edges": [
+      {
+        "from": "agents",
+        "to": "ctx",
+        "label": "siempre",
+        "lx": -14,
+        "ly": -8
+      },
+      {
+        "from": "memory",
+        "to": "ctx",
+        "label": "índice"
+      },
+      {
+        "from": "skills",
+        "to": "ctx",
+        "label": "al invocarse",
+        "lx": 14,
+        "ly": -8
+      },
+      {
+        "from": "sub",
+        "to": "ctx",
+        "label": "resumen"
+      },
+      {
+        "from": "hooks",
+        "to": "ctx",
+        "label": "bloquea o añade",
+        "dashed": true
+      },
+      {
+        "from": "skills",
+        "to": "sub",
+        "label": "se pueden precargar",
+        "dashed": true
+      },
+      {
+        "from": "sub",
+        "to": "submem",
+        "both": true,
+        "dashed": true
+      }
+    ],
+    "notes": "Una forma de decidir dónde va algo:\n\n- ¿Debe saberse siempre? → AGENTS.md.\n- ¿Es un procedimiento que se usa a veces? → Skill.\n- ¿Genera mucho ruido o necesita menos permisos? → Subagente.\n- ¿Lo aprendió el agente trabajando? → Memoria.\n- ¿No admite excepciones? → Hook.\n\nLos detalles proceden de Claude Code; otras herramientas tienen piezas similares con diferencias.",
+    "sources": [
+      {
+        "title": "Claude Code: How Claude remembers your project",
+        "url": "https://code.claude.com/docs/en/memory"
+      },
+      {
+        "title": "Claude Code: Skills",
+        "url": "https://code.claude.com/docs/en/skills"
+      },
+      {
+        "title": "Claude Code: Subagents",
+        "url": "https://code.claude.com/docs/en/sub-agents"
+      },
+      {
+        "title": "Claude Code: Hooks reference",
+        "url": "https://code.claude.com/docs/en/hooks"
+      },
+      {
+        "title": "AGENTS.md",
+        "url": "https://agents.md/",
+        "note": "Sitio oficial del formato"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "mcp",
+    "short": "Sistema basado en MCP",
+    "title": "Arquitectura de un sistema basado en MCP",
+    "status": "verified",
+    "summary": "El host crea un cliente por servidor. Cada servidor expone capacidades y queda aislado de los demás.",
+    "viewBox": "0 0 860 470",
+    "groups": [
+      {
+        "label": "Proceso host",
+        "x": 20,
+        "y": 40,
+        "w": 340,
+        "h": 380
+      },
+      {
+        "label": "Máquina local",
+        "x": 400,
+        "y": 40,
+        "w": 440,
+        "h": 220
+      },
+      {
+        "label": "Internet",
+        "x": 400,
+        "y": 290,
+        "w": 440,
+        "h": 130
+      }
+    ],
+    "nodes": [
+      {
+        "id": "host",
+        "label": "Host",
+        "x": 50,
+        "y": 180,
+        "w": 110,
+        "h": 90,
+        "kind": "accent",
+        "description": "La aplicación de IA, como un agente de código. Crea y gestiona clientes, aplica políticas de seguridad, pide consentimiento y coordina la integración con el modelo. La conversación completa permanece aquí.",
+        "concept": "mcp"
+      },
+      {
+        "id": "c1",
+        "label": "Client 1",
+        "x": 210,
+        "y": 75,
+        "w": 120,
+        "h": 56,
+        "kind": "primary",
+        "description": "Se comunica con un único servidor (relación 1:1) y adjunta a cada petición la versión del protocolo y sus capacidades.",
+        "concept": "mcp"
+      },
+      {
+        "id": "c2",
+        "label": "Client 2",
+        "x": 210,
+        "y": 170,
+        "w": 120,
+        "h": 56,
+        "kind": "primary",
+        "description": "Cada cliente mantiene un límite de seguridad con su servidor.",
+        "concept": "mcp"
+      },
+      {
+        "id": "c3",
+        "label": "Client 3",
+        "x": 210,
+        "y": 325,
+        "w": 120,
+        "h": 56,
+        "kind": "primary",
+        "description": "Un cliente remoto usa Streamable HTTP; uno local suele usar stdio.",
+        "concept": "mcp"
+      },
+      {
+        "id": "s1",
+        "label": "Servidor: archivos y Git",
+        "x": 430,
+        "y": 75,
+        "w": 190,
+        "h": 56,
+        "kind": "default",
+        "description": "Proceso local, normalmente iniciado por el cliente y comunicado por stdio.",
+        "concept": "mcp-servers",
+        "sublabel": "stdio"
+      },
+      {
+        "id": "s2",
+        "label": "Servidor: base de datos",
+        "x": 430,
+        "y": 170,
+        "w": 190,
+        "h": 56,
+        "kind": "default",
+        "description": "Expone herramientas o recursos. No puede leer toda la conversación ni ver otros servidores.",
+        "concept": "mcp-servers",
+        "sublabel": "stdio"
+      },
+      {
+        "id": "s3",
+        "label": "Servidor: API externa",
+        "x": 430,
+        "y": 325,
+        "w": 190,
+        "h": 56,
+        "kind": "default",
+        "description": "Servicio remoto. La especificación exige validar el origen y recomienda autenticar conexiones.",
+        "concept": "mcp-servers",
+        "sublabel": "Streamable HTTP"
+      },
+      {
+        "id": "r1",
+        "label": "Repositorio",
+        "x": 680,
+        "y": 75,
+        "w": 130,
+        "h": 56,
+        "kind": "store",
+        "description": "Recurso al que accede el servidor. El modelo no se conecta aquí de forma directa."
+      },
+      {
+        "id": "r2",
+        "label": "Base de datos",
+        "x": 680,
+        "y": 170,
+        "w": 130,
+        "h": 56,
+        "kind": "store",
+        "description": "Limita las credenciales del servidor: el modelo puede pedir cosas inesperadas."
+      },
+      {
+        "id": "r3",
+        "label": "Servicio SaaS",
+        "x": 680,
+        "y": 325,
+        "w": 130,
+        "h": 56,
+        "kind": "store",
+        "description": "A menudo, MCP envuelve aquí una API existente.",
+        "concept": "api-design"
+      }
+    ],
+    "edges": [
+      {
+        "from": "host",
+        "to": "c1"
+      },
+      {
+        "from": "host",
+        "to": "c2"
+      },
+      {
+        "from": "host",
+        "to": "c3"
+      },
+      {
+        "from": "c1",
+        "to": "s1",
+        "label": "JSON-RPC",
+        "both": true
+      },
+      {
+        "from": "c2",
+        "to": "s2",
+        "label": "JSON-RPC",
+        "both": true
+      },
+      {
+        "from": "c3",
+        "to": "s3",
+        "label": "JSON-RPC",
+        "both": true
+      },
+      {
+        "from": "s1",
+        "to": "r1",
+        "both": true
+      },
+      {
+        "from": "s2",
+        "to": "r2",
+        "both": true
+      },
+      {
+        "from": "s3",
+        "to": "r3",
+        "both": true
+      }
+    ],
+    "notes": "La revisión 2026-07-28 de la especificación hace que el protocolo sea sin estado: desaparece el handshake `initialize`, y cada petición lleva su versión y capacidades. Los servidores anuncian las suyas con `server/discover`.\n\nLos servidores exponen tres primitivas: tools, resources y prompts. Sampling, Roots y Logging quedan marcados como obsoletos en esa revisión, aunque siguen funcionando durante el periodo de retirada.",
+    "sources": [
+      {
+        "title": "MCP Specification 2026-07-28: Architecture",
+        "url": "https://modelcontextprotocol.io/specification/2026-07-28/architecture"
+      },
+      {
+        "title": "MCP Specification 2026-07-28: Key Changes",
+        "url": "https://modelcontextprotocol.io/specification/2026-07-28/changelog"
+      },
+      {
+        "title": "Claude Code: MCP",
+        "url": "https://code.claude.com/docs/en/mcp"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "ai-workflow",
+    "short": "Workflow con IA",
+    "title": "Workflow de desarrollo asistido por IA",
+    "status": "verified",
+    "summary": "Un flujo con puntos de control donde corregir aún es barato, y un bucle de mejora que convierte los errores en controles permanentes.",
+    "viewBox": "0 0 860 420",
+    "nodes": [
+      {
+        "id": "spec",
+        "label": "Especificar",
+        "x": 20,
+        "y": 60,
+        "w": 130,
+        "h": 64,
+        "kind": "primary",
+        "description": "Qué se quiere y cómo se comprueba. Las buenas prácticas de Claude Code sugieren escribir la especificación y construir después en una sesión limpia.",
+        "concept": "spec-driven-development"
+      },
+      {
+        "id": "explore",
+        "label": "Explorar",
+        "x": 185,
+        "y": 60,
+        "w": 130,
+        "h": 64,
+        "kind": "default",
+        "description": "El agente lee el código sin cambiar nada. Si genera mucha salida, un subagente puede encargarse.",
+        "concept": "context-engineering"
+      },
+      {
+        "id": "plan",
+        "label": "Planificar",
+        "x": 350,
+        "y": 60,
+        "w": 130,
+        "h": 64,
+        "kind": "accent",
+        "description": "Propuesta de enfoque. Es el punto de revisión más rentable: cambiar de rumbo aquí cuesta poco.",
+        "concept": "planning-reasoning"
+      },
+      {
+        "id": "impl",
+        "label": "Implementar",
+        "x": 515,
+        "y": 60,
+        "w": 130,
+        "h": 64,
+        "kind": "default",
+        "description": "El agente escribe en una rama o worktree aislados.",
+        "concept": "agentic-coding"
+      },
+      {
+        "id": "verify",
+        "label": "Verificar",
+        "x": 680,
+        "y": 60,
+        "w": 150,
+        "h": 64,
+        "kind": "primary",
+        "description": "Tests, linter y comprobación del comportamiento real. Sin esto, un agente puede dar por terminada una tarea que no lo está.",
+        "concept": "ai-generated-code-testing"
+      },
+      {
+        "id": "review",
+        "label": "Revisar",
+        "x": 680,
+        "y": 200,
+        "w": 150,
+        "h": 64,
+        "kind": "accent",
+        "description": "Un revisor con contexto limpio y una persona. Importa más cuanto más autónomo sea el agente.",
+        "concept": "code-reviews"
+      },
+      {
+        "id": "merge",
+        "label": "Integrar",
+        "x": 680,
+        "y": 330,
+        "w": 150,
+        "h": 64,
+        "kind": "default",
+        "description": "PR, CI y merge.",
+        "concept": "pull-requests"
+      },
+      {
+        "id": "learn",
+        "label": "Mejorar el harness",
+        "x": 350,
+        "y": 270,
+        "w": 170,
+        "h": 64,
+        "kind": "accent",
+        "description": "Si un error se repite, añade una instrucción, un linter o un hook. El siguiente agente ya no lo cometerá.",
+        "concept": "harness-engineering"
+      },
+      {
+        "id": "config",
+        "label": "Instrucciones y controles",
+        "x": 80,
+        "y": 270,
+        "w": 180,
+        "h": 64,
+        "kind": "store",
+        "description": "AGENTS.md, skills, hooks y tests. Es el entorno que hace que el próximo ciclo empiece mejor.",
+        "concept": "agentic-harness"
+      }
+    ],
+    "edges": [
+      {
+        "from": "spec",
+        "to": "explore"
+      },
+      {
+        "from": "explore",
+        "to": "plan"
+      },
+      {
+        "from": "plan",
+        "to": "impl"
+      },
+      {
+        "from": "impl",
+        "to": "verify"
+      },
+      {
+        "from": "verify",
+        "to": "impl",
+        "dashed": true
+      },
+      {
+        "from": "verify",
+        "to": "review"
+      },
+      {
+        "from": "review",
+        "to": "merge"
+      },
+      {
+        "from": "review",
+        "to": "learn",
+        "label": "errores repetidos",
+        "dashed": true,
+        "ly": -8
+      },
+      {
+        "from": "learn",
+        "to": "config"
+      },
+      {
+        "from": "config",
+        "to": "spec",
+        "label": "siguiente ciclo",
+        "dashed": true,
+        "lx": -6
+      }
+    ],
+    "notes": "No todas las tareas necesitan todos los pasos. Un cambio de texto puede saltar directamente a implementar y verificar; una migración de datos los necesita todos.\n\nEl orden es orientativo y no corresponde a un estándar. Lo importante es tener un objetivo verificable y revisar antes de que corregir sea caro.",
+    "sources": [
+      {
+        "title": "Claude Code: Best practices",
+        "url": "https://code.claude.com/docs/en/best-practices"
+      },
+      {
+        "title": "Anthropic: Effective harnesses for long-running agents",
+        "url": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"
+      },
+      {
+        "title": "Birgitta Böckeler: Harness engineering for coding agent users",
+        "url": "https://martinfowler.com/articles/exploring-gen-ai/harness-engineering.html",
+        "note": "martinfowler.com, 2 de abril de 2026"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "parallel-worktrees",
+    "short": "Agentes con Worktrees",
+    "title": "Agentes en paralelo con Git Worktrees",
+    "status": "verified",
+    "summary": "Un solo repositorio, varios directorios de trabajo. Cada agente tiene sus archivos, su rama y su index, y comparten el historial.",
+    "viewBox": "0 0 860 490",
+    "groups": [
+      {
+        "label": "Compartido por todos",
+        "x": 280,
+        "y": 15,
+        "w": 300,
+        "h": 105
+      },
+      {
+        "label": "Propio de cada worktree: archivos, HEAD, index",
+        "x": 20,
+        "y": 150,
+        "w": 820,
+        "h": 170
+      }
+    ],
+    "nodes": [
+      {
+        "id": "git",
+        "label": ".git compartido",
+        "x": 320,
+        "y": 50,
+        "w": 220,
+        "h": 56,
+        "kind": "accent",
+        "description": "Objetos, referencias y configuración son comunes. Un commit en un worktree se ve al momento en los demás.",
+        "concept": "git-worktrees",
+        "sublabel": "objetos, refs, config"
+      },
+      {
+        "id": "wt1",
+        "label": "Worktree principal",
+        "x": 45,
+        "y": 190,
+        "w": 170,
+        "h": 56,
+        "kind": "primary",
+        "description": "El directorio del `git clone`. No se puede eliminar con `git worktree remove`.",
+        "concept": "git-worktrees",
+        "sublabel": "main"
+      },
+      {
+        "id": "wt2",
+        "label": "../app-auth",
+        "x": 245,
+        "y": 190,
+        "w": 170,
+        "h": 56,
+        "kind": "primary",
+        "description": "Linked worktree creado con `git worktree add ../app-auth -b feature/auth`. Necesita sus propias dependencias.",
+        "concept": "git-worktrees",
+        "sublabel": "feature/auth"
+      },
+      {
+        "id": "wt3",
+        "label": "../app-billing",
+        "x": 445,
+        "y": 190,
+        "w": 170,
+        "h": 56,
+        "kind": "primary",
+        "description": "Una rama solo puede estar activa en un worktree a la vez: Git rechaza repetirla sin `--force`.",
+        "concept": "git-worktrees",
+        "sublabel": "feature/billing"
+      },
+      {
+        "id": "wt4",
+        "label": "../app-docs",
+        "x": 645,
+        "y": 190,
+        "w": 170,
+        "h": 56,
+        "kind": "primary",
+        "description": "Una tarea sin relación con las demás es la candidata ideal: no generará conflictos.",
+        "concept": "git-worktrees",
+        "sublabel": "docs/api"
+      },
+      {
+        "id": "a1",
+        "label": "Tú",
+        "x": 45,
+        "y": 262,
+        "w": 170,
+        "h": 44,
+        "kind": "default",
+        "description": "Trabajas o supervisas en el directorio principal, sin interrupciones."
+      },
+      {
+        "id": "a2",
+        "label": "Agente A",
+        "x": 245,
+        "y": 262,
+        "w": 170,
+        "h": 44,
+        "kind": "default",
+        "description": "Trabaja en sus archivos sin ver los cambios sin commitear de los demás.",
+        "concept": "subagents"
+      },
+      {
+        "id": "a3",
+        "label": "Agente B",
+        "x": 445,
+        "y": 262,
+        "w": 170,
+        "h": 44,
+        "kind": "default",
+        "description": "Aunque comparte historia, tiene su propio index: su `git add` no afecta a los demás.",
+        "concept": "subagents"
+      },
+      {
+        "id": "a4",
+        "label": "Agente C",
+        "x": 645,
+        "y": 262,
+        "w": 170,
+        "h": 44,
+        "kind": "default",
+        "description": "Comparten recursos de la máquina: puertos, bases de datos locales y CPU siguen siendo un punto de choque.",
+        "concept": "parallel-agent-development"
+      },
+      {
+        "id": "pr",
+        "label": "PRs y CI",
+        "x": 245,
+        "y": 370,
+        "w": 170,
+        "h": 56,
+        "kind": "default",
+        "description": "Cada rama se valida por separado. Esto no descubre los fallos que aparecen al combinar cambios.",
+        "concept": "pull-requests"
+      },
+      {
+        "id": "integrate",
+        "label": "Integración",
+        "x": 445,
+        "y": 370,
+        "w": 170,
+        "h": 56,
+        "kind": "accent",
+        "description": "Aquí surgen los conflictos. Fusiona de una en una, actualiza las demás ramas y vuelve a ejecutar los tests.",
+        "concept": "conflict-resolution"
+      },
+      {
+        "id": "main",
+        "label": "main",
+        "x": 645,
+        "y": 370,
+        "w": 170,
+        "h": 56,
+        "kind": "primary",
+        "description": "El resultado integrado."
+      }
+    ],
+    "edges": [
+      {
+        "from": "git",
+        "to": "wt1",
+        "both": true
+      },
+      {
+        "from": "git",
+        "to": "wt2",
+        "both": true
+      },
+      {
+        "from": "git",
+        "to": "wt3",
+        "both": true
+      },
+      {
+        "from": "git",
+        "to": "wt4",
+        "both": true
+      },
+      {
+        "from": "a2",
+        "to": "pr",
+        "label": "push",
+        "lx": 26
+      },
+      {
+        "from": "a3",
+        "to": "pr",
+        "label": "push",
+        "ly": -4
+      },
+      {
+        "from": "pr",
+        "to": "integrate"
+      },
+      {
+        "from": "integrate",
+        "to": "main"
+      }
+    ],
+    "notes": "**Lo que los worktrees evitan:** que dos agentes se sobrescriban archivos en disco o compartan el área de preparación.\n\n**Lo que no evitan:** conflictos de merge, conflictos semánticos y choques de recursos como un puerto compartido. Para eso hace falta dividir bien las tareas.",
+    "sources": [
+      {
+        "title": "Git: git-worktree",
+        "url": "https://git-scm.com/docs/git-worktree"
+      },
+      {
+        "title": "Claude Code: Run parallel sessions with worktrees",
+        "url": "https://code.claude.com/docs/en/worktrees"
+      }
+    ],
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "specialized-agents",
+    "short": "Agentes especializados",
+    "title": "Arquitectura de un proyecto con agentes especializados",
+    "status": "needs-review",
+    "summary": "Un ejemplo de reparto de roles en un repositorio. Cada agente tiene solo las herramientas y el contexto que su función necesita.",
+    "viewBox": "0 0 860 460",
+    "groups": [
+      {
+        "label": "En .claude/agents/",
+        "x": 190,
+        "y": 120,
+        "w": 480,
+        "h": 200
+      }
+    ],
+    "nodes": [
+      {
+        "id": "lead",
+        "label": "Agente principal",
+        "x": 345,
+        "y": 30,
+        "w": 170,
+        "h": 60,
+        "kind": "accent",
+        "description": "Conversa contigo, mantiene el plan y decide a quién delegar según la descripción de cada agente.",
+        "concept": "orchestrators"
+      },
+      {
+        "id": "explorer",
+        "label": "explorer",
+        "x": 210,
+        "y": 155,
+        "w": 130,
+        "h": 60,
+        "kind": "default",
+        "description": "Solo lectura y un modelo económico. Localiza código y resume.",
+        "concept": "subagents",
+        "sublabel": "Read, Grep, Glob"
+      },
+      {
+        "id": "implementer",
+        "label": "implementer",
+        "x": 365,
+        "y": 155,
+        "w": 130,
+        "h": 60,
+        "kind": "primary",
+        "description": "Puede editar. Trabaja en un worktree con `isolation: worktree`.",
+        "concept": "git-worktrees",
+        "sublabel": "Edit, Bash"
+      },
+      {
+        "id": "reviewer",
+        "label": "reviewer",
+        "x": 520,
+        "y": 155,
+        "w": 130,
+        "h": 60,
+        "kind": "default",
+        "description": "Solo lectura. Al no haber visto cómo se escribió el código, aporta una mirada distinta.",
+        "concept": "automated-code-review",
+        "sublabel": "Read, Grep"
+      },
+      {
+        "id": "tester",
+        "label": "test-runner",
+        "x": 365,
+        "y": 245,
+        "w": 130,
+        "h": 56,
+        "kind": "default",
+        "description": "Ejecuta las pruebas y devuelve solo los fallos, para que no se llene el contexto con salida larga.",
+        "concept": "unit-testing",
+        "sublabel": "Bash, Read"
+      },
+      {
+        "id": "instr",
+        "label": "AGENTS.md",
+        "x": 20,
+        "y": 155,
+        "w": 140,
+        "h": 60,
+        "kind": "store",
+        "description": "Convenciones comunes para todos. Evita repetirlas en cada agente.",
+        "concept": "agents-md"
+      },
+      {
+        "id": "skills",
+        "label": "Skills",
+        "x": 20,
+        "y": 245,
+        "w": 140,
+        "h": 56,
+        "kind": "store",
+        "description": "Procedimientos que pueden precargarse en un agente concreto.",
+        "concept": "skills"
+      },
+      {
+        "id": "hooks",
+        "label": "Hooks",
+        "x": 700,
+        "y": 155,
+        "w": 140,
+        "h": 60,
+        "kind": "default",
+        "description": "Se aplican con independencia del agente: formatear, bloquear comandos, registrar.",
+        "concept": "hooks"
+      },
+      {
+        "id": "mcp",
+        "label": "MCP",
+        "x": 700,
+        "y": 245,
+        "w": 140,
+        "h": 56,
+        "kind": "default",
+        "description": "Un agente puede tener solo los servidores que necesita, con el campo `mcpServers`.",
+        "concept": "mcp"
+      },
+      {
+        "id": "ci",
+        "label": "CI y revisión humana",
+        "x": 345,
+        "y": 370,
+        "w": 170,
+        "h": 60,
+        "kind": "primary",
+        "description": "La última barrera. No depende de ningún agente del sistema.",
+        "concept": "ci-cd"
+      }
+    ],
+    "edges": [
+      {
+        "from": "lead",
+        "to": "explorer"
+      },
+      {
+        "from": "lead",
+        "to": "implementer",
+        "label": "delega",
+        "lx": 28
+      },
+      {
+        "from": "lead",
+        "to": "reviewer"
+      },
+      {
+        "from": "implementer",
+        "to": "tester"
+      },
+      {
+        "from": "instr",
+        "to": "explorer",
+        "dashed": true
+      },
+      {
+        "from": "skills",
+        "to": "tester",
+        "dashed": true
+      },
+      {
+        "from": "hooks",
+        "to": "reviewer",
+        "dashed": true
+      },
+      {
+        "from": "mcp",
+        "to": "tester",
+        "dashed": true
+      },
+      {
+        "from": "tester",
+        "to": "ci",
+        "label": "PR"
+      }
+    ],
+    "notes": "Este reparto es **un ejemplo, no una receta**. Más agentes no significa mejores resultados: cada rol añade coste y coordinación.\n\nEmpieza sin ninguno, y crea un agente especializado solo cuando un problema concreto lo justifique, por ejemplo cuando la salida de los tests llena el contexto o quieras una revisión con permisos limitados.",
+    "sources": [
+      {
+        "title": "Claude Code: Subagents",
+        "url": "https://code.claude.com/docs/en/sub-agents"
+      },
+      {
+        "title": "Claude Code: Best practices",
+        "url": "https://code.claude.com/docs/en/best-practices"
+      },
+      {
+        "title": "Anthropic: Building effective agents",
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "note": "19 de diciembre de 2024"
+      }
+    ],
+    "lastVerified": null
+  }
+]

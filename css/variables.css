@@ -1,0 +1,62 @@
+:root {
+  /* Paleta de marca */
+  --brand-dark: #14123D;
+  --brand-light: #F4EDE0;
+  --brand-accent: #FF6B5B;
+
+  /* Tema oscuro (por defecto): variaciones del color principal */
+  --bg: var(--brand-dark);
+  --bg-sunken: #0F0D30;
+  --surface: #1B1950;
+  --surface-2: #242163;
+  --text: var(--brand-light);
+  --text-muted: #BDB8CC;
+  --line: rgba(244, 237, 224, 0.14);
+  --line-strong: rgba(244, 237, 224, 0.28);
+  --accent: var(--brand-accent);
+  --accent-text: #FF8A7D;
+  --on-accent: var(--brand-dark);
+  --accent-wash: rgba(255, 107, 91, 0.13);
+  --mark: rgba(255, 107, 91, 0.34);
+  --code-bg: #0F0D30;
+  --tok-com: #9C97B5;
+  --tok-str: #F4D9B8;
+  --tok-kw: #FF8A7D;
+  --tok-attr: #C9C4F0;
+  --tok-num: #F4EDE0;
+  --tok-var: #FFC2A8;
+
+  --font-display: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  --radius-s: 6px;
+  --radius: 10px;
+  --radius-l: 14px;
+  --sidebar-w: 268px;
+  --topbar-h: 64px;
+  --reading-size: 1.0625rem;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --bg: var(--brand-light);
+  --bg-sunken: #EBE2D1;
+  --surface: #FBF7EE;
+  --surface-2: #E9E0CD;
+  --text: var(--brand-dark);
+  --text-muted: #55517A;
+  --line: rgba(20, 18, 61, 0.15);
+  --line-strong: rgba(20, 18, 61, 0.32);
+  --accent: #E0503F;
+  --accent-text: #B4382A;
+  --on-accent: #FFFFFF;
+  --accent-wash: rgba(224, 80, 63, 0.11);
+  --mark: rgba(255, 107, 91, 0.32);
+  --code-bg: #14123D;
+  color-scheme: light;
+}
+
+:root[data-reading='sm'] { --reading-size: 1rem; }
+:root[data-reading='lg'] { --reading-size: 1.1875rem; }
