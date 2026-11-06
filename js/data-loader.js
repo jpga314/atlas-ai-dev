@@ -1,5 +1,5 @@
 // Carga las colecciones JSON y construye los índices que usa el resto de la app.
-const COLLECTIONS = ['categories', 'concepts', 'tools', 'timeline', 'comparisons', 'examples', 'architectures', 'learning-paths'];
+const COLLECTIONS = ['categories', 'concepts', 'tools', 'timeline', 'comparisons', 'examples', 'architectures', 'learning-paths', 'real-world', 'simulations'];
 
 export const db = {};
 
@@ -14,7 +14,7 @@ export async function loadData() {
     return response.json();
   }));
 
-  COLLECTIONS.forEach((name, i) => { db[name === 'learning-paths' ? 'paths' : name] = loaded[i]; });
+  COLLECTIONS.forEach((name, i) => { db[{ 'learning-paths': 'paths', 'real-world': 'realWorld' }[name] ?? name] = loaded[i]; });
 
   db.capabilityLabels = db.tools.capabilities;
   db.tools = db.tools.items;
@@ -27,6 +27,19 @@ export async function loadData() {
   db.exampleById = byId(db.examples);
   db.architectureById = byId(db.architectures);
   db.pathById = byId(db.paths);
+
+  // Cada roadmap se aplana para calcular progreso y recorrerlo en orden.
+  db.paths.forEach((path) => {
+    path.stages.forEach((stage) => {
+      stage.allNodes = stage.nodes.flatMap((node) => [
+        { ...node, optional: false },
+        ...(node.branches ?? []).map((branch) => ({ ...branch, optional: true })),
+      ]);
+    });
+    path.allNodes = path.stages.flatMap((stage) => stage.allNodes);
+    path.concepts = path.allNodes.map((node) => db.conceptById.get(node.concept));
+    path.steps = path.allNodes;
+  });
 
   // Código tipo atlas: letra de categoría + posición dentro de ella, p. ej. "E.07".
   db.conceptsByCategory = new Map(db.categories.map((c) => [c.id, []]));

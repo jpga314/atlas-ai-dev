@@ -13,7 +13,7 @@ const NAV = [
   { href: '#/compare', match: /^\/compare/, label: 'Comparativas', icon: 'columns' },
   { href: '#/lab', match: /^\/lab/, label: 'Architecture Lab', icon: 'network' },
   { href: '#/playground', match: /^\/playground/, label: 'Playground', icon: 'code' },
-  { href: '#/paths', match: /^\/paths/, label: 'Rutas de aprendizaje', icon: 'route' },
+  { href: '#/roadmaps', match: /^\/(roadmaps|paths)/, label: 'Roadmaps', icon: 'route' },
 ];
 
 function renderSidebar() {

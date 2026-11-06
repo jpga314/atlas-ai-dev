@@ -1,6 +1,6 @@
 # AI Dev Atlas
 
-Enciclopedia interactiva del desarrollo de software, con énfasis en el desarrollo asistido por IA. Es una aplicación estática en HTML, CSS y JavaScript Vanilla: sin backend, sin frameworks y sin dependencias que instalar.
+Enciclopedia interactiva centrada exclusivamente en el desarrollo con agentes de IA. Es una aplicación estática en HTML, CSS y JavaScript Vanilla: sin backend, sin frameworks y sin dependencias que instalar.
 
 ## Cómo ejecutarla
 
@@ -56,7 +56,9 @@ Todas las secciones y artículos tienen URL propia:
 | `#/compare`, `#/compare/<id>`, `#/compare/custom?a=x&b=y` | Comparativas |
 | `#/lab/<id>?node=<nodo>` | Architecture Lab |
 | `#/playground`, `#/playground/<id>` | Ejemplos |
-| `#/paths`, `#/paths/<id>` | Rutas de aprendizaje |
+| `#/playground/real-world` | Repositorios públicos reales |
+| `#/playground/context-simulator` | Simulador de contexto |
+| `#/roadmaps`, `#/roadmaps/<id>?node=<concepto>` | Roadmaps visuales |
 | `#/library?tab=favorites` | Biblioteca personal y preferencias |
 | `#/search?q=<texto>` | Búsqueda |
 
@@ -79,9 +81,13 @@ node scripts/validate-data.mjs
 | `comparisons.json` | Comparativas |
 | `examples.json` | Ejemplos del Playground |
 | `architectures.json` | Diagramas: nodos, aristas y grupos, con sus coordenadas |
-| `learning-paths.json` | Rutas de aprendizaje |
+| `learning-paths.json` | Roadmaps: etapas, estaciones (`nodes`) y ramas opcionales (`branches`) |
+| `real-world.json` | Archivos de repositorios públicos, con resumen propio |
+| `simulations.json` | Guion de la simulación del inicio y datos del simulador de contexto |
 
 Copia una entrada existente como plantilla. Los identificadores deben ser únicos y estables, porque los favoritos y el historial se guardan por identificador.
+
+**Pestañas por herramienta:** un artículo puede incluir `perTool` (`tool`, `path`, `text`, `code`, `language`), y un archivo de ejemplo puede incluir `tool`. La herramienta elegida se recuerda en todo el sitio.
 
 **Marcado en los textos:** `` `código` ``, `**negrita**`, enlace a un concepto con `[[id]]` o `[[id|texto]]`, párrafos separados por una línea en blanco y listas con `- `.
 
@@ -99,9 +105,16 @@ No marques algo como `verified` solo porque el enlace funcione. Si un dato cambi
 
 ## Estado del contenido inicial (5 de noviembre de 2026)
 
-- 95 artículos: 31 Verified, 63 Needs review y 1 Draft.
+- 47 artículos: 28 Verified, 18 Needs review y 1 Draft.
+- 18 ejemplos. El campo `tested` indica qué se ha ejecutado de verdad; los formatos de cada herramienta se basan en su documentación y no se han probado en cada una.
+- Los archivos de `real-world.json` se resumen con palabras propias y se enlazan, sin copiar su contenido: cada uno pertenece a su proyecto.
 - 2 enlaces de OpenAI bloquean la lectura automática y deben contrastarse a mano.
+- El alcance es deliberadamente estrecho: los temas generales de ingeniería, testing y DevOps quedan fuera. Git solo aparece en lo necesario para aislar agentes en paralelo.
 - En los ejemplos, el campo `tested` indica qué se ha ejecutado de verdad. Los que requieren un agente real o un repositorio en GitHub no se han ejecutado, y así lo indican.
+
+## Movimiento
+
+Las animaciones están en `js/utils/motion.js` y en `css/pages.css`. Si el sistema pide reducir el movimiento, no se aplican: la simulación del inicio se muestra completa y estática. Esa simulación se pausa fuera de pantalla y tiene un botón de pausa.
 
 ## Persistencia
 

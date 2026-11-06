@@ -27,6 +27,10 @@ const PATHS = {
   chevron: '<path d="m9 6 6 6-6 6"/>',
   library: '<path d="M4 4v16M9 4v16M14 5l5 15"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
+  play: '<path d="M7 4.5v15l12-7.5z"/>',
+  pause: '<path d="M8 5v14M16 5v14"/>',
+  next: '<path d="M6 5v14l10-7zM18 5v14"/>',
+  prev: '<path d="M18 5v14L8 12zM6 5v14"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
 };
 

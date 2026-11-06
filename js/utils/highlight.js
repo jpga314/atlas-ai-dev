@@ -40,6 +40,13 @@ const RULES = {
     [/\b(?:resource|provider|variable|output|terraform|module|data)\b/y, 'kw'],
     [/\b(?:true|false)\b|\b\d+\b/y, 'num'],
   ],
+  toml: [
+    [/(?<![^\s])#[^\n]*/y, 'com'],
+    [/"""[\s\S]*?"""/y, 'str'], STRING,
+    [/^\[[^\]\n]+\]/my, 'kw'],
+    [/^[A-Za-z_][\w.-]*(?=\s*=)/my, 'attr'],
+    [/\b(?:true|false)\b|\b\d+\b/y, 'num'],
+  ],
   dockerfile: [
     [/^\s*#[^\n]*/my, 'com'], STRING,
     [/^(?:FROM|RUN|COPY|WORKDIR|CMD|ENV|EXPOSE|USER|ENTRYPOINT)\b/my, 'kw'],

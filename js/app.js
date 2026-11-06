@@ -1,10 +1,11 @@
 import { loadData } from './data-loader.js';
 import { buildIndex } from './search.js';
 import { route, match, parseHash, startRouter, refresh } from './router.js';
-import { applyPrefs, subscribe, toggle, has } from './state.js';
+import { applyPrefs, subscribe, toggle, has, setPref } from './state.js';
 import { $, $$, html, toast } from './utils/dom.js';
 import { initShell, setSidebar, updateActiveNav } from './components/shell.js';
 import { icon } from './components/icons.js';
+import { initMotion } from './utils/motion.js';
 import { emptyState } from './components/ui.js';
 
 import { dashboardPage } from './pages/dashboard.js';
@@ -14,10 +15,11 @@ import { timelinePage } from './pages/timeline.js';
 import { toolsPage, toolDetailPage, toolComparePage } from './pages/tools.js';
 import { compareIndexPage, comparisonPage, customComparePage } from './pages/compare.js';
 import { labPage } from './pages/lab.js';
-import { playgroundPage, examplePage } from './pages/playground.js';
+import { playgroundPage, examplePage, realWorldPage } from './pages/playground.js';
 import { pathsPage, pathDetailPage } from './pages/paths.js';
 import { libraryPage } from './pages/library.js';
 import { searchPage } from './pages/search-results.js';
+import { simulatorPage } from './pages/simulator.js';
 
 route('/', dashboardPage);
 route('/encyclopedia', encyclopediaPage);
@@ -34,7 +36,11 @@ route('/compare/:id', comparisonPage);
 route('/lab', labPage);
 route('/lab/:id', labPage);
 route('/playground', playgroundPage);
+route('/playground/real-world', realWorldPage);
+route('/playground/context-simulator', simulatorPage);
 route('/playground/:id', examplePage);
+route('/roadmaps', pathsPage);
+route('/roadmaps/:id', pathDetailPage);
 route('/paths', pathsPage);
 route('/paths/:id', pathDetailPage);
 route('/library', libraryPage);
@@ -74,7 +80,10 @@ function render({ resetScroll, keepFocus, initial } = {}) {
   const holder = document.createElement('div');
   holder.innerHTML = page.content.toString();
   view.replaceChildren(holder);
-  cleanup = page.mount?.(holder) ?? null;
+  const stopPage = page.mount?.(holder) ?? null;
+  // Al refrescar por un cambio de estado no se repiten las animaciones de entrada.
+  const stopMotion = keepFocus ? null : initMotion(holder);
+  cleanup = () => { stopPage?.(); stopMotion?.(); };
   liveState = Boolean(page.liveState);
   updateActiveNav(path);
 
@@ -100,6 +109,20 @@ function syncToggles() {
     btn.title = label;
     const span = $('.btn-label', btn);
     if (span) span.textContent = label;
+  });
+}
+
+// Aplica la herramienta elegida a todos los grupos de pestañas que la incluyan.
+function selectTool(tool) {
+  $$('[data-tool-tabs]').forEach((group) => {
+    const tabs = $$('[data-tool-tab]', group);
+    if (!tabs.some((t) => t.dataset.toolTab === tool)) return;
+    tabs.forEach((t) => {
+      const on = t.dataset.toolTab === tool;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+    });
+    $$('[data-tool-panel]', group).forEach((p) => { p.hidden = p.dataset.toolPanel !== tool; });
   });
 }
 
@@ -129,6 +152,12 @@ function bindGlobalEvents() {
       toggle(toggler.dataset.toggle, toggler.dataset.ref);
       return;
     }
+    const toolTab = e.target.closest('[data-tool-tab]');
+    if (toolTab) {
+      selectTool(toolTab.dataset.toolTab);
+      setPref('tool', toolTab.dataset.toolTab);
+      return;
+    }
     const copier = e.target.closest('[data-copy]');
     if (copier) { copyCode(copier); return; }
     const scroller = e.target.closest('[data-scroll-to]');
@@ -139,6 +168,15 @@ function bindGlobalEvents() {
   });
 
   document.addEventListener('keydown', (e) => {
+    const current = e.target.closest?.('[data-tool-tab]');
+    if (current && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+      e.preventDefault();
+      const tabs = $$('[data-tool-tab]', current.parentElement);
+      const next = tabs[(tabs.indexOf(current) + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+      next.click();
+      next.focus();
+      return;
+    }
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName ?? '');
     if ((e.key === '/' && !typing) || (e.key.toLowerCase() === 'k' && (e.ctrlKey || e.metaKey))) {
       e.preventDefault();

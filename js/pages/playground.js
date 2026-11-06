@@ -2,7 +2,8 @@ import { db } from '../data-loader.js';
 import { $, $$, html } from '../utils/dom.js';
 import { rich, richInline } from '../utils/rich-text.js';
 import { visit } from '../state.js';
-import { codeBlock, emptyState, filterGroup, sourcesList, toggleButton, verifiedLine } from '../components/ui.js';
+import { icon } from '../components/icons.js';
+import { chips, codeBlock, emptyState, filterGroup, sourcesList, toggleButton, toolTabs, verifiedLine } from '../components/ui.js';
 
 let activeTopic = 'all';
 
@@ -29,6 +30,14 @@ export function playgroundPage() {
         <h1>Playground</h1>
         <p class="lead">Configuraciones y flujos listos para copiar y adaptar, con cada parte explicada. Comprueba los campos en la documentación de tu versión: estos formatos evolucionan.</p>
       </header>
+      <a class="real-banner" href="#/playground/real-world">
+        <span><span class="eyebrow">En el mundo real</span><strong>Cómo lo hacen Airflow, VS Code, goose o Gemini CLI</strong><span class="muted small">${db.realWorld.items.length} archivos de repositorios públicos, con lo que puedes aprender de cada uno.</span></span>
+        ${icon('arrowRight', 18)}
+      </a>
+      <a class="real-banner" href="#/playground/context-simulator">
+        <span><span class="eyebrow">Interactivo</span><strong>Simulador de contexto</strong><span class="muted small">Comprueba qué llena la ventana de un agente y cómo liberarla.</span></span>
+        ${icon('arrowRight', 18)}
+      </a>
       <div class="filters">${filterGroup('topic', 'Tema', options, activeTopic)}</div>
       <div id="ex-list">${list()}</div>
     </div>`,
@@ -48,6 +57,52 @@ export function playgroundPage() {
 }
 
 const block = (n, title, body) => html`<section class="art-section"><h2><span class="art-num">${n}</span>${title}</h2>${body}</section>`;
+
+function filesBlock(files) {
+  const shared = files.filter((f) => !f.tool);
+  const tabbed = files.filter((f) => f.tool);
+  return html`${shared.map((f) => codeBlock({ code: f.code, language: f.language, filename: f.path }))}
+    ${tabbed.length ? toolTabs(tabbed) : ''}`;
+}
+
+export function realWorldPage() {
+  const types = [...new Set(db.realWorld.items.map((i) => i.type))];
+  let active = 'all';
+  const grid = () => html`<ul class="real-grid">${db.realWorld.items.filter((i) => active === 'all' || i.type === active).map((i) => html`<li class="real-card reveal">
+    <p class="eyebrow">${i.type} · ${i.tool}</p>
+    <h2>${i.project}</h2>
+    <p class="real-file"><code>${i.file}</code><span class="muted small">${i.size}</span></p>
+    <p>${i.summary}</p>
+    <ul class="mini-list">${i.highlights.map((h) => html`<li>${richInline(h)}</li>`)}</ul>
+    <a class="link-more" href="${i.url}" target="_blank" rel="noopener noreferrer">Ver en GitHub ${icon('external', 14)}</a>
+  </li>`)}</ul>`;
+  return {
+    title: 'En el mundo real',
+    crumbs: [{ label: 'Playground', href: '#/playground' }, { label: 'En el mundo real' }],
+    content: html`<div class="page">
+      <header class="page-head">
+        <p class="eyebrow">Repositorios públicos</p>
+        <h1>En el mundo real</h1>
+        <p class="lead">Archivos que usan de verdad proyectos conocidos. Lo mejor para aprender es abrirlos y compararlos: aquí te contamos qué mirar en cada uno.</p>
+        <p class="small muted">${db.realWorld.note}</p>
+      </header>
+      <div class="filters">${filterGroup('real', 'Tipo', [{ value: 'all', label: 'Todos' }, ...types.map((t) => ({ value: t, label: t }))], active)}</div>
+      <div id="real-list">${grid()}</div>
+    </div>`,
+    mount(root) {
+      root.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-filter="real"]');
+        if (!btn) return;
+        active = btn.dataset.value;
+        $$('[data-filter="real"]', root).forEach((b) => {
+          b.classList.toggle('on', b === btn);
+          b.setAttribute('aria-pressed', String(b === btn));
+        });
+        $('#real-list', root).innerHTML = grid().toString();
+      });
+    },
+  };
+}
 
 export function examplePage({ params }) {
   const ex = db.exampleById.get(params.id);
@@ -70,7 +125,7 @@ export function examplePage({ params }) {
         ${block('01', 'Objetivo', rich(ex.objective))}
         ${block('02', 'Contexto', rich(ex.context))}
         ${block('03', 'Implementación', rich(ex.implementation))}
-        ${block('04', 'Código o configuración', ex.files.map((f) => codeBlock({ code: f.code, language: f.language, filename: f.path })))}
+        ${block('04', 'Código o configuración', filesBlock(ex.files))}
         ${block('05', 'Explicación de cada parte', html`<dl class="parts">${ex.parts.map((p) => html`<div><dt><code>${p.label}</code></dt><dd>${richInline(p.text)}</dd></div>`)}</dl>`)}
         ${block('06', 'Resultado esperado', rich(ex.expected))}
         ${block('07', 'Cuándo utilizarlo', rich(ex.whenToUse))}

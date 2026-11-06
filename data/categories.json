@@ -1,10 +1,44 @@
 [
-  { "id": "software-engineering", "letter": "A", "name": "Software Engineering", "tagline": "Paradigmas, diseño y arquitectura", "description": "Los fundamentos que siguen decidiendo la calidad de un sistema, lo escriba una persona o un agente: paradigmas, principios de diseño, estilos de arquitectura y diseño de APIs." },
-  { "id": "ai-development", "letter": "B", "name": "AI Development", "tagline": "Cómo se trabaja con IA al programar", "description": "Las prácticas y términos del desarrollo con modelos de lenguaje. Muchos son recientes y sus límites aún se discuten: cada artículo separa lo que está definido de lo que es uso informal." },
-  { "id": "ai-agents", "letter": "C", "name": "AI Agents", "tagline": "Qué es un agente y cómo se comporta", "description": "Qué distingue a un agente de un asistente, cómo se estructura su bucle de ejecución, cómo se coordina con otros agentes y cómo se evalúa." },
-  { "id": "agent-components", "letter": "D", "name": "Agent Components", "tagline": "Las piezas con las que se configura un agente", "description": "Instrucciones, skills, subagentes, memoria, hooks, permisos, MCP y orquestadores. Cada artículo explica la pieza por separado y dónde encaja con las demás." },
-  { "id": "git-collaboration", "letter": "E", "name": "Git & Parallel Development", "tagline": "Ramas, worktrees y trabajo simultáneo", "description": "Del modelo de Git a la coordinación de varios agentes en paralelo, con especial atención a Git Worktrees y a la prevención de conflictos." },
-  { "id": "devops-infrastructure", "letter": "F", "name": "DevOps & Infrastructure", "tagline": "Entregar y operar software", "description": "Integración y entrega continuas, contenedores, infraestructura como código, nube, monitorización y estrategias de despliegue." },
-  { "id": "testing-quality", "letter": "G", "name": "Testing & Quality", "tagline": "Comprobar que funciona, y seguir comprobándolo", "description": "Tipos de pruebas, análisis estático y las particularidades de verificar código generado por IA y de evaluar agentes." },
-  { "id": "tools-platforms", "letter": "H", "name": "Development Tools & Platforms", "tagline": "Las categorías de herramientas del sector", "description": "Qué es cada categoría de herramienta: IDEs, editores, agentes de terminal, servidores MCP o proveedores de modelos. Las fichas de productos concretos están en Tools Explorer." }
+  {
+    "id": "ai-agents",
+    "letter": "A",
+    "name": "AI Agents",
+    "tagline": "Qué es un agente y cómo se comporta",
+    "description": "Qué distingue a un agente de un asistente, cómo se estructura su bucle de ejecución y cómo se coordina con otros agentes."
+  },
+  {
+    "id": "agent-components",
+    "letter": "B",
+    "name": "Agent Components",
+    "tagline": "Las piezas con las que se configura un agente",
+    "description": "Instrucciones, skills, subagentes, memoria, hooks, permisos, MCP y orquestadores. Cada artículo explica la pieza por separado y dónde encaja con las demás."
+  },
+  {
+    "id": "ai-development",
+    "letter": "C",
+    "name": "Agentic Development",
+    "tagline": "Cómo se trabaja con agentes",
+    "description": "Las prácticas y términos del desarrollo con agentes de IA. Muchos son recientes y sus límites aún se discuten: cada artículo separa lo que está definido de lo que es uso informal."
+  },
+  {
+    "id": "parallel-agents",
+    "letter": "D",
+    "name": "Parallel Agents",
+    "tagline": "Varios agentes en un mismo repositorio",
+    "description": "Cómo hacer que varios agentes trabajen a la vez sin pisarse, con Git Worktrees como mecanismo principal de aislamiento."
+  },
+  {
+    "id": "agent-quality",
+    "letter": "E",
+    "name": "Evaluation & Quality",
+    "tagline": "Comprobar lo que hace un agente",
+    "description": "Cómo medir a un agente con evals y cómo verificar y revisar el código que genera."
+  },
+  {
+    "id": "agent-tools",
+    "letter": "F",
+    "name": "Agent Tools & Platforms",
+    "tagline": "Las categorías de herramientas para agentes",
+    "description": "Qué es cada categoría: agentes de terminal, asistentes de código, servidores MCP o proveedores de modelos. Las fichas de productos concretos están en Tools Explorer."
+  }
 ]

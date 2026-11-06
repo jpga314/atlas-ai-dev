@@ -5,6 +5,10 @@ import { replaceHash } from '../router.js';
 import { renderDiagram } from '../components/diagram.js';
 import { sourcesList, statusBadge } from '../components/ui.js';
 import { icon } from '../components/icons.js';
+import { prefersReducedMotion } from '../utils/motion.js';
+
+const STEP_MS = 2800;
+const TOKEN_MS = 650;
 
 function nodePanel(arch, node) {
   if (!node) {
@@ -41,6 +45,12 @@ export function labPage({ params, query }) {
       <nav class="lab-tabs" aria-label="Diagramas disponibles">
         ${db.architectures.map((a, i) => html`<a href="#/lab/${a.id}" ${a === arch ? html`aria-current="page" class="on"` : ''}><b>${i + 1}</b>${a.short}</a>`)}
       </nav>
+      <div class="flow-bar">
+        <button type="button" class="btn btn-primary" id="flow-play">${icon('play', 14)}<span>Ver el flujo</span></button>
+        <button type="button" class="btn btn-icon" id="flow-prev" aria-label="Paso anterior" title="Paso anterior">${icon('prev', 15)}</button>
+        <button type="button" class="btn btn-icon" id="flow-next" aria-label="Paso siguiente" title="Paso siguiente">${icon('next', 15)}</button>
+        <span class="small muted" id="flow-count" aria-live="polite"></span>
+      </div>
       <div class="lab-stage">
         <div class="diagram-wrap" tabindex="0" role="region" aria-label="Lienzo del diagrama">${renderDiagram(arch)}</div>
         <aside class="node-panel" id="node-panel" aria-live="polite">${nodePanel(arch, initial)}</aside>
@@ -93,6 +103,71 @@ export function labPage({ params, query }) {
         }
       });
       if (initial) select(initial.id);
+
+      // Reproducción paso a paso por las conexiones directas del diagrama.
+      const svg = $('.diagram', root);
+      const edgesEl = $$('.dg-edge', svg);
+      const flow = arch.edges.map((edge, index) => ({ edge, el: edgesEl[index] })).filter(({ edge }) => !edge.dashed);
+      const playBtn = $('#flow-play', root);
+      const count = $('#flow-count', root);
+      let position = -1;
+      let timer = null;
+      let frame = null;
+      let token = null;
+
+      const moveToken = (line) => {
+        token?.remove();
+        cancelAnimationFrame(frame);
+        if (prefersReducedMotion()) return;
+        const from = [line.x1.baseVal.value, line.y1.baseVal.value];
+        const to = [line.x2.baseVal.value, line.y2.baseVal.value];
+        token = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        token.setAttribute('r', '6');
+        token.setAttribute('class', 'dg-token');
+        svg.append(token);
+        const start = performance.now();
+        const step = (now) => {
+          const t = Math.min((now - start) / TOKEN_MS, 1);
+          const eased = t * (2 - t);
+          token.setAttribute('cx', from[0] + (to[0] - from[0]) * eased);
+          token.setAttribute('cy', from[1] + (to[1] - from[1]) * eased);
+          if (t < 1) frame = requestAnimationFrame(step); else token.remove();
+        };
+        frame = requestAnimationFrame(step);
+      };
+
+      const setPlaying = (on) => {
+        clearTimeout(timer);
+        timer = null;
+        playBtn.innerHTML = html`${icon(on ? 'pause' : 'play', 14)}<span>${on ? 'Pausar' : position >= 0 ? 'Continuar' : 'Ver el flujo'}</span>`.toString();
+      };
+
+      const goTo = (index) => {
+        position = (index + flow.length) % flow.length;
+        const { edge, el } = flow[position];
+        select(edge.to);
+        el.classList.add('active');
+        moveToken($('line', el));
+        count.textContent = `Paso ${position + 1} de ${flow.length}`;
+      };
+
+      const play = () => {
+        goTo(position + 1);
+        setPlaying(true);
+        timer = setTimeout(play, STEP_MS);
+      };
+
+      playBtn.addEventListener('click', () => {
+        if (timer) setPlaying(false); else play();
+      });
+      $('#flow-next', root).addEventListener('click', () => { setPlaying(false); goTo(position + 1); setPlaying(false); });
+      $('#flow-prev', root).addEventListener('click', () => { setPlaying(false); goTo(position - 1); setPlaying(false); });
+      svg.addEventListener('click', () => { if (timer) setPlaying(false); });
+
+      return () => {
+        clearTimeout(timer);
+        cancelAnimationFrame(frame);
+      };
     },
   };
 }

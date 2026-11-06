@@ -7,7 +7,7 @@ export const DEFAULT_STATE = {
   read: [],
   history: [],
   activePath: null,
-  prefs: { theme: 'dark', readingSize: 'md', codeWrap: false },
+  prefs: { theme: 'dark', readingSize: 'md', codeWrap: false, tool: null },
 };
 
 let memoryFallback = null;

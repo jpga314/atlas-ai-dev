@@ -81,7 +81,16 @@ architectures.forEach((a) => {
   a.nodes.forEach((n) => { if (n.concept) refs(`arquitectura ${a.id}`, [n.concept], conceptIds); });
   a.edges.forEach((e) => refs(`arquitectura ${a.id}`, [e.from, e.to], nodeIds));
 });
-paths.forEach((p) => refs(`ruta ${p.id}`, p.steps.map((s) => s.concept), conceptIds));
+paths.forEach((p) => {
+  const nodes = p.stages.flatMap((s) => s.nodes.flatMap((n) => [n, ...(n.branches ?? [])]));
+  refs(`roadmap ${p.id}`, nodes.map((n) => n.concept), conceptIds);
+  nodes.forEach((n) => { if (!n.why) problems.push(`roadmap ${p.id}: "${n.concept}" sin motivo`); });
+  const seen = new Set();
+  nodes.forEach((n) => {
+    if (seen.has(n.concept)) problems.push(`roadmap ${p.id}: "${n.concept}" repetido`);
+    seen.add(n.concept);
+  });
+});
 
 if (problems.length) {
   console.error(`${problems.length} problemas:\n${problems.join('\n')}`);

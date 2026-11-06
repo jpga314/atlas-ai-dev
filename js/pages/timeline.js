@@ -5,17 +5,16 @@ import { replaceHash } from '../router.js';
 import { chips, emptyState, filterGroup, sourcesList, statusBadge } from '../components/ui.js';
 import { icon } from '../components/icons.js';
 
+const START = 2021;
 const NOW = 2027;
 
-// Escala por tramos: el periodo reciente es denso en hitos y necesita más ancho.
+// Escala lineal desde el primer hito de la timeline.
 function x(year) {
-  const segments = [[1950, 2000, 0, 22], [2000, 2020, 22, 50], [2020, NOW, 50, 100]];
-  const y = Math.min(Math.max(year, 1950), NOW);
-  const [y0, y1, p0, p1] = segments.find(([a, b]) => y >= a && y <= b);
-  return p0 + ((y - y0) / (y1 - y0)) * (p1 - p0);
+  const clamped = Math.min(Math.max(year, START), NOW);
+  return ((clamped - START) / (NOW - START)) * 100;
 }
 
-const TICKS = [1950, 1980, 2000, 2010, 2020, 2022, 2024, 2026];
+const TICKS = [2021, 2022, 2023, 2024, 2025, 2026];
 
 function eventRow(event, openId) {
   const open = event.id === openId;
@@ -76,7 +75,7 @@ export function timelinePage({ params }) {
     crumbs: [{ label: 'Timeline' }],
     content: html`<div class="page">
       <header class="page-head">
-        <p class="eyebrow">Evolution of software development</p>
+        <p class="eyebrow">Evolution of AI agent development</p>
         <h1>Timeline</h1>
         <p class="lead">${db.timeline.intro}</p>
       </header>

@@ -304,8 +304,7 @@
         "w": 210,
         "h": 60,
         "kind": "default",
-        "description": "Tests, CI y revisión humana del resultado global.",
-        "concept": "ci-cd"
+        "description": "Tests, CI y revisión humana del resultado global."
       }
     ],
     "edges": [
@@ -415,7 +414,7 @@
         "w": 200,
         "h": 64,
         "kind": "store",
-        "description": "**Al inicio, y parcial.** La escribe el agente con lo que aprende. Claude Code carga las primeras 200 líneas o 25 KB del índice.",
+        "description": "**Al inicio, y parcial.** La escribe el agente con lo que aprende. Claude Code, por ejemplo, carga las primeras 200 líneas o 25 KB del índice.",
         "concept": "persistent-memory",
         "sublabel": "la escribe el agente"
       },
@@ -474,7 +473,7 @@
         "w": 200,
         "h": 64,
         "kind": "store",
-        "description": "Un subagente puede tener su propia memoria con el campo `memory`.",
+        "description": "Algunas herramientas permiten que un subagente tenga su propia memoria.",
         "concept": "persistent-memory"
       }
     ],
@@ -522,7 +521,7 @@
         "dashed": true
       }
     ],
-    "notes": "Una forma de decidir dónde va algo:\n\n- ¿Debe saberse siempre? → AGENTS.md.\n- ¿Es un procedimiento que se usa a veces? → Skill.\n- ¿Genera mucho ruido o necesita menos permisos? → Subagente.\n- ¿Lo aprendió el agente trabajando? → Memoria.\n- ¿No admite excepciones? → Hook.\n\nLos detalles proceden de Claude Code; otras herramientas tienen piezas similares con diferencias.",
+    "notes": "Una forma de decidir dónde va algo:\n\n- ¿Debe saberse siempre? → AGENTS.md.\n- ¿Es un procedimiento que se usa a veces? → Skill.\n- ¿Genera mucho ruido o necesita menos permisos? → Subagente.\n- ¿Lo aprendió el agente trabajando? → Memoria.\n- ¿No admite excepciones? → Hook.\n\nLas herramientas tienen piezas similares con diferencias: consulta las pestañas por herramienta de cada artículo.",
     "sources": [
       {
         "title": "Claude Code: How Claude remembers your project",
@@ -687,8 +686,7 @@
         "w": 130,
         "h": 56,
         "kind": "store",
-        "description": "A menudo, MCP envuelve aquí una API existente.",
-        "concept": "api-design"
+        "description": "A menudo, MCP envuelve aquí una API existente."
       }
     ],
     "edges": [
@@ -826,8 +824,7 @@
         "w": 150,
         "h": 64,
         "kind": "accent",
-        "description": "Un revisor con contexto limpio y una persona. Importa más cuanto más autónomo sea el agente.",
-        "concept": "code-reviews"
+        "description": "Un revisor con contexto limpio y una persona. Importa más cuanto más autónomo sea el agente."
       },
       {
         "id": "merge",
@@ -837,8 +834,7 @@
         "w": 150,
         "h": 64,
         "kind": "default",
-        "description": "PR, CI y merge.",
-        "concept": "pull-requests"
+        "description": "PR, CI y merge."
       },
       {
         "id": "learn",
@@ -1065,8 +1061,7 @@
         "w": 170,
         "h": 56,
         "kind": "default",
-        "description": "Cada rama se valida por separado. Esto no descubre los fallos que aparecen al combinar cambios.",
-        "concept": "pull-requests"
+        "description": "Cada rama se valida por separado. Esto no descubre los fallos que aparecen al combinar cambios."
       },
       {
         "id": "integrate",
@@ -1076,8 +1071,7 @@
         "w": 170,
         "h": 56,
         "kind": "accent",
-        "description": "Aquí surgen los conflictos. Fusiona de una en una, actualiza las demás ramas y vuelve a ejecutar los tests.",
-        "concept": "conflict-resolution"
+        "description": "Aquí surgen los conflictos. Fusiona de una en una, actualiza las demás ramas y vuelve a ejecutar los tests."
       },
       {
         "id": "main",
@@ -1154,7 +1148,7 @@
     "viewBox": "0 0 860 460",
     "groups": [
       {
-        "label": "En .claude/agents/",
+        "label": "Subagentes del repositorio",
         "x": 190,
         "y": 120,
         "w": 480,
@@ -1193,7 +1187,7 @@
         "w": 130,
         "h": 60,
         "kind": "primary",
-        "description": "Puede editar. Trabaja en un worktree con `isolation: worktree`.",
+        "description": "Puede editar. Conviene aislarlo en un worktree si trabaja en paralelo.",
         "concept": "git-worktrees",
         "sublabel": "Edit, Bash"
       },
@@ -1218,7 +1212,6 @@
         "h": 56,
         "kind": "default",
         "description": "Ejecuta las pruebas y devuelve solo los fallos, para que no se llene el contexto con salida larga.",
-        "concept": "unit-testing",
         "sublabel": "Bash, Read"
       },
       {
@@ -1262,7 +1255,7 @@
         "w": 140,
         "h": 56,
         "kind": "default",
-        "description": "Un agente puede tener solo los servidores que necesita, con el campo `mcpServers`.",
+        "description": "En algunas herramientas, un agente puede tener solo los servidores que necesita.",
         "concept": "mcp"
       },
       {
@@ -1273,8 +1266,7 @@
         "w": 170,
         "h": 60,
         "kind": "primary",
-        "description": "La última barrera. No depende de ningún agente del sistema.",
-        "concept": "ci-cd"
+        "description": "La última barrera. No depende de ningún agente del sistema."
       }
     ],
     "edges": [

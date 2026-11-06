@@ -77,7 +77,7 @@ export function encyclopediaPage({ params }) {
       <header class="page-head">
         ${category ? html`<p class="eyebrow">Región ${category.letter}</p>` : html`<p class="eyebrow">Knowledge base</p>`}
         <h1>${category ? category.name : 'Encyclopedia'}</h1>
-        <p class="lead">${category ? category.description : 'Ocho regiones de conocimiento: de los fundamentos de ingeniería a los componentes de un agente. Todos los artículos siguen la misma estructura.'}</p>
+        <p class="lead">${category ? category.description : 'Seis regiones de conocimiento sobre el desarrollo con agentes de IA, de qué es un agente a cómo se evalúa. Todos los artículos siguen la misma estructura.'}</p>
         <div class="page-progress">${progressBar(done, concepts.length, 'Artículos leídos')}<span class="small muted">${done} de ${plural(concepts.length, 'artículo')} leídos</span></div>
       </header>
       ${category ? '' : html`<nav class="cat-jump" aria-label="Categorías">${db.categories.map((c) => html`<a href="#/encyclopedia/${c.id}"><b>${c.letter}</b>${c.name}</a>`)}</nav>`}

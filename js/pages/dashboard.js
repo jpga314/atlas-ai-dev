@@ -5,6 +5,8 @@ import { getState } from '../state.js';
 import { icon } from '../components/icons.js';
 import { attachSearchBox } from '../components/search-box.js';
 import { difficultyBadge, progressBar, readCount, statusBadge } from '../components/ui.js';
+import { miniMap } from './paths.js';
+import { agentRun, startAgentRun } from '../components/agent-run.js';
 
 function featuredBlock() {
   const items = db.concepts.filter((c) => c.featured).sort((a, b) => a.featured - b.featured);
@@ -47,10 +49,11 @@ function pathsBlock() {
     ${db.paths.slice(0, 3).map((p) => {
       const concepts = p.steps.map((s) => db.conceptById.get(s.concept));
       const done = readCount(concepts);
-      return html`<li><a href="#/paths/${p.id}">
-        <span class="eyebrow">${p.level} · ${plural(p.steps.length, 'paso')}</span>
+      return html`<li><a href="#/roadmaps/${p.id}">
+        <span class="eyebrow">${p.level} · ${plural(p.stages.length, 'etapa')}</span>
         <strong>${p.title}</strong>
         <span class="muted small">${p.description}</span>
+        ${miniMap(p)}
         <span class="path-progress">${progressBar(done, p.steps.length, `Progreso en ${p.title}`)}<span class="small muted">${done}/${p.steps.length}</span></span>
       </a></li>`;
     })}
@@ -102,18 +105,28 @@ export function dashboardPage() {
     crumbs: [],
     content: html`<div class="page dashboard">
       <section class="hero">
+        <div class="hero-text">
         <p class="eyebrow">Enciclopedia · Timeline · Explorer</p>
-        <h1>El mapa del desarrollo de software, de los paradigmas a los agentes.</h1>
-        <p class="lead">Conceptos, herramientas y arquitecturas explicados con rigor y con sus fuentes a la vista, para entender qué hace cada pieza y cómo encaja con las demás.</p>
+        <h1>El mapa del desarrollo con agentes de IA.</h1>
+        <p class="lead">Agentes, skills, subagentes, memoria, MCP y worktrees explicados con rigor y con sus fuentes a la vista, para entender qué hace cada pieza y cómo encaja con las demás.</p>
         <div class="search-box search-hero" id="hero-search" role="search">
           <span class="search-icon">${icon('search', 18)}</span>
           <input type="search" placeholder="¿Qué quieres entender? Prueba con “git worktrees” o “MCP”" aria-label="Buscar en el atlas" autocomplete="off" spellcheck="false">
           <div class="search-panel" hidden></div>
         </div>
         <dl class="stats">
-          ${stats.map((s) => html`<div><dd><a href="${s.href}">${s.n}</a></dd><dt>${s.label}</dt></div>`)}
+          ${stats.map((s) => html`<div><dd><a href="${s.href}" data-count="${s.n}">${s.n}</a></dd><dt>${s.label}</dt></div>`)}
         </dl>
         <p class="small muted editorial-note">${verified} de ${db.concepts.length} artículos tienen estado <strong>Verified</strong>. Cada ficha indica qué se ha contrastado y cuándo; <a href="#/encyclopedia">consulta el índice</a>.</p>
+        </div>
+        ${agentRun()}
+      </section>
+
+      <section class="section">
+        <a class="real-banner" href="#/playground/context-simulator">
+          <span><span class="eyebrow">Interactivo</span><strong>¿Qué llena el contexto de tu agente?</strong><span class="muted small">Activa skills, servidores MCP o archivos, y prueba a compactar o a delegar en un subagente.</span></span>
+          ${icon('arrowRight', 18)}
+        </a>
       </section>
 
       <section class="section">
@@ -140,8 +153,8 @@ export function dashboardPage() {
 
       <section class="section">
         <header class="section-head">
-          <h2 class="section-title">Rutas de aprendizaje</h2>
-          <a class="link-more" href="#/paths">Todas las rutas ${icon('arrowRight', 14)}</a>
+          <h2 class="section-title">Roadmaps</h2>
+          <a class="link-more" href="#/roadmaps">Todos los roadmaps ${icon('arrowRight', 14)}</a>
         </header>
         ${pathsBlock()}
       </section>
@@ -154,6 +167,9 @@ export function dashboardPage() {
         ${popularTools()}
       </section>
     </div>`,
-    mount(root) { attachSearchBox($('#hero-search', root)); },
+    mount(root) {
+      attachSearchBox($('#hero-search', root));
+      return startAgentRun(root);
+    },
   };
 }

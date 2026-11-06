@@ -1,6 +1,7 @@
 import { html, raw } from '../utils/dom.js';
 import { DIFFICULTY, STATUS, formatDate } from '../utils/format.js';
 import { highlight } from '../utils/highlight.js';
+import { richInline } from '../utils/rich-text.js';
 import { has, getState } from '../state.js';
 import { icon } from './icons.js';
 
@@ -43,6 +44,21 @@ export function codeBlock({ code, language = 'text', filename = '' }) {
     </figcaption>
     <pre tabindex="0"><code>${raw(highlight(code, language))}</code></pre>
   </figure>`;
+}
+
+// Pestañas por herramienta. La herramienta elegida se recuerda y se aplica en todo el sitio.
+export function toolTabs(items) {
+  const preferred = getState().prefs.tool;
+  const active = items.some((i) => i.tool === preferred) ? preferred : items[0].tool;
+  return html`<div class="tool-tabs" data-tool-tabs>
+    <div class="tool-tablist" role="tablist" aria-label="Elige una herramienta">
+      ${items.map((i) => html`<button type="button" role="tab" class="tool-tab" data-tool-tab="${i.tool}" aria-selected="${String(i.tool === active)}" tabindex="${i.tool === active ? 0 : -1}">${i.tool}</button>`)}
+    </div>
+    ${items.map((i) => html`<div class="tool-panel" role="tabpanel" data-tool-panel="${i.tool}" ${i.tool === active ? '' : html`hidden`}>
+      ${i.text ? html`<p class="tool-note">${i.path && !i.code ? html`<code>${i.path}</code> ` : ''}${richInline(i.text)}</p>` : ''}
+      ${i.code ? codeBlock({ code: i.code, language: i.language, filename: i.path }) : ''}
+    </div>`)}
+  </div>`;
 }
 
 export function emptyState(title, text, action = '') {

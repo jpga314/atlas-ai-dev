@@ -2,8 +2,9 @@ import { db } from '../data-loader.js';
 import { $$, html } from '../utils/dom.js';
 import { rich, richInline } from '../utils/rich-text.js';
 import { visit } from '../state.js';
+import { readingBar } from '../utils/motion.js';
 import { icon } from '../components/icons.js';
-import { codeBlock, difficultyBadge, sourcesList, toggleButton, verifiedLine } from '../components/ui.js';
+import { codeBlock, difficultyBadge, sourcesList, toggleButton, toolTabs, verifiedLine } from '../components/ui.js';
 
 const section = (id, number, title, body) => html`<section class="art-section" id="${id}">
   <h2><span class="art-num">${String(number).padStart(2, '0')}</span>${title}</h2>
@@ -61,6 +62,7 @@ export function articlePage({ params }) {
     ['tecnica', 'Explicación técnica', rich(concept.technicalExplanation)],
     ['problema', '¿Qué problema resuelve?', rich(concept.problem)],
     ['funcionamiento', '¿Cómo funciona?', rich(concept.howItWorks)],
+    ...(concept.perTool ? [['por-herramienta', 'En cada herramienta', toolTabs(concept.perTool)]] : []),
     ['cuando', '¿Cuándo utilizarlo?', rich(concept.whenToUse)],
     ['ventajas', 'Ventajas', bulletList(concept.advantages, 'pros')],
     ['limitaciones', 'Desventajas y limitaciones', bulletList(concept.limitations, 'cons')],
@@ -117,7 +119,8 @@ export function articlePage({ params }) {
         });
       }, { rootMargin: '-15% 0px -75% 0px' });
       $$('.art-section', root).forEach((s) => observer.observe(s));
-      return () => observer.disconnect();
+      const stopBar = readingBar();
+      return () => { observer.disconnect(); stopBar(); };
     },
   };
 }

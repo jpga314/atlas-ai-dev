@@ -40,7 +40,7 @@
     "whenToUse": "En cualquier repositorio donde se usen agentes, sobre todo si el equipo utiliza varias herramientas.",
     "limitations": [
       "No se hace cumplir: lo crítico debe ir también en un hook o en CI.",
-      "En Claude Code, si hay un `CLAUDE.md`, este tiene prioridad salvo que importe `AGENTS.md`.",
+      "Cada herramienta carga los archivos anidados a su manera: compruébalo en la tuya.",
       "Hay que mantenerlo al día cuando cambien los comandos."
     ],
     "concepts": [
@@ -63,47 +63,200 @@
     "lastVerified": "2026-11-05"
   },
   {
-    "id": "skill-release-notes",
-    "title": "Skill para redactar notas de versión",
-    "topic": "Skills",
-    "objective": "Empaquetar un procedimiento repetible que solo se cargue cuando alguien lo pida.",
-    "context": "Cada versión requiere resumir los commits con el formato del equipo. Son demasiadas instrucciones para llevarlas en `AGENTS.md`, y solo se usan de vez en cuando.",
-    "implementation": "Crea un directorio de skill con su `SKILL.md`. El comando entre `!` y comillas invertidas se ejecuta antes de que el modelo vea la skill, y su salida ocupa ese lugar. Al escribir un archivo, se puede dejar que el modelo la active o reservarla para invocación manual.",
+    "id": "agents-md-python-lib",
+    "title": "AGENTS.md de una biblioteca Python",
+    "topic": "AGENTS.md",
+    "objective": "Dar a un agente lo imprescindible para contribuir a una biblioteca con usuarios externos.",
+    "context": "En una biblioteca, lo que más daña es romper la API pública. El archivo prioriza esa regla y los comandos para comprobar el trabajo.",
+    "implementation": "Colócalo en la raíz. Cambia los comandos por los tuyos y borra lo que ya impongan el linter o la CI.",
     "files": [
       {
-        "path": ".claude/skills/release-notes/SKILL.md",
+        "path": "AGENTS.md",
         "language": "markdown",
-        "code": "---\ndescription: Redacta notas de versión a partir de los commits desde la última etiqueta. Úsala cuando pidan notas de versión o un changelog.\ndisable-model-invocation: true\nallowed-tools: Bash(git log *), Bash(git describe *)\n---\n\n## Commits desde la última etiqueta\n\n!`git log $(git describe --tags --abbrev=0)..HEAD --oneline`\n\n## Instrucciones\n\n1. Agrupa los cambios en: Novedades, Correcciones y Otros.\n2. Redacta para personas usuarias: explica el efecto, no el detalle interno.\n3. Omite los commits que solo afecten a tests o a formato.\n4. Si no ves claro un cambio, indícalo en lugar de suponer qué hace."
+        "code": "# Instrucciones para agentes\n\n## Comandos\n- Instalar: `uv sync`\n- Tests: `uv run pytest`\n- Tipos y lint: `uv run mypy src && uv run ruff check .`\n\nEjecuta los tres antes de dar una tarea por terminada.\n\n## API pública\n- Lo exportado en `src/mi_lib/__init__.py` es API pública.\n- No cambies su firma sin añadir antes un aviso de obsolescencia.\n- Todo cambio visible va en `CHANGELOG.md`, en la sección `Unreleased`.\n\n## Tests\n- Cada corrección de bug incluye un test que falle sin el arreglo.\n- No uses la red en los tests: usa los fixtures de `tests/fixtures`.\n\n## Dependencias\n- No añadas dependencias de ejecución sin indicarlo en la descripción del PR."
       }
     ],
     "parts": [
       {
-        "label": "description",
-        "text": "Es lo único que se ve hasta invocar la skill. De ella depende que se active en el momento adecuado."
+        "label": "Comandos",
+        "text": "El agente puede comprobar su trabajo sin preguntar."
       },
       {
-        "label": "disable-model-invocation",
-        "text": "Solo tú la lanzas, con `/release-notes`. Conviene si no quieres que se ejecute por iniciativa del modelo."
+        "label": "API pública",
+        "text": "Lo que el agente no deduce del código: qué no debe romper."
       },
       {
-        "label": "allowed-tools",
-        "text": "Herramientas que se pueden usar sin pedir permiso durante el turno en que se invoca la skill."
-      },
-      {
-        "label": "!`git log …`",
-        "text": "Inyección de comando: el modelo recibe la salida, no el comando, por lo que parte de datos reales en vez de suponerlos."
-      },
-      {
-        "label": "Instrucciones",
-        "text": "Están redactadas como reglas permanentes. Claude no vuelve a leer el archivo en turnos posteriores."
+        "label": "Dependencias",
+        "text": "Una regla que los agentes suelen pasar por alto si no se indica."
       }
     ],
-    "expected": "Al escribir `/release-notes`, Claude Code recibe los commits reales y devuelve unas notas agrupadas con el formato del equipo.",
-    "whenToUse": "Con procedimientos de varios pasos que se repiten pero no se usan en cada sesión. Si tiene efectos secundarios, reserva su invocación para personas.",
+    "expected": "El agente ejecuta las comprobaciones y evita romper la API, o avisa si debe hacerlo.",
+    "whenToUse": "En bibliotecas y SDK con usuarios externos.",
     "limitations": [
-      "Necesita al menos una etiqueta de Git; si no, `git describe` falla.",
-      "Fuera de Claude Code, campos como `disable-model-invocation` no son portables.",
-      "Una vez cargada, sigue ocupando contexto en esa sesión."
+      "Las instrucciones no se hacen cumplir: una comprobación de API en CI es más fiable.",
+      "Los comandos dependen de tu proyecto."
+    ],
+    "concepts": [
+      "agents-md",
+      "context-engineering"
+    ],
+    "sources": [
+      {
+        "title": "AGENTS.md",
+        "url": "https://agents.md/"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "agents-md-frontend",
+    "title": "AGENTS.md de una aplicación frontend",
+    "topic": "AGENTS.md",
+    "objective": "Evitar que el agente invente componentes y rompa el sistema de diseño.",
+    "context": "En frontend, un error habitual es crear otro botón en lugar de usar el que existe. También es útil decir cómo comprobar el resultado visual.",
+    "implementation": "Señala dónde están las piezas existentes, en lugar de describirlas. Así el agente las lee cuando las necesita y el archivo sigue siendo breve.",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "language": "markdown",
+        "code": "# Instrucciones para agentes\n\n## Comandos\n- Desarrollo: `pnpm dev` (puerto 3000)\n- Tests: `pnpm test`\n- E2E: `pnpm e2e` (requiere `pnpm dev` en marcha)\n\n## Interfaz\n- Antes de crear un componente, busca en `src/components/ui`.\n- Colores y espacios salen de `src/styles/tokens.css`. No escribas valores fijos.\n- Los textos van en `src/i18n/es.json`, no en los componentes.\n\n## Comprobar un cambio visual\n- Abre la página afectada y revísala en móvil y escritorio.\n- Comprueba que se puede usar con teclado.\n\n## No tocar\n- `src/generated/` se genera con `pnpm codegen`."
+      }
+    ],
+    "parts": [
+      {
+        "label": "Busca en src/components/ui",
+        "text": "Un puntero en lugar de una lista: no se queda obsoleto tan rápido."
+      },
+      {
+        "label": "Comprobar un cambio visual",
+        "text": "Los tests no ven la interfaz. Indica cómo comprobarla."
+      },
+      {
+        "label": "No tocar",
+        "text": "Los archivos generados son una trampa habitual: se editan y se pierden."
+      }
+    ],
+    "expected": "El agente reutiliza componentes y tokens, y comprueba el resultado en lugar de darlo por bueno.",
+    "whenToUse": "En aplicaciones con sistema de diseño o con internacionalización.",
+    "limitations": [
+      "Para comprobar visualmente, el agente necesita acceso a un navegador.",
+      "Un linter puede imponer los tokens de forma más fiable."
+    ],
+    "concepts": [
+      "agents-md",
+      "rules"
+    ],
+    "sources": [
+      {
+        "title": "AGENTS.md",
+        "url": "https://agents.md/"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "agents-md-one-source",
+    "title": "Una sola fuente de instrucciones para todo el equipo",
+    "topic": "AGENTS.md",
+    "objective": "Mantener un único archivo de instrucciones aunque el equipo use varias herramientas.",
+    "context": "Si cada persona usa una herramienta, es fácil acabar con varios archivos desincronizados. Codex, Cursor y Copilot leen `AGENTS.md` directamente; otras necesitan un paso más.",
+    "implementation": "Escribe todo en `AGENTS.md`. Añade un archivo específico solo si tu herramienta lo necesita, y deja en él solo lo que sea exclusivo de esa herramienta.",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "language": "markdown",
+        "code": "# Instrucciones para agentes\n\n- Tests: `npm test`\n- La lógica de negocio va en `src/domain`."
+      },
+      {
+        "tool": "Claude Code",
+        "path": "CLAUDE.md",
+        "language": "markdown",
+        "code": "@AGENTS.md\n\n## Solo para Claude Code\n- Usa plan mode antes de cambios en más de tres archivos."
+      },
+      {
+        "tool": "Aider",
+        "path": ".aider.conf.yml",
+        "language": "yaml",
+        "code": "read: AGENTS.md"
+      }
+    ],
+    "parts": [
+      {
+        "label": "@AGENTS.md",
+        "text": "Claude Code importa el archivo. Sin `CLAUDE.md`, lo lee directamente, de modo que este archivo solo hace falta si añades algo propio."
+      },
+      {
+        "label": "read:",
+        "text": "Aider carga el archivo como contexto de solo lectura."
+      },
+      {
+        "label": "Gemini CLI",
+        "text": "Usa `GEMINI.md` y el sitio de AGENTS.md lo cita como compatible: comprueba en su documentación cómo configurarlo en tu versión."
+      }
+    ],
+    "expected": "Un cambio en `AGENTS.md` llega a todas las herramientas sin copiarlo.",
+    "whenToUse": "Cuando conviven varias herramientas en un equipo.",
+    "limitations": [
+      "Instrucciones muy ligadas a una herramienta confunden a las demás.",
+      "Cada herramienta tiene sus propios límites de tamaño y de carga."
+    ],
+    "concepts": [
+      "agents-md",
+      "claude-md"
+    ],
+    "sources": [
+      {
+        "title": "AGENTS.md",
+        "url": "https://agents.md/"
+      },
+      {
+        "title": "Claude Code: How Claude remembers your project",
+        "url": "https://code.claude.com/docs/en/memory"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "skill-release-notes",
+    "title": "Skill portable para notas de versión",
+    "topic": "Skills",
+    "objective": "Empaquetar un procedimiento repetible en una skill que funcione en varias herramientas.",
+    "context": "Cada versión requiere resumir los commits con el formato del equipo. Son demasiadas instrucciones para llevarlas siempre en `AGENTS.md`, y solo se usan de vez en cuando.",
+    "implementation": "Crea la skill en `.agents/skills/`, la carpeta que leen Codex, Cursor, Gemini CLI y GitHub Copilot. Usa solo los campos de la especificación abierta para que siga siendo portable.",
+    "files": [
+      {
+        "path": ".agents/skills/release-notes/SKILL.md",
+        "language": "markdown",
+        "code": "---\nname: release-notes\ndescription: Redacta notas de versión a partir de los commits desde la última etiqueta. Úsala cuando pidan notas de versión o un changelog.\n---\n\n1. Busca la última etiqueta con `git describe --tags --abbrev=0`.\n2. Lista los commits con `git log <etiqueta>..HEAD --oneline`.\n3. Agrupa los cambios en: Novedades, Correcciones y Otros.\n4. Explica el efecto para quien usa el producto, no el detalle interno.\n5. Omite los commits que solo afecten a tests o a formato.\n6. Si no ves claro un cambio, indícalo en lugar de suponer qué hace."
+      }
+    ],
+    "parts": [
+      {
+        "label": "name",
+        "text": "Obligatorio. Minúsculas, números y guiones, y debe coincidir con el nombre de la carpeta."
+      },
+      {
+        "label": "description",
+        "text": "Obligatorio. Es lo único que se carga al inicio: debe decir qué hace y cuándo usarla."
+      },
+      {
+        "label": "Pasos numerados",
+        "text": "Dan un orden fijo. Puedes mover los pasos deterministas a un archivo en `scripts/`."
+      },
+      {
+        "label": "Último paso",
+        "text": "Indica qué hacer ante la duda, para reducir invenciones."
+      }
+    ],
+    "expected": "Al pedir “prepara las notas de versión”, el agente activa la skill y devuelve el texto agrupado, basándose en commits reales.",
+    "whenToUse": "Con procedimientos de varios pasos que se repiten, pero que no se usan en cada sesión.",
+    "limitations": [
+      "Necesita al menos una etiqueta de Git.",
+      "Claude Code usa `.claude/skills/`; Cursor y Copilot también leen esa carpeta.",
+      "La activación automática depende de la descripción: pruébala con peticiones naturales."
     ],
     "concepts": [
       "skills",
@@ -112,8 +265,119 @@
     ],
     "sources": [
       {
-        "title": "Claude Code: Skills",
-        "url": "https://code.claude.com/docs/en/skills"
+        "title": "Agent Skills: Specification",
+        "url": "https://agentskills.io/specification"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "skill-db-migration",
+    "title": "Skill con script para revisar migraciones",
+    "topic": "Skills",
+    "tested": "Script ejecutado con cuatro migraciones de prueba: detecta las dos peligrosas.",
+    "objective": "Combinar instrucciones con un script determinista para los pasos que no deben quedar al criterio del modelo.",
+    "context": "Una migración de base de datos mal escrita puede bloquear una tabla o borrar datos. Algunas de esas comprobaciones se pueden hacer con código, y la skill reúne ambas cosas.",
+    "implementation": "Crea la estructura de la especificación: `SKILL.md`, un script en `scripts/` y una referencia en `references/`. El agente solo lee la referencia si la necesita.",
+    "files": [
+      {
+        "path": ".agents/skills/review-migration/SKILL.md",
+        "language": "markdown",
+        "code": "---\nname: review-migration\ndescription: Revisa migraciones SQL antes de aplicarlas. Úsala al crear o modificar archivos en migrations/ o si preguntan si una migración es segura.\n---\n\n1. Ejecuta `node scripts/check-migration.mjs <archivo>`.\n2. Si informa de un problema, explícalo y propón una alternativa.\n   Para los patrones habituales, consulta references/patterns.md.\n3. Aunque pase, comprueba que la migración es reversible.\n4. Nunca apliques la migración: la decisión es de una persona."
+      },
+      {
+        "path": ".agents/skills/review-migration/scripts/check-migration.mjs",
+        "language": "javascript",
+        "code": "// Uso: node check-migration.mjs <archivo.sql>\nimport { readFileSync } from 'node:fs';\n\nconst file = process.argv[2];\nconst sql = readFileSync(file, 'utf8');\nconst rules = [\n  [/\\bDROP\\s+(TABLE|COLUMN)\\b/i, 'Borra datos: requiere aprobación humana.'],\n  [/\\bALTER\\s+COLUMN\\b.*\\bTYPE\\b/i, 'Cambiar un tipo puede bloquear la tabla.'],\n  [/\\bADD\\s+COLUMN\\b(?![^;]*\\bDEFAULT\\b)[^;]*\\bNOT\\s+NULL\\b/i, 'NOT NULL sin DEFAULT falla si la tabla tiene filas.'],\n];\nconst problems = rules.filter(([rule]) => rule.test(sql)).map(([, message]) => message);\n\nif (problems.length) {\n  problems.forEach((p) => console.error(`${file}: ${p}`));\n  process.exit(1);\n}\nconsole.log(`${file}: sin problemas detectados`);"
+      },
+      {
+        "path": ".agents/skills/review-migration/references/patterns.md",
+        "language": "markdown",
+        "code": "# Patrones seguros\n\n## Añadir una columna obligatoria\n1. Añádela como opcional.\n2. Rellena los datos existentes.\n3. Añade la restricción NOT NULL.\n\n## Eliminar una columna\n1. Deja de usarla en el código y despliega.\n2. Elimínala en una migración posterior."
+      }
+    ],
+    "parts": [
+      {
+        "label": "description",
+        "text": "Incluye la carpeta `migrations/` para que se active al trabajar en ella."
+      },
+      {
+        "label": "scripts/",
+        "text": "Los scripts se ejecutan; su código no tiene por qué cargarse en contexto."
+      },
+      {
+        "label": "references/",
+        "text": "Solo ocupa contexto cuando se lee: divulgación progresiva."
+      },
+      {
+        "label": "Paso 4",
+        "text": "Es una instrucción. Para garantizarlo, bloquea el comando con un hook."
+      }
+    ],
+    "expected": "Con `ADD COLUMN b text NOT NULL`, el script avisa de que falla si la tabla tiene filas, y el agente propone los pasos seguros.",
+    "whenToUse": "Cuando un procedimiento mezcla comprobaciones objetivas con criterio.",
+    "limitations": [
+      "Las reglas por texto no entienden SQL: pueden fallar en casos complejos.",
+      "La lista de reglas es un ejemplo, no una cobertura completa.",
+      "Las rutas del script dependen de cómo tu herramienta ejecute la skill."
+    ],
+    "concepts": [
+      "skills",
+      "guardrails",
+      "context-engineering"
+    ],
+    "sources": [
+      {
+        "title": "Agent Skills: Specification",
+        "url": "https://agentskills.io/specification"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "skill-pr-description",
+    "title": "Skill con plantilla para descripciones de PR",
+    "topic": "Skills",
+    "objective": "Que todos los PR, los escriba quien los escriba, sigan el mismo formato.",
+    "context": "Las plantillas son material que no hace falta cargar hasta usarlo. La especificación propone `assets/` para ese tipo de recursos.",
+    "implementation": "Guarda la plantilla aparte, y usa instrucciones breves que indiquen de dónde sale cada dato.",
+    "files": [
+      {
+        "path": ".agents/skills/pr-description/SKILL.md",
+        "language": "markdown",
+        "code": "---\nname: pr-description\ndescription: Redacta la descripción de un pull request con la plantilla del equipo. Úsala al abrir un PR o si piden describir los cambios.\n---\n\n1. Lee el diff con `git diff main...HEAD`.\n2. Rellena assets/template.md.\n3. En \"Cómo se ha probado\", incluye solo lo que hayas ejecutado de verdad.\n4. Si algo queda sin probar, indícalo en esa misma sección."
+      },
+      {
+        "path": ".agents/skills/pr-description/assets/template.md",
+        "language": "markdown",
+        "code": "## Qué cambia\n\n## Por qué\n\n## Cómo se ha probado\n\n## Riesgos"
+      }
+    ],
+    "parts": [
+      {
+        "label": "assets/template.md",
+        "text": "La plantilla se puede editar sin tocar las instrucciones."
+      },
+      {
+        "label": "Paso 3",
+        "text": "Reduce un problema real: descripciones que afirman pruebas que no se han hecho."
+      }
+    ],
+    "expected": "Un PR con las cuatro secciones, basado en el diff real.",
+    "whenToUse": "Si quieres un formato común de PR o cualquier otro documento recurrente.",
+    "limitations": [
+      "Si es muy simple, puede bastar una plantilla de PR de la propia plataforma."
+    ],
+    "concepts": [
+      "skills",
+      "workflows"
+    ],
+    "sources": [
+      {
+        "title": "Agent Skills: Specification",
+        "url": "https://agentskills.io/specification"
       }
     ],
     "status": "verified",
@@ -121,66 +385,248 @@
   },
   {
     "id": "subagent-reviewer",
-    "title": "Subagente revisor de solo lectura",
+    "title": "Subagente revisor en cinco herramientas",
     "topic": "Subagents",
-    "objective": "Revisar cambios con una mirada independiente y con la garantía de que el revisor no puede modificar nada.",
-    "context": "Quien acaba de escribir un código tiende a validarlo. Un agente con contexto limpio, que no ha visto cómo se escribió, puede encontrar otros problemas. La documentación de Claude Code advierte de que un revisor al que se le pide buscar problemas siempre encontrará algo, así que conviene orientarlo a fallos reales.",
-    "implementation": "Define el subagente con una lista cerrada de herramientas. Claude Code aplica ese límite: no es una petición en un prompt. Pídele después que revise el diff actual.",
+    "objective": "Revisar cambios con una mirada independiente y, donde sea posible, con la garantía de que el revisor no modifica nada.",
+    "context": "Quien acaba de escribir un código tiende a validarlo. Un agente con contexto limpio puede encontrar otros problemas. La idea es la misma en todas las herramientas, pero el formato y lo que se puede restringir cambian.",
+    "implementation": "Elige tu herramienta en las pestañas. Después, pide al agente principal que use `reviewer` sobre el diff actual, indicándole también el objetivo del cambio.",
     "files": [
       {
-        "path": ".claude/agents/reviewer.md",
+        "tool": "Cursor",
+        "path": ".cursor/agents/reviewer.md",
         "language": "markdown",
-        "code": "---\nname: reviewer\ndescription: Revisa los cambios en busca de errores reales. Úsalo después de implementar un cambio y antes de abrir un PR.\ntools: Read, Grep, Glob\nmodel: sonnet\n---\n\nEres un revisor de código. No has participado en la implementación.\n\nRevisa solo lo que te indiquen y comunica únicamente problemas que puedan\nprovocar un fallo. Omite las cuestiones de estilo y las preferencias.\n\nPor cada hallazgo indica:\n- Archivo y línea.\n- Un escenario concreto en el que falla.\n- Cómo lo has comprobado.\n\nSi no encuentras nada, dilo: no inventes hallazgos para justificar la revisión."
+        "code": "---\nname: reviewer\ndescription: Revisa los cambios en busca de errores reales. Úsalo antes de abrir un PR.\nreadonly: true\n---\n\nRevisa solo lo que te indiquen e informa únicamente de problemas que puedan\nprovocar un fallo. Por cada hallazgo, indica archivo, línea y un escenario concreto.\nSi no encuentras nada, dilo: no inventes hallazgos."
       },
       {
-        "path": "prompt",
-        "language": "text",
-        "code": "Usa el subagente reviewer para revisar los archivos que devuelve\n\"git diff main --name-only\". Te paso el objetivo del cambio:\nevitar que un carrito vacío genere un error 500 en /orders."
+        "tool": "Codex",
+        "path": ".codex/agents/reviewer.toml",
+        "language": "toml",
+        "code": "name = \"reviewer\"\ndescription = \"Revisa los cambios en busca de errores reales. Úsalo antes de abrir un PR.\"\ndeveloper_instructions = \"\"\"\nNo modifiques ningún archivo.\nRevisa solo lo que te indiquen e informa únicamente de problemas que puedan\nprovocar un fallo. Por cada hallazgo, indica archivo, línea y un escenario concreto.\nSi no encuentras nada, dilo: no inventes hallazgos.\n\"\"\""
+      },
+      {
+        "tool": "Gemini CLI",
+        "path": ".gemini/agents/reviewer.md",
+        "language": "markdown",
+        "code": "---\nname: reviewer\ndescription: Revisa los cambios en busca de errores reales. Úsalo antes de abrir un PR.\n---\n\nNo modifiques ningún archivo.\nRevisa solo lo que te indiquen e informa únicamente de problemas que puedan\nprovocar un fallo. Por cada hallazgo, indica archivo, línea y un escenario concreto.\nSi no encuentras nada, dilo: no inventes hallazgos."
+      },
+      {
+        "tool": "GitHub Copilot",
+        "path": "reviewer.agent.md",
+        "language": "markdown",
+        "code": "---\nname: reviewer\ndescription: Revisa los cambios en busca de errores reales. Úsalo antes de abrir un PR.\ntools: [\"read\"]\n---\n\nRevisa solo lo que te indiquen e informa únicamente de problemas que puedan\nprovocar un fallo. Por cada hallazgo, indica archivo, línea y un escenario concreto.\nSi no encuentras nada, dilo: no inventes hallazgos."
+      },
+      {
+        "tool": "Claude Code",
+        "path": ".claude/agents/reviewer.md",
+        "language": "markdown",
+        "code": "---\nname: reviewer\ndescription: Revisa los cambios en busca de errores reales. Úsalo antes de abrir un PR.\ntools: Read, Grep, Glob\n---\n\nRevisa solo lo que te indiquen e informa únicamente de problemas que puedan\nprovocar un fallo. Por cada hallazgo, indica archivo, línea y un escenario concreto.\nSi no encuentras nada, dilo: no inventes hallazgos."
       }
     ],
     "parts": [
       {
-        "label": "name / description",
-        "text": "Son los únicos campos obligatorios. El agente principal usa `description` para decidir cuándo delegar."
+        "label": "description",
+        "text": "En todas las herramientas sirve para decidir cuándo delegar."
       },
       {
-        "label": "tools",
-        "text": "Lista permitida. Sin `Edit`, `Write` ni `Bash`, no puede modificar archivos. Sin `Bash` tampoco puede lanzar `git diff`, y por eso el encargo le indica qué revisar."
+        "label": "readonly (Cursor)",
+        "text": "Bloquea la edición de archivos."
       },
       {
-        "label": "model",
-        "text": "Permite elegir un modelo según el coste de la tarea."
+        "label": "tools (Copilot, Claude Code)",
+        "text": "Limita lo que puede usar. Sin herramientas de edición, no puede modificar nada."
       },
       {
-        "label": "prompt del sistema",
-        "text": "El cuerpo del archivo. Pedir un escenario de fallo reduce los falsos positivos."
+        "label": "“No modifiques” (Codex, Gemini)",
+        "text": "Aquí es una instrucción, no una garantía. En Codex, el agente hereda los permisos del padre; en Gemini CLI puedes añadir el campo `tools`."
       },
       {
-        "label": "encargo",
-        "text": "El subagente no ve la conversación: hay que darle el objetivo y el alcance."
+        "label": "Cuerpo",
+        "text": "Pedir un escenario concreto reduce los falsos positivos, y permitir “no hay nada” evita hallazgos inventados."
       }
     ],
-    "expected": "El subagente devuelve una lista corta de hallazgos con archivo, línea y escenario, o indica que no encuentra problemas. Los resultados intermedios no llenan el contexto principal.",
-    "whenToUse": "Antes de abrir un PR, en cambios de cierto riesgo o cuando el agente principal lleva una sesión larga con ese código.",
+    "expected": "El revisor devuelve una lista corta de hallazgos, o indica que no encuentra problemas, sin llenar el contexto principal.",
+    "whenToUse": "Antes de abrir un PR o tras una sesión larga con el mismo código.",
     "limitations": [
       "No sustituye a los tests ni a la revisión humana.",
-      "Sin `Bash` no puede ejecutar tests para confirmar sus hipótesis; añadirlo amplía sus permisos.",
-      "Añade coste en tokens."
+      "El subagente no ve la conversación: dale el objetivo y el alcance.",
+      "Los formatos no se han probado en cada herramienta: se basan en su documentación."
     ],
     "concepts": [
       "subagents",
       "automated-code-review",
-      "code-reviews",
       "permissions"
     ],
     "sources": [
       {
-        "title": "Claude Code: Subagents",
-        "url": "https://code.claude.com/docs/en/sub-agents"
+        "title": "Cursor: Subagents",
+        "url": "https://cursor.com/docs/subagents"
       },
       {
-        "title": "Claude Code: Best practices",
-        "url": "https://code.claude.com/docs/en/best-practices"
+        "title": "Codex: Subagents",
+        "url": "https://learn.chatgpt.com/docs/agent-configuration/subagents"
+      },
+      {
+        "title": "Gemini CLI: Subagents",
+        "url": "https://geminicli.com/docs/core/subagents/"
+      },
+      {
+        "title": "GitHub Docs: Custom agents configuration",
+        "url": "https://docs.github.com/en/copilot/reference/custom-agents-configuration"
+      },
+      {
+        "title": "Claude Code: Subagents",
+        "url": "https://code.claude.com/docs/en/sub-agents"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "subagent-test-runner",
+    "title": "Subagente que ejecuta los tests y resume",
+    "topic": "Subagents",
+    "objective": "Evitar que la salida larga de los tests llene el contexto principal.",
+    "context": "Una suite puede imprimir miles de líneas, de las que solo importan unas pocas. Es el caso ideal para un subagente, que además puede usar un modelo más económico.",
+    "implementation": "Crea el subagente en tu herramienta. Limítalo a ejecutar y resumir, sin intentar arreglar nada, para que las decisiones sigan en el agente principal.",
+    "files": [
+      {
+        "tool": "Cursor",
+        "path": ".cursor/agents/test-runner.md",
+        "language": "markdown",
+        "code": "---\nname: test-runner\ndescription: Ejecuta los tests y resume los fallos. Úsalo cuando haya que ejecutar la suite.\nreadonly: true\n---\n\nEjecuta los tests. Devuelve solo: número de tests, nombres de los que fallan\ny el primer error de cada uno. No intentes arreglar nada."
+      },
+      {
+        "tool": "Codex",
+        "path": ".codex/agents/test-runner.toml",
+        "language": "toml",
+        "code": "name = \"test_runner\"\ndescription = \"Ejecuta los tests y resume los fallos. Úsalo cuando haya que ejecutar la suite.\"\ndeveloper_instructions = \"\"\"\nEjecuta los tests. Devuelve solo: número de tests, nombres de los que fallan\ny el primer error de cada uno. No intentes arreglar nada.\n\"\"\""
+      },
+      {
+        "tool": "Gemini CLI",
+        "path": ".gemini/agents/test-runner.md",
+        "language": "markdown",
+        "code": "---\nname: test-runner\ndescription: Ejecuta los tests y resume los fallos. Úsalo cuando haya que ejecutar la suite.\nmax_turns: 5\n---\n\nEjecuta los tests. Devuelve solo: número de tests, nombres de los que fallan\ny el primer error de cada uno. No intentes arreglar nada."
+      },
+      {
+        "tool": "Claude Code",
+        "path": ".claude/agents/test-runner.md",
+        "language": "markdown",
+        "code": "---\nname: test-runner\ndescription: Ejecuta los tests y resume los fallos. Úsalo cuando haya que ejecutar la suite.\ntools: Bash, Read\n---\n\nEjecuta los tests. Devuelve solo: número de tests, nombres de los que fallan\ny el primer error de cada uno. No intentes arreglar nada."
+      }
+    ],
+    "parts": [
+      {
+        "label": "Formato de salida",
+        "text": "Es lo que hace útil al subagente: el agente principal recibe unas líneas en lugar de miles."
+      },
+      {
+        "label": "No intentes arreglar nada",
+        "text": "Separa diagnosticar de decidir."
+      },
+      {
+        "label": "max_turns (Gemini CLI)",
+        "text": "Limita cuánto puede trabajar."
+      },
+      {
+        "label": "readonly (Cursor)",
+        "text": "Bloquea editar archivos. Comprueba que permite ejecutar los tests en tu versión."
+      }
+    ],
+    "expected": "Un resumen como “120 tests, 2 fallan: `test_login` con KeyError…”.",
+    "whenToUse": "Con suites de salida larga o si ejecutas los tests a menudo durante una tarea.",
+    "limitations": [
+      "Un resumen puede omitir un detalle necesario.",
+      "Si la suite es corta, ejecutarla directamente es más simple.",
+      "Formatos basados en documentación, sin probar en cada herramienta."
+    ],
+    "concepts": [
+      "subagents",
+      "context-management"
+    ],
+    "sources": [
+      {
+        "title": "Cursor: Subagents",
+        "url": "https://cursor.com/docs/subagents"
+      },
+      {
+        "title": "Codex: Subagents",
+        "url": "https://learn.chatgpt.com/docs/agent-configuration/subagents"
+      },
+      {
+        "title": "Gemini CLI: Subagents",
+        "url": "https://geminicli.com/docs/core/subagents/"
+      },
+      {
+        "title": "Claude Code: Subagents",
+        "url": "https://code.claude.com/docs/en/sub-agents"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
+    "id": "rules-path-scoped",
+    "title": "Reglas que solo se aplican a una carpeta",
+    "topic": "Rules",
+    "objective": "Aplicar una convención solo en una parte del repositorio, sin cargarla en cada tarea.",
+    "context": "Las reglas de los tests de integración no importan al tocar la interfaz. Cursor y GitHub Copilot permiten vincular instrucciones a rutas; con `AGENTS.md`, la alternativa es un archivo en esa carpeta.",
+    "implementation": "Elige el formato de tu herramienta. Mantén cada regla corta y sobre una sola cosa.",
+    "files": [
+      {
+        "tool": "Cursor",
+        "path": ".cursor/rules/integration-tests.mdc",
+        "language": "markdown",
+        "code": "---\ndescription: Convenciones de los tests de integración\nglobs: tests/integration/**\nalwaysApply: false\n---\n\n- Usa la base de datos del contenedor, no mocks.\n- Cada test crea y borra sus propios datos."
+      },
+      {
+        "tool": "GitHub Copilot",
+        "path": ".github/instructions/integration-tests.instructions.md",
+        "language": "markdown",
+        "code": "---\napplyTo: \"tests/integration/**\"\n---\n\n- Usa la base de datos del contenedor, no mocks.\n- Cada test crea y borra sus propios datos."
+      },
+      {
+        "tool": "AGENTS.md",
+        "path": "tests/integration/AGENTS.md",
+        "language": "markdown",
+        "code": "- Usa la base de datos del contenedor, no mocks.\n- Cada test crea y borra sus propios datos."
+      }
+    ],
+    "parts": [
+      {
+        "label": ".mdc",
+        "text": "Cursor ignora los `.md` de esa carpeta."
+      },
+      {
+        "label": "globs / applyTo",
+        "text": "Indican a qué archivos se aplica."
+      },
+      {
+        "label": "tests/integration/AGENTS.md",
+        "text": "Se aplica por directorio, y es la opción más portable."
+      }
+    ],
+    "expected": "La regla solo aparece en el contexto al trabajar en esa carpeta.",
+    "whenToUse": "Con convenciones que solo afectan a una parte del código.",
+    "limitations": [
+      "Con muchas reglas, cuesta saber cuáles están activas.",
+      "No se hacen cumplir."
+    ],
+    "concepts": [
+      "rules",
+      "agents-md"
+    ],
+    "sources": [
+      {
+        "title": "Cursor: Rules",
+        "url": "https://cursor.com/docs/rules"
+      },
+      {
+        "title": "GitHub Docs: Repository custom instructions",
+        "url": "https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions"
+      },
+      {
+        "title": "AGENTS.md",
+        "url": "https://agents.md/"
       }
     ],
     "status": "verified",
@@ -188,48 +634,59 @@
   },
   {
     "id": "mcp-project-config",
-    "title": "Configuración MCP compartida por el equipo",
+    "title": "El mismo servidor MCP en cuatro clientes",
     "topic": "MCP",
-    "objective": "Conectar un servidor MCP remoto y uno local para todo el equipo, sin escribir credenciales en el repositorio.",
-    "context": "El equipo quiere que el agente consulte una base de datos de desarrollo y un servicio remoto. Claude Code lee `.mcp.json` en la raíz del proyecto, y ese archivo se puede versionar.",
-    "implementation": "Declara los servidores en `.mcp.json` y usa expansión de variables de entorno para los secretos. Cada persona define esas variables en su entorno. Los URL de ejemplo deben sustituirse por los de tus servidores.",
+    "objective": "Conectar un mismo servidor MCP desde distintas herramientas, sin escribir secretos en el repositorio.",
+    "context": "MCP es un estándar, así que el servidor no cambia. Lo que cambia es dónde y cómo lo declara cada cliente. Un equipo que usa varias herramientas tendrá que mantener cada archivo.",
+    "implementation": "Sustituye `mi-servidor-mcp` por un paquete en el que confíes. Elige la pestaña de tu cliente y define `DB_URL` en tu entorno.",
     "files": [
       {
-        "path": ".mcp.json",
+        "tool": "Cursor",
+        "path": ".cursor/mcp.json",
         "language": "json",
-        "code": "{\n  \"mcpServers\": {\n    \"docs\": {\n      \"type\": \"http\",\n      \"url\": \"https://mcp.example.com/mcp\",\n      \"headers\": { \"Authorization\": \"Bearer ${DOCS_TOKEN}\" }\n    },\n    \"database-tools\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@bytebase/dbhub\", \"--dsn\", \"${DB_URL}\"]\n    }\n  }\n}"
+        "code": "{\n  \"mcpServers\": {\n    \"database\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"mi-servidor-mcp\", \"--dsn\", \"${env:DB_URL}\"]\n    }\n  }\n}"
       },
       {
-        "path": "terminal",
-        "language": "bash",
-        "code": "# Alternativa: añadirlo por CLI con ámbito de proyecto\nclaude mcp add --transport http docs --scope project https://mcp.example.com/mcp\n\n# Comprobar\nclaude mcp list"
+        "tool": "Codex",
+        "path": ".codex/config.toml",
+        "language": "toml",
+        "code": "[mcp_servers.database]\ncommand = \"npx\"\nargs = [\"-y\", \"mi-servidor-mcp\"]\nenv_vars = [\"DB_URL\"]"
+      },
+      {
+        "tool": "Gemini CLI",
+        "path": ".gemini/settings.json",
+        "language": "json",
+        "code": "{\n  \"mcpServers\": {\n    \"database\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"mi-servidor-mcp\", \"--dsn\", \"$DB_URL\"]\n    }\n  }\n}"
+      },
+      {
+        "tool": "Claude Code",
+        "path": ".mcp.json",
+        "language": "json",
+        "code": "{\n  \"mcpServers\": {\n    \"database\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"mi-servidor-mcp\", \"--dsn\", \"${DB_URL}\"]\n    }\n  }\n}"
       }
     ],
     "parts": [
       {
-        "label": "\"type\": \"http\"",
-        "text": "Transporte recomendado para servidores remotos. Si hay `url` pero no `type`, Claude Code lo trata como error de configuración y lo omite."
+        "label": "mcpServers",
+        "text": "Cursor, Gemini CLI y Claude Code usan esta clave en JSON. Codex usa tablas `[mcp_servers.<nombre>]` en TOML."
       },
       {
-        "label": "${DOCS_TOKEN}",
-        "text": "Se expande desde el entorno. Admite también `${VAR:-valor}`. Así, el secreto no llega al repositorio."
-      },
-      {
-        "label": "\"command\" / \"args\"",
+        "label": "command / args",
         "text": "Servidor local por stdio: el cliente lanza el proceso. `npx -y` descarga y ejecuta un paquete, por lo que debes confiar en él."
       },
       {
-        "label": "--scope project",
-        "text": "Guarda la configuración en `.mcp.json`. Los ámbitos son `local` (por defecto), `project` y `user`."
+        "label": "Variables de entorno",
+        "text": "**La sintaxis de sustitución varía entre clientes.** Compruébala en su documentación antes de confiar en este ejemplo."
       }
     ],
-    "expected": "Dentro de una sesión, `/mcp` muestra ambos servidores conectados, y sus herramientas están disponibles para el agente.",
-    "whenToUse": "Cuando todo el equipo necesita las mismas integraciones. Para credenciales o herramientas personales, usa el ámbito `user` o `local`.",
+    "expected": "El cliente muestra el servidor conectado y el agente puede usar sus herramientas.",
+    "whenToUse": "Cuando el agente necesita un sistema al que no puede acceder de otra forma.",
     "limitations": [
       "Un servidor de terceros es código con acceso a tus sistemas: revísalo antes.",
       "Cada servidor añade definiciones que consumen contexto.",
       "El contenido devuelto puede contener inyecciones de prompt.",
-      "Da al servidor credenciales de mínimo privilegio, por ejemplo de solo lectura."
+      "Da al servidor credenciales de mínimo privilegio, por ejemplo de solo lectura.",
+      "No se ha probado en cada cliente, y la sustitución de variables es lo más sensible."
     ],
     "concepts": [
       "mcp",
@@ -238,12 +695,120 @@
     ],
     "sources": [
       {
-        "title": "Claude Code: MCP",
-        "url": "https://code.claude.com/docs/en/mcp"
+        "title": "Cursor: MCP",
+        "url": "https://cursor.com/docs/mcp"
       },
       {
-        "title": "MCP Specification 2026-07-28: Architecture",
-        "url": "https://modelcontextprotocol.io/specification/2026-07-28/architecture"
+        "title": "Codex: MCP",
+        "url": "https://learn.chatgpt.com/docs/extend/mcp?surface=cli"
+      },
+      {
+        "title": "Gemini CLI: MCP servers",
+        "url": "https://geminicli.com/docs/tools/mcp-server/"
+      },
+      {
+        "title": "Claude Code: MCP",
+        "url": "https://code.claude.com/docs/en/mcp"
+      }
+    ],
+    "status": "needs-review",
+    "lastVerified": null
+  },
+  {
+    "id": "hooks-guard-format",
+    "title": "Hook que bloquea comandos peligrosos",
+    "topic": "Hooks",
+    "tested": "Script ejecutado con entradas de prueba en los dos formatos de JSON. No se ha probado dentro de cada herramienta.",
+    "objective": "Garantizar que el agente no ejecuta comandos destructivos, sin depender de lo que decida el modelo.",
+    "context": "Una instrucción como “no hagas force push” es una petición; un hook se ejecuta siempre. Codex, Cursor, Gemini CLI y Claude Code bloquean si el comando sale con el código 2, así que un mismo script puede servir con una configuración distinta para cada una.",
+    "implementation": "Guarda el script en tu repositorio y regístralo en el formato de tu herramienta. Pruébalo a mano antes de confiar en él.",
+    "files": [
+      {
+        "path": "hooks/guard.mjs",
+        "language": "javascript",
+        "code": "// Bloquea comandos peligrosos. Exit 2 bloquea y stderr explica el motivo.\nlet input = '';\nfor await (const chunk of process.stdin) input += chunk;\n\nconst data = JSON.parse(input);\nconst command = data.tool_input?.command ?? data.command ?? '';\nconst forbidden = [/\\brm\\s+-[a-z]*r[a-z]*f/i, /\\bgit\\s+push\\b.*--force/];\n\nif (forbidden.some((rule) => rule.test(command))) {\n  console.error(`Bloqueado por política del proyecto: ${command}`);\n  process.exit(2);\n}"
+      },
+      {
+        "tool": "Cursor",
+        "path": ".cursor/hooks.json",
+        "language": "json",
+        "code": "{\n  \"version\": 1,\n  \"hooks\": {\n    \"beforeShellExecution\": [{ \"command\": \"node hooks/guard.mjs\" }]\n  }\n}"
+      },
+      {
+        "tool": "Codex",
+        "path": ".codex/hooks.json",
+        "language": "json",
+        "code": "{\n  \"hooks\": {\n    \"PreToolUse\": [\n      { \"hooks\": [{ \"type\": \"command\", \"command\": \"node hooks/guard.mjs\" }] }\n    ]\n  }\n}"
+      },
+      {
+        "tool": "Gemini CLI",
+        "path": ".gemini/settings.json",
+        "language": "json",
+        "code": "{\n  \"hooks\": {\n    \"BeforeTool\": [\n      {\n        \"matcher\": \"run_shell_command\",\n        \"hooks\": [{ \"type\": \"command\", \"command\": \"node hooks/guard.mjs\" }]\n      }\n    ]\n  }\n}"
+      },
+      {
+        "tool": "Claude Code",
+        "path": ".claude/settings.json",
+        "language": "json",
+        "code": "{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [{ \"type\": \"command\", \"command\": \"node hooks/guard.mjs\" }]\n      }\n    ]\n  }\n}"
+      },
+      {
+        "path": "prueba manual",
+        "language": "bash",
+        "code": "echo '{\"tool_input\":{\"command\":\"rm -rf build\"}}' | node hooks/guard.mjs\necho $?   # 2: bloqueado\n\necho '{\"command\":\"npm test\"}' | node hooks/guard.mjs\necho $?   # 0: permitido"
+      }
+    ],
+    "parts": [
+      {
+        "label": "tool_input?.command ?? command",
+        "text": "El comando llega en un campo distinto según la herramienta y el evento. En `beforeShellExecution` de Cursor está en `command`; en Codex y Claude Code, en `tool_input.command`."
+      },
+      {
+        "label": "process.exit(2)",
+        "text": "Bloquea la acción. En Claude Code, **un exit 1 no bloquea**: la acción continúa."
+      },
+      {
+        "label": "console.error",
+        "text": "El motivo llega al modelo por stderr, y puede cambiar de enfoque."
+      },
+      {
+        "label": "Gemini CLI",
+        "text": "Su documentación no detalla el campo del comando en `BeforeTool`: comprueba que tu entrada coincide. Además, prefiere responder con JSON."
+      },
+      {
+        "label": "Codex",
+        "text": "Los hooks deben aprobarse con `/hooks` antes de ejecutarse."
+      }
+    ],
+    "expected": "Si el agente intenta `rm -rf build`, la llamada no se ejecuta y recibe el motivo.",
+    "whenToUse": "Para reglas sin excepciones. Si la regla requiere criterio, usa una instrucción o un revisor.",
+    "limitations": [
+      "Filtrar por texto no es una frontera de seguridad: un script que borre archivos lo elude. Combínalo con permisos y aislamiento.",
+      "Los hooks se ejecutan con tus permisos: revísalos como código de producción.",
+      "Si el JSON no trae el campo esperado, el script deja pasar el comando: pruébalo en tu herramienta."
+    ],
+    "concepts": [
+      "hooks",
+      "guardrails",
+      "permissions",
+      "agentic-harness"
+    ],
+    "sources": [
+      {
+        "title": "Cursor: Hooks",
+        "url": "https://cursor.com/docs/hooks"
+      },
+      {
+        "title": "Codex: Hooks",
+        "url": "https://learn.chatgpt.com/docs/hooks"
+      },
+      {
+        "title": "Gemini CLI: Hooks",
+        "url": "https://geminicli.com/docs/hooks/"
+      },
+      {
+        "title": "Claude Code: Hooks reference",
+        "url": "https://code.claude.com/docs/en/hooks"
       }
     ],
     "status": "verified",
@@ -251,10 +816,10 @@
   },
   {
     "id": "persistent-memory-layers",
-    "title": "Memoria persistente por capas",
+    "title": "Memoria por capas en Claude Code",
     "topic": "Persistent Memory",
     "objective": "Separar lo que escribe el equipo, lo que aprende el agente y lo que recuerda un subagente concreto.",
-    "context": "Tras varias sesiones, el agente sigue preguntando lo mismo y repite errores. Pero meterlo todo en `CLAUDE.md` lo haría demasiado largo.",
+    "context": "Ejemplo específico de una herramienta, porque cada una gestiona la memoria de forma distinta. Tras varias sesiones, el agente sigue preguntando lo mismo y repite errores. Pero meterlo todo en `CLAUDE.md` lo haría demasiado largo.",
     "implementation": "Deja las reglas de equipo en `CLAUDE.md`, que puede importar `AGENTS.md`. Deja que la auto memory recoja las correcciones. Y, si un subagente acumula conocimiento propio, actívale el campo `memory`. Trata la memoria como cualquier otro contenido: léela y corrígela.",
     "files": [
       {
@@ -323,6 +888,59 @@
     "lastVerified": "2026-11-05"
   },
   {
+    "id": "memory-progress-file",
+    "title": "Archivo de progreso para tareas largas",
+    "topic": "Persistent Memory",
+    "objective": "Retomar una tarea larga en una sesión nueva sin perder lo avanzado, con cualquier agente.",
+    "context": "Anthropic describe que los agentes tienden a intentar demasiado de una vez o a declarar el trabajo terminado antes de tiempo. Propone una lista de funcionalidades, un log de progreso y commits frecuentes. Son archivos normales, así que no dependen de ninguna herramienta.",
+    "implementation": "Añade la instrucción a `AGENTS.md`, y crea el archivo con la tarea. Cada sesión lee el estado, avanza una cosa y lo deja actualizado.",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "language": "markdown",
+        "code": "## Tareas largas\n- Al empezar, lee PROGRESS.md y `git log --oneline -10`.\n- Trabaja en una sola funcionalidad por sesión.\n- Márcala como hecha solo si la has comprobado de extremo a extremo.\n- Al terminar, haz commit y actualiza PROGRESS.md."
+      },
+      {
+        "path": "PROGRESS.md",
+        "language": "markdown",
+        "code": "# Migración a la API v2\n\n## Funcionalidades\n- [x] Listado de pedidos (comprobado en el navegador)\n- [ ] Detalle de pedido  <- siguiente\n- [ ] Exportación a CSV\n\n## Decisiones\n- Mantener v1 hasta terminar: ver docs/decisions/012.md.\n\n## Problemas abiertos\n- El test de exportación necesita datos de prueba nuevos."
+      }
+    ],
+    "parts": [
+      {
+        "label": "Una sola funcionalidad",
+        "text": "Evita quedarse sin contexto a mitad de un cambio."
+      },
+      {
+        "label": "Solo si la has comprobado",
+        "text": "Combate marcar como terminado algo que no lo está."
+      },
+      {
+        "label": "Decisiones",
+        "text": "Lo que no se deduce del código y se perdería entre sesiones."
+      }
+    ],
+    "expected": "Una sesión nueva sabe en un minuto qué está hecho, qué sigue y por qué.",
+    "whenToUse": "En tareas que no caben en una sola sesión.",
+    "limitations": [
+      "El agente puede olvidarse de actualizar el archivo: un hook al terminar puede recordárselo.",
+      "En tareas cortas es una sobrecarga."
+    ],
+    "concepts": [
+      "persistent-memory",
+      "context-compaction",
+      "agentic-harness"
+    ],
+    "sources": [
+      {
+        "title": "Anthropic: Effective harnesses for long-running agents",
+        "url": "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"
+      }
+    ],
+    "status": "verified",
+    "lastVerified": "2026-11-05"
+  },
+  {
     "id": "spec-plan-build-workflow",
     "title": "Workflow de especificación, construcción y revisión",
     "topic": "Workflows",
@@ -373,7 +991,6 @@
     "concepts": [
       "ai-development-workflows",
       "spec-driven-development",
-      "tdd",
       "subagents"
     ],
     "sources": [
@@ -384,79 +1001,6 @@
       {
         "title": "GitHub Spec Kit",
         "url": "https://github.com/github/spec-kit"
-      }
-    ],
-    "status": "verified",
-    "lastVerified": "2026-11-05"
-  },
-  {
-    "id": "hooks-guard-format",
-    "title": "Hooks: bloquear comandos peligrosos y formatear",
-    "topic": "Hooks",
-    "tested": "Script del hook ejecutado con entradas de prueba; la integración con Claude Code no se ha ejecutado.",
-    "objective": "Garantizar dos reglas sin depender del modelo: impedir comandos destructivos y formatear cada archivo editado.",
-    "context": "Una instrucción como “no hagas force push” es una petición. Un hook se ejecuta siempre. El script está en Node para que funcione igual en Windows, macOS y Linux, sin depender de `jq`.",
-    "implementation": "Registra los hooks en `.claude/settings.json` y guarda el script en el repositorio para que lo revise el equipo. Adapta el comando de formateo a tu proyecto.",
-    "files": [
-      {
-        "path": ".claude/settings.json",
-        "language": "json",
-        "code": "{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [\n          { \"type\": \"command\", \"command\": \"node \\\"${CLAUDE_PROJECT_DIR}/.claude/hooks/guard-bash.mjs\\\"\" }\n        ]\n      }\n    ],\n    \"PostToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [\n          { \"type\": \"command\", \"command\": \"npx prettier --write --ignore-unknown .\" }\n        ]\n      }\n    ]\n  }\n}"
-      },
-      {
-        "path": ".claude/hooks/guard-bash.mjs",
-        "language": "javascript",
-        "code": "// PreToolUse: recibe la llamada en JSON por stdin. Exit 2 bloquea y stderr llega al modelo.\nlet input = '';\nfor await (const chunk of process.stdin) input += chunk;\n\nconst command = JSON.parse(input).tool_input?.command ?? '';\nconst forbidden = [/\\brm\\s+-[a-z]*r[a-z]*f/i, /\\bgit\\s+push\\b.*--force/];\n\nif (forbidden.some((rule) => rule.test(command))) {\n  console.error(`Bloqueado por política del proyecto: ${command}`);\n  process.exit(2);\n}"
-      },
-      {
-        "path": "prueba manual",
-        "language": "bash",
-        "code": "echo '{\"tool_input\":{\"command\":\"rm -rf build\"}}' | node .claude/hooks/guard-bash.mjs\necho $?   # 2: bloqueado\n\necho '{\"tool_input\":{\"command\":\"npm test\"}}' | node .claude/hooks/guard-bash.mjs\necho $?   # 0: permitido"
-      }
-    ],
-    "parts": [
-      {
-        "label": "PreToolUse",
-        "text": "Se ejecuta antes de la herramienta y puede impedirla."
-      },
-      {
-        "label": "matcher",
-        "text": "Filtra por herramienta. `Edit|Write` coincide con cualquiera de las dos."
-      },
-      {
-        "label": "process.exit(2)",
-        "text": "Solo el código 2 bloquea. **Un exit 1 no bloquea:** la acción continúa. Es un error frecuente."
-      },
-      {
-        "label": "console.error",
-        "text": "Con exit 2, stderr llega al modelo como motivo, y puede cambiar de enfoque."
-      },
-      {
-        "label": "PostToolUse",
-        "text": "La herramienta ya se ejecutó, así que no puede impedirla. Sirve para reaccionar, por ejemplo formateando."
-      },
-      {
-        "label": "prettier .",
-        "text": "Formatea todo el proyecto en cada edición: es sencillo, pero lento en repositorios grandes. Se puede leer la ruta editada del JSON de entrada para formatear solo ese archivo."
-      }
-    ],
-    "expected": "Si el agente intenta `rm -rf build`, la llamada no se ejecuta y recibe el motivo. Tras cada edición, el código queda formateado.",
-    "whenToUse": "Para reglas sin excepciones. Si la regla requiere criterio, usa una instrucción o un revisor.",
-    "limitations": [
-      "Filtrar comandos por texto no es una frontera de seguridad: otra forma de escribirlo puede eludirlo, por ejemplo un script que borre archivos. Combínalo con permisos y aislamiento.",
-      "Los hooks se ejecutan con tus permisos: revísalos como código de producción.",
-      "Un hook lento frena cada acción."
-    ],
-    "concepts": [
-      "hooks",
-      "guardrails",
-      "permissions",
-      "agentic-harness"
-    ],
-    "sources": [
-      {
-        "title": "Claude Code: Hooks reference",
-        "url": "https://code.claude.com/docs/en/hooks"
       }
     ],
     "status": "verified",
@@ -507,9 +1051,7 @@
       "Varios servidores de desarrollo pueden chocar en el mismo puerto."
     ],
     "concepts": [
-      "git-worktrees",
-      "git-branches",
-      "parallel-development"
+      "git-worktrees"
     ],
     "sources": [
       {
@@ -524,43 +1066,34 @@
     "id": "parallel-agents-worktrees",
     "title": "Agentes en paralelo con worktrees",
     "topic": "Parallel Agents",
-    "status": "needs-review",
-    "objective": "Lanzar varias tareas independientes con agentes a la vez, y luego revisarlas e integrarlas de una en una.",
-    "context": "Tienes dos tareas que tocan áreas distintas. Claude Code puede crear un worktree por sesión con `--worktree`. En modo no interactivo (`-p`) no limpia sus worktrees al terminar, y por eso hay un paso explícito de limpieza.",
-    "implementation": "Comprueba primero que las tareas no tocan los mismos archivos. Lanza una sesión por tarea, revisa cada rama y fusiona en orden, ejecutando los tests tras cada merge. Como esos worktrees se bloquean durante la ejecución, puede que debas desbloquearlos antes de eliminarlos.",
+    "tested": "Script ejecutado con un agente simulado, tanto correcto como fallido. No se ha ejecutado con un agente real.",
+    "objective": "Lanzar varias tareas independientes con cualquier agente, y detectar si alguna falla.",
+    "context": "El script no depende de una herramienta: crea un worktree y una rama por tarea, y lanza ahí el agente que indiques. Algunas herramientas tienen su propia opción, como `claude --worktree`, o integran worktrees en su interfaz, como Cursor y Devin Desktop.",
+    "implementation": "Comprueba primero que las tareas no toquen los mismos archivos. Define `AGENT_CMD` con el modo no interactivo de tu agente y ejecuta el script desde el repositorio.",
     "files": [
       {
         "path": "parallel.sh",
         "language": "bash",
-        "code": "#!/usr/bin/env bash\nset -euo pipefail\n\n# Una sesión aislada por tarea; cada una crea su worktree y su rama\nclaude -p --worktree rate-limit \"Añade rate limiting a /login con tests. Ejecuta los tests antes de terminar.\" > rate-limit.log &\nclaude -p --worktree api-docs \"Actualiza docs/api.md según las rutas actuales. No modifiques código.\" > api-docs.log &\nwait\n\ngit worktree list"
+        "code": "#!/usr/bin/env bash\nset -uo pipefail\n\n# Tu agente en modo no interactivo, por ejemplo: AGENT_CMD=\"gemini -p\"\nAGENT_CMD=${AGENT_CMD:?Define AGENT_CMD con el comando de tu agente}\n\nrun_task() {\n  local name=$1 prompt=$2\n  git worktree add -q \"../wt-$name\" -b \"agent/$name\" || return 1\n  (cd \"../wt-$name\" && $AGENT_CMD \"$prompt\" > \"../$name.log\" 2>&1)\n}\n\npids=()\nrun_task rate-limit \"Añade rate limiting a /login con tests.\" & pids+=($!)\nrun_task api-docs \"Actualiza docs/api.md según las rutas actuales.\" & pids+=($!)\n\nstatus=0\nfor pid in \"${pids[@]}\"; do\n  wait \"$pid\" || status=1\ndone\n\ngit worktree list\n[ \"$status\" -eq 0 ] && echo \"Todas las tareas han terminado.\" || echo \"Alguna tarea ha fallado: revisa los .log\"\nexit \"$status\""
       },
       {
         "path": "integración",
         "language": "bash",
-        "code": "# Revisar lo que ha hecho cada agente\ngit diff main...worktree-rate-limit\ngit diff main...worktree-api-docs\n\n# Integrar de una en una, comprobando cada paso\ngit merge worktree-api-docs\nnpm test\ngit merge worktree-rate-limit\nnpm test\n\n# Limpiar\ngit worktree remove .claude/worktrees/rate-limit\ngit worktree remove .claude/worktrees/api-docs"
-      },
-      {
-        "path": ".gitignore",
-        "language": "text",
-        "code": ".claude/worktrees/"
+        "code": "# Revisar lo que ha hecho cada agente\ngit diff main...agent/rate-limit\ngit diff main...agent/api-docs\n\n# Integrar de una en una, comprobando cada paso\ngit merge agent/api-docs\nnpm test\ngit merge agent/rate-limit\nnpm test\n\n# Limpiar\ngit worktree remove ../wt-rate-limit\ngit worktree remove ../wt-api-docs"
       }
     ],
     "parts": [
       {
-        "label": "--worktree <nombre>",
-        "text": "Crea `.claude/worktrees/<nombre>/`, en una rama `worktree-<nombre>`."
+        "label": "AGENT_CMD",
+        "text": "El comando no interactivo de tu agente. Consulta su documentación para saber cuál es."
       },
       {
-        "label": "-p",
-        "text": "No interactivo. Interactivamente, Claude pregunta al salir si conserva el worktree; con `-p`, no."
+        "label": "git worktree add … -b",
+        "text": "Cada tarea tiene sus archivos, su rama y su área de preparación."
       },
       {
-        "label": "> *.log &",
-        "text": "Ejecuta cada sesión en segundo plano y guarda su salida para revisarla."
-      },
-      {
-        "label": "wait",
-        "text": "Espera a que terminen todas."
+        "label": "pids / wait \"$pid\"",
+        "text": "Espera a cada tarea por separado. Un simple `wait` devolvería 0 aunque alguna fallara: lo comprobamos al probar este script."
       },
       {
         "label": "git diff main...rama",
@@ -568,162 +1101,26 @@
       },
       {
         "label": "npm test tras cada merge",
-        "text": "Dos ramas correctas por separado pueden fallar juntas. Es la única forma de detectar conflictos semánticos."
-      },
-      {
-        "label": ".gitignore",
-        "text": "La documentación recomienda ignorar `.claude/worktrees/` para que no aparezca como archivos sin seguimiento."
+        "text": "Dos ramas correctas por separado pueden fallar juntas."
       }
     ],
-    "expected": "Dos ramas independientes, con sus logs. Tras revisarlas, `main` las integra con los tests en verde.",
+    "expected": "Dos ramas independientes con sus logs, y un código de salida distinto de 0 si alguna tarea ha fallado.",
     "whenToUse": "Con tareas realmente independientes y buenos tests. Si las dos tocan el mismo módulo, hazlas en serie.",
     "limitations": [
-      "Este ejemplo se basa en la documentación y **no se ha ejecutado**, porque consume tokens de una cuenta real.",
-      "Los permisos: en modo no interactivo no hay quien apruebe; configúralos antes o las acciones se denegarán.",
-      "Si la rama base no es la esperada, revisa `worktree.baseRef`; por defecto parte de la rama por defecto del remoto.",
+      "En modo no interactivo nadie aprueba permisos: configúralos antes o las acciones se denegarán.",
+      "Un worktree no tiene `node_modules` ni `.env`: añade la instalación al script si hace falta.",
+      "Si la rama ya existe, `git worktree add -b` falla.",
       "El límite real es tu capacidad de revisar los diffs."
     ],
     "concepts": [
       "parallel-agent-development",
       "git-worktrees",
-      "conflict-resolution",
       "shared-file-conflicts"
     ],
     "sources": [
       {
-        "title": "Claude Code: Run parallel sessions with worktrees",
-        "url": "https://code.claude.com/docs/en/worktrees"
-      }
-    ],
-    "lastVerified": null
-  },
-  {
-    "id": "cicd-github-actions",
-    "title": "Pipeline de CI con GitHub Actions",
-    "topic": "CI/CD",
-    "status": "needs-review",
-    "objective": "Comprobar automáticamente cada pull request, lo haya escrito una persona o un agente.",
-    "context": "CI es un verificador que no depende de quien escribió el código. Si un agente dice que “todo funciona”, el pipeline lo comprueba de forma independiente.",
-    "implementation": "Guarda el workflow en `.github/workflows/`. Después, en la configuración del repositorio, exige este check con una regla de protección de rama para que no se pueda fusionar sin pasarlo.",
-    "files": [
-      {
-        "path": ".github/workflows/ci.yml",
-        "language": "yaml",
-        "code": "name: CI\n\non:\n  pull_request:\n  push:\n    branches: [main]\n\npermissions:\n  contents: read\n\njobs:\n  lint:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 22\n          cache: npm\n      - run: npm ci\n      - run: npm run lint\n\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 22\n          cache: npm\n      - run: npm ci\n      - run: npm test"
-      }
-    ],
-    "parts": [
-      {
-        "label": "on",
-        "text": "El evento que dispara el workflow: cada PR y cada push a `main`."
-      },
-      {
-        "label": "permissions",
-        "text": "Reduce los permisos del token al mínimo. Es buena práctica, sobre todo si ejecutas código generado."
-      },
-      {
-        "label": "jobs",
-        "text": "`lint` y `test` se ejecutan en paralelo, porque no se han declarado dependencias entre ellos."
-      },
-      {
-        "label": "runs-on",
-        "text": "El runner: aquí, una máquina virtual alojada por GitHub."
-      },
-      {
-        "label": "uses",
-        "text": "Una action reutilizable. Para mayor seguridad, fija las de terceros a un commit concreto."
-      },
-      {
-        "label": "run",
-        "text": "Un comando de shell. `npm ci` instala exactamente lo que indica el lockfile."
-      }
-    ],
-    "expected": "Cada PR muestra dos checks. Si uno falla, el PR queda marcado y, con protección de rama, no se puede fusionar.",
-    "whenToUse": "En todo repositorio de GitHub con tests. Es lo primero que conviene tener antes de delegar en agentes.",
-    "limitations": [
-      "YAML revisado, pero no ejecutado en un repositorio real.",
-      "Comprueba las versiones vigentes de las actions y de Node.",
-      "Requiere que existan los scripts `lint` y `test` en `package.json`.",
-      "Solo detecta lo que comprueban tus tests."
-    ],
-    "concepts": [
-      "ci-cd",
-      "github-actions",
-      "regression-testing",
-      "pull-requests"
-    ],
-    "sources": [
-      {
-        "title": "GitHub Docs: Understanding GitHub Actions",
-        "url": "https://docs.github.com/en/actions/get-started/understand-github-actions"
-      }
-    ],
-    "lastVerified": null
-  },
-  {
-    "id": "testing-regression-node",
-    "title": "Tests de regresión con el runner de Node.js",
-    "topic": "Testing",
-    "tested": "Código ejecutado con Node.js 24: 2 de 2 tests correctos.",
-    "objective": "Capturar un bug con un test, de modo que no pueda volver a aparecer, sin instalar dependencias.",
-    "context": "Un cálculo de IVA devolvía `24.187900000000003` por la aritmética de coma flotante. Este flujo es también un buen encargo para un agente: primero el test, después el arreglo.",
-    "implementation": "Escribe el test de regresión, confirma que falla con el código antiguo, corrige y ejecuta toda la suite con `node --test`.",
-    "files": [
-      {
-        "path": "iva.js",
-        "language": "javascript",
-        "code": "export const conIva = (importe, tipo = 21) => Math.round(importe * (100 + tipo)) / 100;"
-      },
-      {
-        "path": "iva.test.js",
-        "language": "javascript",
-        "code": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport { conIva } from './iva.js';\n\ntest('añade el 21% por defecto', () => {\n  assert.equal(conIva(100), 121);\n});\n\n// Regresión: 19.99 * 1.21 producía 24.187900000000003.\ntest('redondea a céntimos', () => {\n  assert.equal(conIva(19.99), 24.19);\n});"
-      },
-      {
-        "path": "terminal",
-        "language": "bash",
-        "code": "node --test"
-      }
-    ],
-    "parts": [
-      {
-        "label": "node:test",
-        "text": "Runner incluido en Node.js, sin dependencias."
-      },
-      {
-        "label": "assert/strict",
-        "text": "Comparaciones estrictas: `equal` se comporta como `===`."
-      },
-      {
-        "label": "Comentario de regresión",
-        "text": "Explica por qué existe el test, para que nadie lo borre por parecer redundante."
-      },
-      {
-        "label": "Math.round(...) / 100",
-        "text": "Trabaja la operación en céntimos. En un sistema de cobro real conviene usar enteros o una biblioteca decimal."
-      }
-    ],
-    "expected": "`node --test` informa de 2 tests superados. Si alguien reintroduce el error, CI fallará.",
-    "whenToUse": "Cada vez que corrijas un bug. Con un agente, pídele que muestre el test fallando antes de arreglarlo.",
-    "limitations": [
-      "Solo cubre el caso probado.",
-      "Si el mismo agente escribe código y test, ambos pueden compartir la misma idea errónea.",
-      "No comprueba la integración con otros componentes."
-    ],
-    "concepts": [
-      "unit-testing",
-      "regression-testing",
-      "tdd",
-      "ai-generated-code-testing"
-    ],
-    "sources": [
-      {
-        "title": "Node.js: Test runner",
-        "url": "https://nodejs.org/api/test.html"
-      },
-      {
-        "title": "Martin Fowler: Test Pyramid",
-        "url": "https://martinfowler.com/bliki/TestPyramid.html"
+        "title": "Git: git-worktree",
+        "url": "https://git-scm.com/docs/git-worktree"
       }
     ],
     "status": "verified",
@@ -732,27 +1129,27 @@
   {
     "id": "agent-eval-minimal",
     "title": "Evaluación mínima de un agente",
-    "topic": "Testing",
-    "status": "needs-review",
-    "objective": "Medir con datos si un cambio de instrucciones o de modelo mejora a un agente, en lugar de juzgarlo por impresión.",
-    "context": "Sigue el enfoque de *Demystifying evals*: empezar con pocas tareas reales, evaluar el resultado final y no la secuencia de pasos, y repetir cada tarea porque el resultado varía.",
-    "implementation": "Cada tarea tiene un prompt y un comando que puntúa el resultado. El script crea un worktree limpio por intento, lanza el agente y ejecuta el grader. Empieza con los fallos reales de tu proyecto.",
+    "topic": "Evaluation",
+    "tested": "Script ejecutado con un agente simulado: 2/2 con el correcto y 0/2 con el que falla.",
+    "objective": "Medir con datos si un cambio de instrucciones o de modelo mejora a un agente, sin depender de una herramienta concreta.",
+    "context": "Sigue el enfoque de *Demystifying evals*: pocas tareas reales, evaluar el resultado final y no la secuencia de pasos, y repetir cada tarea porque el resultado varía.",
+    "implementation": "Define `AGENT_CMD`, indica el prompt y un comando que puntúe el resultado. El script crea un worktree limpio por intento y conserva la transcripción.",
     "files": [
-      {
-        "path": "evals/tasks.json",
-        "language": "json",
-        "code": "[\n  {\n    \"id\": \"issue-142\",\n    \"prompt\": \"El endpoint /orders devuelve 500 con el carrito vacío. Corrígelo.\",\n    \"grader\": \"npm test -- tests/regression/issue-142.test.js\"\n  }\n]"
-      },
       {
         "path": "evals/run.sh",
         "language": "bash",
-        "code": "#!/usr/bin/env bash\n# Uso: evals/run.sh <id> \"<prompt>\" \"<grader>\" [intentos]\nid=$1; prompt=$2; grader=$3; trials=${4:-3}\npass=0\n\nfor i in $(seq 1 \"$trials\"); do\n  dir=\"../eval-$id-$i\"\n  git worktree add -q --detach \"$dir\" HEAD\n  (\n    cd \"$dir\"\n    npm ci --silent\n    claude -p \"$prompt\" > transcript.txt\n    eval \"$grader\"\n  ) && pass=$((pass + 1))\n  git worktree remove --force \"$dir\"\ndone\n\necho \"$id: $pass/$trials\""
+        "code": "#!/usr/bin/env bash\n# Uso: AGENT_CMD=\"gemini -p\" evals/run.sh <id> \"<prompt>\" \"<grader>\" [intentos]\nid=$1; prompt=$2; grader=$3; trials=${4:-3}\npass=0\nmkdir -p evals/transcripts\n\nfor i in $(seq 1 \"$trials\"); do\n  dir=\"../eval-$id-$i\"\n  git worktree add -q --detach \"$dir\" HEAD\n  (\n    cd \"$dir\"\n    $AGENT_CMD \"$prompt\" > transcript.txt 2>&1\n    bash -c \"$grader\"\n  ) && pass=$((pass + 1))\n  cp \"$dir/transcript.txt\" \"evals/transcripts/$id-$i.txt\"\n  git worktree remove --force \"$dir\"\ndone\n\necho \"$id: $pass/$trials\""
+      },
+      {
+        "path": "terminal",
+        "language": "bash",
+        "code": "AGENT_CMD=\"tu-agente -p\" evals/run.sh issue-142 \\\n  \"El endpoint /orders devuelve 500 con el carrito vacío. Corrígelo.\" \\\n  \"npm ci && npm test -- tests/regression/issue-142.test.js\""
       }
     ],
     "parts": [
       {
         "label": "grader",
-        "text": "Grader por código: comprueba el *outcome*, no lo que el agente dice haber hecho."
+        "text": "Comprueba el resultado real, no lo que el agente dice haber hecho."
       },
       {
         "label": "trials",
@@ -760,28 +1157,27 @@
       },
       {
         "label": "--detach",
-        "text": "Cada intento parte del mismo commit sin crear ramas: entorno limpio y reproducible."
+        "text": "Cada intento parte del mismo commit sin crear ramas."
       },
       {
-        "label": "transcript.txt",
-        "text": "Conservarlo antes de borrar el worktree ayuda a entender por qué ha fallado; este script mínimo lo descarta, así que cópialo si lo necesitas."
+        "label": "transcripts",
+        "text": "Se conservan para entender por qué ha fallado un intento."
       },
       {
         "label": "pass/trials",
-        "text": "Compara este número antes y después de un cambio, siempre con las mismas tareas."
+        "text": "Compara este número antes y después de un cambio, con las mismas tareas."
       }
     ],
-    "expected": "Una línea por tarea, como `issue-142: 2/3`. Las tareas que pasen siempre se pueden trasladar a un conjunto de regresión.",
+    "expected": "Una línea por tarea, como `issue-142: 2/3`, y una transcripción por intento.",
     "whenToUse": "Antes de cambiar de modelo o de instrucciones en un agente de uso habitual.",
     "limitations": [
-      "Script ilustrativo: no se ha ejecutado, porque consume tokens de una cuenta real.",
-      "`eval` ejecuta el texto del grader: usa solo tareas de confianza.",
+      "El grader se ejecuta como código: usa solo tareas de confianza.",
       "Con pocos intentos, una diferencia pequeña puede ser ruido.",
-      "No evalúa aspectos subjetivos, como la calidad del código; para eso hace falta un grader por modelo o humano."
+      "No evalúa aspectos subjetivos: para eso hace falta un grader por modelo o humano.",
+      "Consume tokens con un agente real."
     ],
     "concepts": [
       "agent-evaluation",
-      "regression-testing",
       "git-worktrees"
     ],
     "sources": [
@@ -790,6 +1186,7 @@
         "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents"
       }
     ],
-    "lastVerified": null
+    "status": "verified",
+    "lastVerified": "2026-11-05"
   }
 ]

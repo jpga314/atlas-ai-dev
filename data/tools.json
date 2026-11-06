@@ -43,6 +43,169 @@
   ],
   "items": [
     {
+      "id": "aider",
+      "name": "Aider",
+      "popular": true,
+      "docs": "https://aider.chat/docs/",
+      "description": "“Pair programming” con IA en la terminal, muy integrado con Git y compatible con la mayoría de los LLM.",
+      "features": [
+        "Mapa del repositorio para dar contexto al modelo.",
+        "Integración estrecha con Git.",
+        "Modos code, architect, ask y help.",
+        "Corrección automática de errores de lint y test.",
+        "Convenciones en un archivo como `CONVENTIONS.md`."
+      ],
+      "useCases": [
+        "Programar en pareja desde la terminal.",
+        "Usar el modelo o proveedor que prefieras, incluidos locales."
+      ],
+      "advantages": [
+        "Gran libertad de modelos: OpenAI, Anthropic, Gemini, DeepSeek, Ollama, LM Studio, OpenRouter y más.",
+        "Su integración con Git facilita revisar y deshacer."
+      ],
+      "limitations": [
+        "La página consultada no menciona MCP, skills, subagentes ni hooks.",
+        "Requiere gestionar claves y costes de cada proveedor."
+      ],
+      "relatedConcepts": [
+        "terminal-agents",
+        "model-providers"
+      ],
+      "sources": [
+        {
+          "title": "Aider: Documentation",
+          "url": "https://aider.chat/docs/"
+        },
+        {
+          "title": "Aider: Specifying coding conventions",
+          "url": "https://aider.chat/docs/usage/conventions.html"
+        },
+        {
+          "title": "AGENTS.md",
+          "url": "https://agents.md/",
+          "note": "Sitio oficial del formato"
+        }
+      ],
+      "capabilities": {
+        "agentsMd": {
+          "value": "yes",
+          "note": "Según agents.md."
+        },
+        "mcp": {
+          "value": "unknown"
+        },
+        "skills": {
+          "value": "unknown"
+        },
+        "subagents": {
+          "value": "unknown"
+        },
+        "hooks": {
+          "value": "unknown"
+        },
+        "worktrees": {
+          "value": "unknown"
+        },
+        "terminal": {
+          "value": "yes"
+        },
+        "ide": {
+          "value": "unknown"
+        },
+        "cloud": {
+          "value": "unknown"
+        },
+        "anyModel": {
+          "value": "yes"
+        }
+      },
+      "category": "terminal-agents",
+      "categoryLabel": "Terminal coding agents",
+      "status": "verified",
+      "lastVerified": "2026-11-05"
+    },
+    {
+      "id": "autogen",
+      "name": "AutoGen",
+      "docs": "https://github.com/microsoft/autogen",
+      "description": "Framework de Microsoft para aplicaciones con varios agentes que colaboran conversando. Importante en la historia del sector, pero ya archivado.",
+      "editorialNote": "El repositorio indica que el proyecto está archivado y sin mantenimiento, ni siquiera de seguridad, y presenta Microsoft Agent Framework como su sucesor. No lo uses en proyectos nuevos.",
+      "features": [
+        "Agentes que colaboran mediante conversación.",
+        "Participación humana opcional.",
+        "Uso de herramientas externas."
+      ],
+      "useCases": [
+        "Estudiar patrones multiagente.",
+        "Mantener sistemas ya existentes mientras se migran."
+      ],
+      "advantages": [
+        "Trabajo influyente en la adopción de sistemas multiagente."
+      ],
+      "limitations": [
+        "Archivado: sin correcciones, seguridad ni soporte.",
+        "Los usuarios deben migrar a Microsoft Agent Framework."
+      ],
+      "relatedConcepts": [
+        "multi-agent-systems",
+        "agent-orchestration"
+      ],
+      "sources": [
+        {
+          "title": "microsoft/autogen en GitHub",
+          "url": "https://github.com/microsoft/autogen"
+        },
+        {
+          "title": "AutoGen: Next-Gen LLM Applications via Multi-Agent Conversation",
+          "url": "https://arxiv.org/abs/2308.08155",
+          "note": "arXiv, agosto de 2023"
+        }
+      ],
+      "category": "agent-frameworks",
+      "categoryLabel": "Agent frameworks",
+      "status": "verified",
+      "lastVerified": "2026-11-05"
+    },
+    {
+      "id": "claude-agent-sdk",
+      "name": "Claude Agent SDK",
+      "docs": "https://code.claude.com/docs/en/agent-sdk/overview",
+      "description": "Biblioteca para Python y TypeScript que da a tus aplicaciones las mismas herramientas, bucle de agente y gestión de contexto que impulsan a Claude Code.",
+      "features": [
+        "Herramientas integradas de archivos, comandos y web.",
+        "Hooks, subagentes y MCP.",
+        "Permisos y sesiones.",
+        "Skills, comandos y memoria desde `.claude/`."
+      ],
+      "useCases": [
+        "Incrustar un agente en tu aplicación.",
+        "Construir agentes con orquestación y permisos propios."
+      ],
+      "advantages": [
+        "Reutiliza un harness maduro en vez de escribirlo.",
+        "Disponible en Python y TypeScript."
+      ],
+      "limitations": [
+        "Vinculado a modelos Claude.",
+        "Sujeto a los términos comerciales de Anthropic; usa autenticación por API key."
+      ],
+      "relatedConcepts": [
+        "agent-architecture",
+        "agentic-harness",
+        "subagents"
+      ],
+      "sources": [
+        {
+          "title": "Claude Agent SDK: overview",
+          "url": "https://code.claude.com/docs/en/agent-sdk/overview"
+        }
+      ],
+      "category": "agent-frameworks",
+      "categoryLabel": "Agent frameworks",
+      "status": "verified",
+      "lastVerified": "2026-11-05"
+    },
+    {
       "id": "claude-code",
       "name": "Claude Code",
       "popular": true,
@@ -146,6 +309,93 @@
       "lastVerified": "2026-11-05"
     },
     {
+      "id": "cline",
+      "name": "Cline",
+      "popular": true,
+      "docs": "https://docs.cline.bot/",
+      "description": "Agente de código para editor y terminal que lee y escribe archivos, ejecuta comandos y usa un navegador, pidiendo tu aprobación explícita en cada acción.",
+      "features": [
+        "Modos Plan y Act.",
+        "Aprobación humana de cada acción.",
+        "Checkpoints para retroceder.",
+        "MCP, con servidores locales y remotos.",
+        "CLI, app de escritorio, extensión de VS Code y plugin de JetBrains.",
+        "Kanban para gestionar agentes en paralelo.",
+        "Bring Your Own Key."
+      ],
+      "useCases": [
+        "Trabajar con supervisión estrecha.",
+        "Usar tus propias credenciales de proveedor o un modelo local.",
+        "Automatización sin interfaz con la CLI."
+      ],
+      "advantages": [
+        "Control humano por defecto.",
+        "Muchos editores y proveedores.",
+        "Separación clara entre planificar y actuar."
+      ],
+      "limitations": [
+        "Aprobar cada acción puede resultar lento en tareas largas.",
+        "Su documentación llama open source a la app de escritorio; verifica la licencia de cada componente."
+      ],
+      "relatedConcepts": [
+        "ai-coding-assistants",
+        "planning-reasoning",
+        "permissions",
+        "mcp"
+      ],
+      "sources": [
+        {
+          "title": "Cline: Documentation",
+          "url": "https://docs.cline.bot/"
+        },
+        {
+          "title": "Cline: Plan & Act",
+          "url": "https://docs.cline.bot/features/plan-and-act"
+        },
+        {
+          "title": "Cline: MCP overview",
+          "url": "https://docs.cline.bot/mcp/mcp-overview"
+        }
+      ],
+      "capabilities": {
+        "agentsMd": {
+          "value": "unknown"
+        },
+        "mcp": {
+          "value": "yes"
+        },
+        "skills": {
+          "value": "unknown"
+        },
+        "subagents": {
+          "value": "unknown"
+        },
+        "hooks": {
+          "value": "unknown"
+        },
+        "worktrees": {
+          "value": "unknown"
+        },
+        "terminal": {
+          "value": "yes"
+        },
+        "ide": {
+          "value": "yes"
+        },
+        "cloud": {
+          "value": "unknown"
+        },
+        "anyModel": {
+          "value": "yes",
+          "note": "BYOK, incluidos entornos locales."
+        }
+      },
+      "category": "coding-assistants",
+      "categoryLabel": "Coding assistants",
+      "status": "verified",
+      "lastVerified": "2026-11-05"
+    },
+    {
       "id": "cursor",
       "name": "Cursor",
       "popular": true,
@@ -177,7 +427,6 @@
       "editorialNote": "La presencia de subagentes, hooks, Cloud Agents y worktrees se ha confirmado por las páginas del índice oficial de documentación, no probando el producto.",
       "relatedConcepts": [
         "ai-coding-assistants",
-        "code-editors",
         "rules",
         "mcp"
       ],
@@ -232,185 +481,6 @@
       },
       "category": "ai-ides",
       "categoryLabel": "AI IDEs",
-      "status": "verified",
-      "lastVerified": "2026-11-05"
-    },
-    {
-      "id": "openai-codex",
-      "name": "OpenAI Codex",
-      "popular": true,
-      "docs": "https://learn.chatgpt.com/docs",
-      "aliases": [
-        "Codex CLI"
-      ],
-      "description": "La herramienta de OpenAI para trabajar en código y otras tareas: recopila contexto, actúa y produce resultados. Disponible en las apps de ChatGPT, web, CLI, extensión de IDE y Codex Cloud.",
-      "features": [
-        "Configuración de agente con `AGENTS.md`.",
-        "Skills y plugins.",
-        "Subagentes.",
-        "Extensión con servidores MCP.",
-        "Git worktrees como opción de entorno.",
-        "Trabajo local y en la nube."
-      ],
-      "useCases": [
-        "Explorar código y construir funcionalidades.",
-        "Revisar cambios y corregir fallos.",
-        "Delegar tareas en la nube."
-      ],
-      "advantages": [
-        "Varias superficies para una misma herramienta.",
-        "Soporte nativo de AGENTS.md.",
-        "Opción de ejecutar en local o en la nube."
-      ],
-      "limitations": [
-        "No confundir con el modelo Codex de 2021, que tenía el mismo nombre.",
-        "La documentación consultada no aclara por sí sola la licencia de la CLI ni los hooks."
-      ],
-      "relatedConcepts": [
-        "terminal-agents",
-        "agents-md",
-        "agentic-coding"
-      ],
-      "sources": [
-        {
-          "title": "OpenAI: Codex documentation",
-          "url": "https://learn.chatgpt.com/docs"
-        },
-        {
-          "title": "AGENTS.md",
-          "url": "https://agents.md/",
-          "note": "Sitio oficial del formato"
-        }
-      ],
-      "capabilities": {
-        "agentsMd": {
-          "value": "yes"
-        },
-        "mcp": {
-          "value": "yes"
-        },
-        "skills": {
-          "value": "yes"
-        },
-        "subagents": {
-          "value": "yes"
-        },
-        "hooks": {
-          "value": "unknown"
-        },
-        "worktrees": {
-          "value": "yes"
-        },
-        "terminal": {
-          "value": "yes"
-        },
-        "ide": {
-          "value": "yes"
-        },
-        "cloud": {
-          "value": "yes",
-          "note": "Codex Cloud."
-        },
-        "anyModel": {
-          "value": "unknown"
-        }
-      },
-      "category": "terminal-agents",
-      "categoryLabel": "Terminal coding agents",
-      "status": "verified",
-      "lastVerified": "2026-11-05"
-    },
-    {
-      "id": "github-copilot",
-      "name": "GitHub Copilot",
-      "popular": true,
-      "docs": "https://docs.github.com/en/copilot/get-started/what-is-github-copilot",
-      "description": "El asistente de IA de GitHub: sugerencias en línea, preguntas sobre código, revisión de PR y un agente que convierte un issue en un pull request.",
-      "features": [
-        "Sugerencias de código mientras escribes.",
-        "Preguntas sobre archivos y repositorios.",
-        "Trabajo agéntico en varios pasos.",
-        "Revisión de código y PR.",
-        "Instrucciones personalizadas, prompts reutilizables y agentes personalizados.",
-        "Copilot CLI en terminal, con MCP."
-      ],
-      "useCases": [
-        "Autocompletado diario.",
-        "Delegar un issue y recibir un PR.",
-        "Revisión automática dentro de GitHub."
-      ],
-      "advantages": [
-        "Integración profunda con GitHub.",
-        "Punto de entrada sencillo, con varios planes."
-      ],
-      "limitations": [
-        "Las capacidades dependen del plan, del cliente y de las políticas de la organización.",
-        "Copilot CLI no admite actualmente las políticas MCP a nivel de organización, según su documentación."
-      ],
-      "relatedConcepts": [
-        "ai-coding-assistants",
-        "pull-requests",
-        "automated-code-review",
-        "ai-assisted-development"
-      ],
-      "sources": [
-        {
-          "title": "GitHub Docs: What is GitHub Copilot?",
-          "url": "https://docs.github.com/en/copilot/get-started/what-is-github-copilot"
-        },
-        {
-          "title": "GitHub Docs: About GitHub Copilot CLI",
-          "url": "https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli"
-        },
-        {
-          "title": "GitHub Blog: Copilot is generally available",
-          "url": "https://github.blog/2022-06-21-github-copilot-is-generally-available-to-all-developers/",
-          "note": "21 de junio de 2022"
-        },
-        {
-          "title": "AGENTS.md",
-          "url": "https://agents.md/",
-          "note": "Sitio oficial del formato"
-        }
-      ],
-      "capabilities": {
-        "agentsMd": {
-          "value": "partial",
-          "note": "agents.md cita al coding agent de Copilot."
-        },
-        "mcp": {
-          "value": "yes"
-        },
-        "skills": {
-          "value": "unknown"
-        },
-        "subagents": {
-          "value": "partial",
-          "note": "Documenta “custom agents”; no se ha confirmado que sean equivalentes."
-        },
-        "hooks": {
-          "value": "unknown"
-        },
-        "worktrees": {
-          "value": "unknown"
-        },
-        "terminal": {
-          "value": "yes",
-          "note": "Copilot CLI."
-        },
-        "ide": {
-          "value": "yes"
-        },
-        "cloud": {
-          "value": "yes",
-          "note": "Agente que trabaja de issue a PR."
-        },
-        "anyModel": {
-          "value": "unknown"
-        }
-      },
-      "category": "coding-assistants",
-      "categoryLabel": "Coding assistants",
       "status": "verified",
       "lastVerified": "2026-11-05"
     },
@@ -516,7 +586,7 @@
         "Servidores MCP.",
         "Extensiones.",
         "Agent Skills.",
-        "Subagentes (experimental).",
+        "Subagentes en `.gemini/agents/`.",
         "Hooks.",
         "Checkpointing de sesión."
       ],
@@ -530,8 +600,7 @@
       ],
       "limitations": [
         "Sustituido por Antigravity CLI para parte de sus usuarios.",
-        "Según su documentación, no está optimizado para Gemini 4 Argon.",
-        "Los subagentes son experimentales."
+        "Según su documentación, no está optimizado para Gemini 4 Argon."
       ],
       "relatedConcepts": [
         "terminal-agents",
@@ -562,8 +631,8 @@
           "value": "yes"
         },
         "subagents": {
-          "value": "partial",
-          "note": "Experimental."
+          "value": "yes",
+          "note": "Activados por defecto."
         },
         "hooks": {
           "value": "yes"
@@ -590,43 +659,51 @@
       "lastVerified": "2026-11-05"
     },
     {
-      "id": "aider",
-      "name": "Aider",
+      "id": "github-copilot",
+      "name": "GitHub Copilot",
       "popular": true,
-      "docs": "https://aider.chat/docs/",
-      "description": "“Pair programming” con IA en la terminal, muy integrado con Git y compatible con la mayoría de los LLM.",
+      "docs": "https://docs.github.com/en/copilot/get-started/what-is-github-copilot",
+      "description": "El asistente de IA de GitHub: sugerencias en línea, preguntas sobre código, revisión de PR y un agente que convierte un issue en un pull request.",
       "features": [
-        "Mapa del repositorio para dar contexto al modelo.",
-        "Integración estrecha con Git.",
-        "Modos code, architect, ask y help.",
-        "Corrección automática de errores de lint y test.",
-        "Convenciones en un archivo como `CONVENTIONS.md`."
+        "Sugerencias de código mientras escribes.",
+        "Preguntas sobre archivos y repositorios.",
+        "Trabajo agéntico en varios pasos.",
+        "Revisión de código y PR.",
+        "Instrucciones personalizadas, prompts reutilizables y agentes personalizados.",
+        "Copilot CLI en terminal, con MCP.",
+        "Skills en `.github/skills` o `.agents/skills`."
       ],
       "useCases": [
-        "Programar en pareja desde la terminal.",
-        "Usar el modelo o proveedor que prefieras, incluidos locales."
+        "Autocompletado diario.",
+        "Delegar un issue y recibir un PR.",
+        "Revisión automática dentro de GitHub."
       ],
       "advantages": [
-        "Gran libertad de modelos: OpenAI, Anthropic, Gemini, DeepSeek, Ollama, LM Studio, OpenRouter y más.",
-        "Su integración con Git facilita revisar y deshacer."
+        "Integración profunda con GitHub.",
+        "Punto de entrada sencillo, con varios planes."
       ],
       "limitations": [
-        "La página consultada no menciona MCP, skills, subagentes ni hooks.",
-        "Requiere gestionar claves y costes de cada proveedor."
+        "Las capacidades dependen del plan, del cliente y de las políticas de la organización.",
+        "Copilot CLI no admite actualmente las políticas MCP a nivel de organización, según su documentación."
       ],
       "relatedConcepts": [
-        "terminal-agents",
-        "git-fundamentals",
-        "model-providers"
+        "ai-coding-assistants",
+        "automated-code-review",
+        "ai-assisted-development"
       ],
       "sources": [
         {
-          "title": "Aider: Documentation",
-          "url": "https://aider.chat/docs/"
+          "title": "GitHub Docs: What is GitHub Copilot?",
+          "url": "https://docs.github.com/en/copilot/get-started/what-is-github-copilot"
         },
         {
-          "title": "Aider: Specifying coding conventions",
-          "url": "https://aider.chat/docs/usage/conventions.html"
+          "title": "GitHub Docs: About GitHub Copilot CLI",
+          "url": "https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli"
+        },
+        {
+          "title": "GitHub Blog: Copilot is generally available",
+          "url": "https://github.blog/2022-06-21-github-copilot-is-generally-available-to-all-developers/",
+          "note": "21 de junio de 2022"
         },
         {
           "title": "AGENTS.md",
@@ -636,17 +713,18 @@
       ],
       "capabilities": {
         "agentsMd": {
-          "value": "yes",
-          "note": "Según agents.md."
+          "value": "partial",
+          "note": "agents.md cita al coding agent de Copilot."
         },
         "mcp": {
-          "value": "unknown"
+          "value": "yes"
         },
         "skills": {
-          "value": "unknown"
+          "value": "yes"
         },
         "subagents": {
-          "value": "unknown"
+          "value": "partial",
+          "note": "Documenta “custom agents”; no se ha confirmado que sean equivalentes."
         },
         "hooks": {
           "value": "unknown"
@@ -655,146 +733,22 @@
           "value": "unknown"
         },
         "terminal": {
-          "value": "yes"
-        },
-        "ide": {
-          "value": "unknown"
-        },
-        "cloud": {
-          "value": "unknown"
-        },
-        "anyModel": {
-          "value": "yes"
-        }
-      },
-      "category": "terminal-agents",
-      "categoryLabel": "Terminal coding agents",
-      "status": "verified",
-      "lastVerified": "2026-11-05"
-    },
-    {
-      "id": "cline",
-      "name": "Cline",
-      "popular": true,
-      "docs": "https://docs.cline.bot/",
-      "description": "Agente de código para editor y terminal que lee y escribe archivos, ejecuta comandos y usa un navegador, pidiendo tu aprobación explícita en cada acción.",
-      "features": [
-        "Modos Plan y Act.",
-        "Aprobación humana de cada acción.",
-        "Checkpoints para retroceder.",
-        "MCP, con servidores locales y remotos.",
-        "CLI, app de escritorio, extensión de VS Code y plugin de JetBrains.",
-        "Kanban para gestionar agentes en paralelo.",
-        "Bring Your Own Key."
-      ],
-      "useCases": [
-        "Trabajar con supervisión estrecha.",
-        "Usar tus propias credenciales de proveedor o un modelo local.",
-        "Automatización sin interfaz con la CLI."
-      ],
-      "advantages": [
-        "Control humano por defecto.",
-        "Muchos editores y proveedores.",
-        "Separación clara entre planificar y actuar."
-      ],
-      "limitations": [
-        "Aprobar cada acción puede resultar lento en tareas largas.",
-        "Su documentación llama open source a la app de escritorio; verifica la licencia de cada componente."
-      ],
-      "relatedConcepts": [
-        "ai-coding-assistants",
-        "planning-reasoning",
-        "permissions",
-        "mcp"
-      ],
-      "sources": [
-        {
-          "title": "Cline: Documentation",
-          "url": "https://docs.cline.bot/"
-        },
-        {
-          "title": "Cline: Plan & Act",
-          "url": "https://docs.cline.bot/features/plan-and-act"
-        },
-        {
-          "title": "Cline: MCP overview",
-          "url": "https://docs.cline.bot/mcp/mcp-overview"
-        }
-      ],
-      "capabilities": {
-        "agentsMd": {
-          "value": "unknown"
-        },
-        "mcp": {
-          "value": "yes"
-        },
-        "skills": {
-          "value": "unknown"
-        },
-        "subagents": {
-          "value": "unknown"
-        },
-        "hooks": {
-          "value": "unknown"
-        },
-        "worktrees": {
-          "value": "unknown"
-        },
-        "terminal": {
-          "value": "yes"
-        },
-        "ide": {
-          "value": "yes"
-        },
-        "cloud": {
-          "value": "unknown"
-        },
-        "anyModel": {
           "value": "yes",
-          "note": "BYOK, incluidos entornos locales."
+          "note": "Copilot CLI."
+        },
+        "ide": {
+          "value": "yes"
+        },
+        "cloud": {
+          "value": "yes",
+          "note": "Agente que trabaja de issue a PR."
+        },
+        "anyModel": {
+          "value": "unknown"
         }
       },
       "category": "coding-assistants",
       "categoryLabel": "Coding assistants",
-      "status": "verified",
-      "lastVerified": "2026-11-05"
-    },
-    {
-      "id": "claude-agent-sdk",
-      "name": "Claude Agent SDK",
-      "docs": "https://code.claude.com/docs/en/agent-sdk/overview",
-      "description": "Biblioteca para Python y TypeScript que da a tus aplicaciones las mismas herramientas, bucle de agente y gestión de contexto que impulsan a Claude Code.",
-      "features": [
-        "Herramientas integradas de archivos, comandos y web.",
-        "Hooks, subagentes y MCP.",
-        "Permisos y sesiones.",
-        "Skills, comandos y memoria desde `.claude/`."
-      ],
-      "useCases": [
-        "Incrustar un agente en tu aplicación.",
-        "Construir agentes con orquestación y permisos propios."
-      ],
-      "advantages": [
-        "Reutiliza un harness maduro en vez de escribirlo.",
-        "Disponible en Python y TypeScript."
-      ],
-      "limitations": [
-        "Vinculado a modelos Claude.",
-        "Sujeto a los términos comerciales de Anthropic; usa autenticación por API key."
-      ],
-      "relatedConcepts": [
-        "agent-architecture",
-        "agentic-harness",
-        "subagents"
-      ],
-      "sources": [
-        {
-          "title": "Claude Agent SDK: overview",
-          "url": "https://code.claude.com/docs/en/agent-sdk/overview"
-        }
-      ],
-      "category": "agent-frameworks",
-      "categoryLabel": "Agent frameworks",
       "status": "verified",
       "lastVerified": "2026-11-05"
     },
@@ -830,48 +784,6 @@
         {
           "title": "LangGraph: overview",
           "url": "https://docs.langchain.com/oss/python/langgraph/overview"
-        }
-      ],
-      "category": "agent-frameworks",
-      "categoryLabel": "Agent frameworks",
-      "status": "verified",
-      "lastVerified": "2026-11-05"
-    },
-    {
-      "id": "autogen",
-      "name": "AutoGen",
-      "docs": "https://github.com/microsoft/autogen",
-      "description": "Framework de Microsoft para aplicaciones con varios agentes que colaboran conversando. Importante en la historia del sector, pero ya archivado.",
-      "editorialNote": "El repositorio indica que el proyecto está archivado y sin mantenimiento, ni siquiera de seguridad, y presenta Microsoft Agent Framework como su sucesor. No lo uses en proyectos nuevos.",
-      "features": [
-        "Agentes que colaboran mediante conversación.",
-        "Participación humana opcional.",
-        "Uso de herramientas externas."
-      ],
-      "useCases": [
-        "Estudiar patrones multiagente.",
-        "Mantener sistemas ya existentes mientras se migran."
-      ],
-      "advantages": [
-        "Trabajo influyente en la adopción de sistemas multiagente."
-      ],
-      "limitations": [
-        "Archivado: sin correcciones, seguridad ni soporte.",
-        "Los usuarios deben migrar a Microsoft Agent Framework."
-      ],
-      "relatedConcepts": [
-        "multi-agent-systems",
-        "agent-orchestration"
-      ],
-      "sources": [
-        {
-          "title": "microsoft/autogen en GitHub",
-          "url": "https://github.com/microsoft/autogen"
-        },
-        {
-          "title": "AutoGen: Next-Gen LLM Applications via Multi-Agent Conversation",
-          "url": "https://arxiv.org/abs/2308.08155",
-          "note": "arXiv, agosto de 2023"
         }
       ],
       "category": "agent-frameworks",
@@ -919,244 +831,89 @@
       "lastVerified": "2026-11-05"
     },
     {
-      "id": "playwright",
-      "name": "Playwright",
-      "docs": "https://playwright.dev/docs/intro",
-      "description": "Framework de pruebas end-to-end que automatiza navegadores reales.",
+      "id": "openai-codex",
+      "name": "OpenAI Codex",
+      "popular": true,
+      "docs": "https://learn.chatgpt.com/docs",
+      "aliases": [
+        "Codex CLI"
+      ],
+      "description": "La herramienta de OpenAI para trabajar en código y otras tareas: recopila contexto, actúa y produce resultados. Disponible en las apps de ChatGPT, web, CLI, extensión de IDE y Codex Cloud.",
       "features": [
-        "Pruebas en Chromium, Firefox y WebKit.",
-        "Localizadores por rol y texto.",
-        "Modo sin interfaz para CI."
+        "Configuración de agente con `AGENTS.md`.",
+        "Skills y plugins.",
+        "Subagentes.",
+        "Extensión con servidores MCP.",
+        "Git worktrees como opción de entorno.",
+        "Trabajo local y en la nube."
       ],
       "useCases": [
-        "Probar flujos críticos de una web.",
-        "Dar a un agente una forma de comprobar la interfaz."
+        "Explorar código y construir funcionalidades.",
+        "Revisar cambios y corregir fallos.",
+        "Delegar tareas en la nube."
       ],
       "advantages": [
-        "Pruebas cercanas a la experiencia real."
+        "Varias superficies para una misma herramienta.",
+        "Soporte nativo de AGENTS.md.",
+        "Opción de ejecutar en local o en la nube."
       ],
       "limitations": [
-        "Pruebas más lentas que las unitarias."
+        "No confundir con el modelo Codex de 2021, que tenía el mismo nombre.",
+        "La documentación consultada no aclara por sí sola la licencia de la CLI ni los hooks."
       ],
       "relatedConcepts": [
-        "e2e-testing",
-        "ai-generated-code-testing"
+        "terminal-agents",
+        "agents-md",
+        "agentic-coding"
       ],
       "sources": [
         {
-          "title": "Playwright: Introduction",
-          "url": "https://playwright.dev/docs/intro"
-        }
-      ],
-      "category": "testing-tools",
-      "categoryLabel": "Testing tools",
-      "status": "needs-review",
-      "lastVerified": null
-    },
-    {
-      "id": "eslint",
-      "name": "ESLint",
-      "docs": "https://eslint.org/docs/latest/",
-      "description": "Linter configurable para JavaScript que detecta problemas y aplica convenciones.",
-      "features": [
-        "Reglas configurables y reglas propias.",
-        "Corrección automática de parte de los problemas."
-      ],
-      "useCases": [
-        "Imponer convenciones en CI.",
-        "Dar feedback inmediato a un agente."
-      ],
-      "advantages": [
-        "Rápido y determinista."
-      ],
-      "limitations": [
-        "No detecta errores de lógica de negocio."
-      ],
-      "relatedConcepts": [
-        "static-analysis",
-        "harness-engineering"
-      ],
-      "sources": [
+          "title": "OpenAI: Codex documentation",
+          "url": "https://learn.chatgpt.com/docs"
+        },
         {
-          "title": "ESLint: Documentation",
-          "url": "https://eslint.org/docs/latest/"
+          "title": "AGENTS.md",
+          "url": "https://agents.md/",
+          "note": "Sitio oficial del formato"
         }
       ],
-      "category": "testing-tools",
-      "categoryLabel": "Testing tools",
-      "status": "needs-review",
-      "lastVerified": null
-    },
-    {
-      "id": "sonarqube",
-      "name": "SonarQube",
-      "docs": "https://docs.sonarsource.com/sonarqube-server/latest/",
-      "description": "Plataforma de análisis continuo de calidad y seguridad del código.",
-      "features": [
-        "Análisis estático para varios lenguajes.",
-        "Criterios de calidad integrables en CI."
-      ],
-      "useCases": [
-        "Controlar la calidad de forma centralizada."
-      ],
-      "advantages": [
-        "Visión de conjunto del estado del código."
-      ],
-      "limitations": [
-        "Requiere ajustar reglas para no generar ruido."
-      ],
-      "relatedConcepts": [
-        "static-analysis",
-        "code-quality",
-        "automated-code-review"
-      ],
-      "sources": [
-        {
-          "title": "SonarQube: Documentation",
-          "url": "https://docs.sonarsource.com/sonarqube-server/latest/"
+      "capabilities": {
+        "agentsMd": {
+          "value": "yes"
+        },
+        "mcp": {
+          "value": "yes"
+        },
+        "skills": {
+          "value": "yes"
+        },
+        "subagents": {
+          "value": "yes"
+        },
+        "hooks": {
+          "value": "yes"
+        },
+        "worktrees": {
+          "value": "yes"
+        },
+        "terminal": {
+          "value": "yes"
+        },
+        "ide": {
+          "value": "yes"
+        },
+        "cloud": {
+          "value": "yes",
+          "note": "Codex Cloud."
+        },
+        "anyModel": {
+          "value": "unknown"
         }
-      ],
-      "category": "testing-tools",
-      "categoryLabel": "Testing tools",
-      "status": "needs-review",
-      "lastVerified": null
-    },
-    {
-      "id": "github-actions-tool",
-      "name": "GitHub Actions",
-      "docs": "https://docs.github.com/en/actions",
-      "description": "Automatización integrada en GitHub: workflows en YAML que se ejecutan por eventos del repositorio.",
-      "features": [
-        "Workflows, jobs, steps y actions.",
-        "Runners alojados o propios.",
-        "Disparadores por push, PR, calendario o manuales."
-      ],
-      "useCases": [
-        "CI/CD en repositorios de GitHub.",
-        "Ejecutar agentes o revisiones en cada PR."
-      ],
-      "advantages": [
-        "Integrado con pull requests."
-      ],
-      "limitations": [
-        "Las acciones de terceros son un riesgo de cadena de suministro."
-      ],
-      "relatedConcepts": [
-        "github-actions",
-        "ci-cd"
-      ],
-      "sources": [
-        {
-          "title": "GitHub Docs: Understanding GitHub Actions",
-          "url": "https://docs.github.com/en/actions/get-started/understand-github-actions"
-        }
-      ],
-      "category": "devops-tools",
-      "categoryLabel": "DevOps tools",
+      },
+      "category": "terminal-agents",
+      "categoryLabel": "Terminal coding agents",
       "status": "verified",
       "lastVerified": "2026-11-05"
-    },
-    {
-      "id": "docker-tool",
-      "name": "Docker",
-      "docs": "https://docs.docker.com/get-started/docker-overview/",
-      "description": "Plataforma para construir, distribuir y ejecutar aplicaciones en contenedores.",
-      "features": [
-        "Imágenes y contenedores.",
-        "Dockerfile para definir builds."
-      ],
-      "useCases": [
-        "Empaquetar servicios.",
-        "Aislar la ejecución de un agente."
-      ],
-      "advantages": [
-        "Entornos reproducibles."
-      ],
-      "limitations": [
-        "Aislamiento menor que el de una máquina virtual."
-      ],
-      "relatedConcepts": [
-        "docker",
-        "dev-environments"
-      ],
-      "sources": [
-        {
-          "title": "Docker Docs: Docker overview",
-          "url": "https://docs.docker.com/get-started/docker-overview/"
-        }
-      ],
-      "category": "devops-tools",
-      "categoryLabel": "DevOps tools",
-      "status": "verified",
-      "lastVerified": "2026-11-05"
-    },
-    {
-      "id": "kubernetes-tool",
-      "name": "Kubernetes",
-      "docs": "https://kubernetes.io/docs/concepts/overview/",
-      "description": "Plataforma de código abierto para orquestar contenedores de forma declarativa.",
-      "features": [
-        "Autorreparación.",
-        "Escalado.",
-        "Actualizaciones graduales."
-      ],
-      "useCases": [
-        "Operar muchos servicios en producción."
-      ],
-      "advantages": [
-        "Modelo declarativo muy extendido."
-      ],
-      "limitations": [
-        "Complejidad operativa alta."
-      ],
-      "relatedConcepts": [
-        "kubernetes",
-        "microservices"
-      ],
-      "sources": [
-        {
-          "title": "Kubernetes: Overview",
-          "url": "https://kubernetes.io/docs/concepts/overview/"
-        }
-      ],
-      "category": "devops-tools",
-      "categoryLabel": "DevOps tools",
-      "status": "verified",
-      "lastVerified": "2026-11-05"
-    },
-    {
-      "id": "terraform-tool",
-      "name": "Terraform",
-      "docs": "https://developer.hashicorp.com/terraform/intro",
-      "description": "Herramienta de infraestructura como código de HashiCorp.",
-      "features": [
-        "Configuración declarativa en HCL.",
-        "`plan` y `apply`.",
-        "Providers para muchos servicios."
-      ],
-      "useCases": [
-        "Crear y versionar infraestructura en la nube."
-      ],
-      "advantages": [
-        "Plan revisable antes de aplicar."
-      ],
-      "limitations": [
-        "El archivo de estado es delicado y puede contener secretos."
-      ],
-      "relatedConcepts": [
-        "terraform",
-        "infrastructure-as-code"
-      ],
-      "sources": [
-        {
-          "title": "HashiCorp: What is Terraform?",
-          "url": "https://developer.hashicorp.com/terraform/intro"
-        }
-      ],
-      "category": "devops-tools",
-      "categoryLabel": "DevOps tools",
-      "status": "needs-review",
-      "lastVerified": null
     }
   ]
 }

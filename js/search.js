@@ -41,6 +41,10 @@ export function buildIndex() {
     type: 'example', ref: `example:${e.id}`, title: e.title, subtitle: e.topic, href: `#/playground/${e.id}`,
     body: [e.objective, e.context, e.implementation, ...e.files.map((f) => f.code)],
   }));
+  db.realWorld.items.forEach((r) => addDoc({
+    type: 'example', ref: `real:${r.id}`, title: `${r.project}: ${r.file}`, subtitle: 'En el mundo real', href: '#/playground/real-world',
+    body: [r.summary, ...r.highlights, r.type, r.tool],
+  }));
   db.timeline.events.forEach((e) => addDoc({
     type: 'timeline', ref: `timeline:${e.id}`, title: e.name, subtitle: `Timeline · ${e.dateLabel}`, href: `#/timeline/${e.id}`,
     body: [e.description, e.importance, ...e.technologies],

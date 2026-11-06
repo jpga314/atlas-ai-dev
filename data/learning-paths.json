@@ -3,39 +3,34 @@
     "id": "agents-from-zero",
     "title": "Agentes de IA desde cero",
     "level": "Beginner",
-    "description": "Qué es un agente, qué lo distingue de un asistente y cómo se configura para trabajar en un repositorio.",
-    "steps": [
+    "duration": "Primer contacto",
+    "description": "Qué es un agente, en qué se diferencia de un asistente y cómo empezar a trabajar con uno de forma segura.",
+    "stages": [
       {
-        "concept": "ai-assisted-development",
-        "why": "El marco general."
+        "title": "Entender la idea",
+        "goal": "Saber qué es un agente y qué cambia frente a un chat.",
+        "nodes": [
+          { "concept": "ai-assisted-development", "why": "El marco general: todas las formas de programar con IA." },
+          { "concept": "ai-agents", "why": "La definición central: un modelo que dirige su propio proceso en un bucle.", "branches": [{ "concept": "agent-lifecycle", "why": "Si quieres ver las fases por las que pasa un agente." }] },
+          { "concept": "assistants-vs-agents", "why": "Cuánto control delegas en cada caso." }
+        ]
       },
       {
-        "concept": "ai-agents",
-        "why": "La definición central y el bucle de trabajo."
+        "title": "Cómo actúa",
+        "goal": "Comprender cómo pasa de generar texto a hacer cosas.",
+        "nodes": [
+          { "concept": "tool-calling", "why": "El modelo no ejecuta nada: pide, y la aplicación ejecuta." },
+          { "concept": "tools-agent", "why": "Qué tiene a su alcance un agente." }
+        ]
       },
       {
-        "concept": "assistants-vs-agents",
-        "why": "Cuánto control delegas en cada caso."
-      },
-      {
-        "concept": "tool-calling",
-        "why": "Cómo actúa de verdad un modelo."
-      },
-      {
-        "concept": "tools-agent",
-        "why": "Qué tiene a su alcance."
-      },
-      {
-        "concept": "agents-md",
-        "why": "Tu primera configuración, sencilla y útil."
-      },
-      {
-        "concept": "permissions",
-        "why": "Cómo limitar lo que puede hacer."
-      },
-      {
-        "concept": "agentic-coding",
-        "why": "Cómo es trabajar así en el día a día."
+        "title": "Primeros pasos seguros",
+        "goal": "Usar un agente en un repositorio real sin sustos.",
+        "nodes": [
+          { "concept": "agents-md", "why": "Tu primera configuración: sencilla, útil y portable." },
+          { "concept": "permissions", "why": "Delimita lo que puede hacer antes de darle autonomía." },
+          { "concept": "agentic-coding", "why": "Cómo es trabajar así en el día a día.", "branches": [{ "concept": "vibe-coding", "why": "Para distinguir programar con agentes de no revisar el código." }, { "concept": "terminal-agents", "why": "Una categoría de herramientas para empezar." }] }
+        ]
       }
     ]
   },
@@ -43,39 +38,83 @@
     "id": "configure-repo",
     "title": "Prepara tu repositorio para agentes",
     "level": "Intermediate",
+    "duration": "Configuración",
     "description": "Instrucciones, skills, subagentes, memoria, hooks y MCP: qué poner en cada sitio y por qué.",
-    "steps": [
+    "stages": [
       {
-        "concept": "context-management",
-        "why": "El recurso que todo lo demás administra."
+        "title": "El recurso limitado",
+        "goal": "Entender por qué no se puede cargar todo siempre.",
+        "nodes": [
+          { "concept": "context-management", "why": "Todo lo que viene después administra este recurso.", "branches": [{ "concept": "context-engineering", "why": "La disciplina completa, con sus técnicas." }] }
+        ]
       },
       {
-        "concept": "agents-md",
-        "why": "Lo que debe saberse siempre."
+        "title": "Lo que el agente debe saber",
+        "goal": "Dar instrucciones en el sitio adecuado.",
+        "nodes": [
+          { "concept": "agents-md", "why": "Lo que debe saberse siempre.", "branches": [{ "concept": "claude-md", "why": "Si usas Claude Code." }] },
+          { "concept": "rules", "why": "Lo que solo aplica a una parte del repositorio." },
+          { "concept": "skills", "why": "Los procedimientos, que se cargan solo al usarse." }
+        ]
       },
       {
-        "concept": "rules",
-        "why": "Lo que solo aplica a una parte."
+        "title": "Repartir y recordar",
+        "goal": "Mantener el contexto limpio y conservar lo aprendido.",
+        "nodes": [
+          { "concept": "subagents", "why": "Las tareas ruidosas o con menos permisos." },
+          { "concept": "persistent-memory", "why": "Lo que el agente aprende entre sesiones.", "branches": [{ "concept": "context-compaction", "why": "Qué pasa cuando la sesión se llena." }] }
+        ]
       },
       {
-        "concept": "skills",
-        "why": "Los procedimientos que se cargan bajo demanda."
+        "title": "Controlar y conectar",
+        "goal": "Garantizar lo que no admite excepciones y acceder a otros sistemas.",
+        "nodes": [
+          { "concept": "hooks", "why": "Lo que no puede quedar al criterio del modelo.", "branches": [{ "concept": "guardrails", "why": "La visión de conjunto de los controles." }] },
+          { "concept": "mcp", "why": "Conexión con sistemas externos.", "branches": [{ "concept": "mcp-servers", "why": "Qué es un servidor y qué riesgos tiene." }] }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "build-your-agent",
+    "title": "Construye tu propio agente",
+    "level": "Advanced",
+    "duration": "Construcción",
+    "description": "De un bucle con herramientas a un agente con contexto, controles y evaluación. Para quien quiere construir, no solo usar.",
+    "stages": [
+      {
+        "title": "El núcleo",
+        "goal": "Montar el bucle mínimo.",
+        "nodes": [
+          { "concept": "workflows", "why": "Primero, comprueba si te basta con un flujo predefinido." },
+          { "concept": "tool-calling", "why": "El mecanismo con el que todo funciona." },
+          { "concept": "agent-architecture", "why": "Las piezas y cómo se conectan.", "branches": [{ "concept": "model-providers", "why": "Qué modelo usar." }] }
+        ]
       },
       {
-        "concept": "subagents",
-        "why": "Las tareas que conviene aislar."
+        "title": "Mantenerlo fiable en tareas largas",
+        "goal": "Que no degrade su calidad al avanzar.",
+        "nodes": [
+          { "concept": "context-engineering", "why": "Qué ve el agente en cada paso.", "branches": [{ "concept": "prompt-engineering", "why": "Cómo redactar el prompt de sistema y las herramientas." }] },
+          { "concept": "planning-reasoning", "why": "Separar el pensar del hacer." },
+          { "concept": "persistent-memory", "why": "Conservar el estado fuera de la ventana." }
+        ]
       },
       {
-        "concept": "persistent-memory",
-        "why": "Lo que el agente aprende."
+        "title": "Conectar y controlar",
+        "goal": "Darle acceso con límites.",
+        "nodes": [
+          { "concept": "mcp", "why": "Reutilizar integraciones estándar." },
+          { "concept": "guardrails", "why": "Controles en capas.", "branches": [{ "concept": "permissions", "why": "La primera de esas capas." }] },
+          { "concept": "agentic-harness", "why": "Todo lo anterior junto: lo que no es el modelo." }
+        ]
       },
       {
-        "concept": "hooks",
-        "why": "Lo que no puede quedar a su criterio."
-      },
-      {
-        "concept": "mcp",
-        "why": "Conexión con sistemas externos."
+        "title": "Medir",
+        "goal": "Saber con datos si mejora.",
+        "nodes": [
+          { "concept": "agent-evaluation", "why": "Sin evals, cada cambio es una opinión." }
+        ]
       }
     ]
   },
@@ -83,71 +122,66 @@
     "id": "parallel-worktrees",
     "title": "Agentes en paralelo con Git Worktrees",
     "level": "Intermediate",
-    "description": "Del modelo de ramas de Git a coordinar varios agentes sin que se pisen.",
-    "steps": [
+    "duration": "Paralelismo",
+    "description": "Cómo coordinar varios agentes en un mismo repositorio sin que se pisen.",
+    "stages": [
       {
-        "concept": "git-fundamentals",
-        "why": "El modelo de Git."
+        "title": "Antes de paralelizar",
+        "goal": "Saber trabajar bien con un agente y repartir dentro de una sesión.",
+        "nodes": [
+          { "concept": "agentic-coding", "why": "Cómo se trabaja con un solo agente." },
+          { "concept": "subagents", "why": "La forma más simple de repartir trabajo." }
+        ]
       },
       {
-        "concept": "git-branches",
-        "why": "Líneas de trabajo."
+        "title": "Aislar",
+        "goal": "Que cada agente tenga sus archivos.",
+        "nodes": [
+          { "concept": "git-worktrees", "why": "Varios directorios y un solo repositorio." },
+          { "concept": "shared-file-conflicts", "why": "Qué evitan los worktrees y qué no." }
+        ]
       },
       {
-        "concept": "git-worktrees",
-        "why": "Varias ramas activas a la vez."
-      },
-      {
-        "concept": "shared-file-conflicts",
-        "why": "Qué evitan los worktrees y qué no."
-      },
-      {
-        "concept": "conflict-resolution",
-        "why": "Cómo integrar."
-      },
-      {
-        "concept": "parallel-agent-development",
-        "why": "El proceso completo."
-      },
-      {
-        "concept": "code-reviews",
-        "why": "El verdadero límite del paralelismo."
+        "title": "Coordinar e integrar",
+        "goal": "Convertir varias ramas en un resultado que funcione.",
+        "nodes": [
+          { "concept": "parallel-agent-development", "why": "El proceso completo.", "branches": [{ "concept": "orchestrators", "why": "Si quieres que un agente coordine a los demás." }] },
+          { "concept": "automated-code-review", "why": "Revisar es el verdadero límite del paralelismo." }
+        ]
       }
     ]
   },
   {
     "id": "harness-quality",
-    "title": "Fiabilidad: harness, tests y evals",
+    "title": "Fiabilidad: harness y evals",
     "level": "Advanced",
+    "duration": "Calidad",
     "description": "Cómo conseguir que el trabajo de un agente sea fiable y cómo medirlo.",
-    "steps": [
+    "stages": [
       {
-        "concept": "context-engineering",
-        "why": "Qué ve el agente."
+        "title": "El entorno del agente",
+        "goal": "Entender qué hay alrededor del modelo.",
+        "nodes": [
+          { "concept": "context-engineering", "why": "Qué ve el agente." },
+          { "concept": "agentic-harness", "why": "Todo lo que no es el modelo." },
+          { "concept": "harness-engineering", "why": "Mejorarlo de forma sistemática.", "branches": [{ "concept": "agentic-engineering", "why": "La práctica profesional que lo rodea." }] }
+        ]
       },
       {
-        "concept": "agentic-harness",
-        "why": "Todo lo que rodea al modelo."
+        "title": "Controlar",
+        "goal": "Evitar y detectar errores automáticamente.",
+        "nodes": [
+          { "concept": "guardrails", "why": "Controles en capas.", "branches": [{ "concept": "hooks", "why": "Cómo implementarlos de forma determinista." }] },
+          { "concept": "ai-generated-code-testing", "why": "Los riesgos de verificar código generado." },
+          { "concept": "automated-code-review", "why": "Una segunda mirada con contexto limpio." }
+        ]
       },
       {
-        "concept": "harness-engineering",
-        "why": "Mejorarlo de forma sistemática."
-      },
-      {
-        "concept": "static-analysis",
-        "why": "Sensores deterministas."
-      },
-      {
-        "concept": "guardrails",
-        "why": "Controles en capas."
-      },
-      {
-        "concept": "ai-generated-code-testing",
-        "why": "Riesgos de verificar código generado."
-      },
-      {
-        "concept": "agent-evaluation",
-        "why": "Medir para decidir."
+        "title": "Medir",
+        "goal": "Decidir con datos.",
+        "nodes": [
+          { "concept": "agent-evaluation", "why": "Tareas, intentos y graders." }
+        ]
       }
     ]
   },
@@ -155,67 +189,33 @@
     "id": "multi-agent",
     "title": "Orquestación y sistemas multiagente",
     "level": "Advanced",
+    "duration": "Orquestación",
     "description": "Cuándo compensa usar varios agentes y cómo coordinarlos.",
-    "steps": [
+    "stages": [
       {
-        "concept": "workflows",
-        "why": "Empieza por la opción más simple."
+        "title": "¿Lo necesitas?",
+        "goal": "Empezar por la opción más simple.",
+        "nodes": [
+          { "concept": "workflows", "why": "A menudo, un flujo predefinido basta." },
+          { "concept": "agent-orchestration", "why": "Las opciones de coordinación." }
+        ]
       },
       {
-        "concept": "agent-orchestration",
-        "why": "Las opciones de coordinación."
+        "title": "Las piezas",
+        "goal": "Conocer quién coordina y cómo se comunican.",
+        "nodes": [
+          { "concept": "orchestrators", "why": "La pieza que divide y sintetiza.", "branches": [{ "concept": "subagents", "why": "Sus trabajadores habituales." }] },
+          { "concept": "multi-agent-systems", "why": "Beneficios y costes reales." },
+          { "concept": "agent-communication", "why": "Cómo intercambian información.", "branches": [{ "concept": "mcp", "why": "Protocolo complementario: de agente a herramienta." }] }
+        ]
       },
       {
-        "concept": "orchestrators",
-        "why": "La pieza que coordina."
-      },
-      {
-        "concept": "multi-agent-systems",
-        "why": "Beneficios y costes."
-      },
-      {
-        "concept": "agent-communication",
-        "why": "Cómo intercambian información."
-      },
-      {
-        "concept": "parallel-agent-development",
-        "why": "Aplicación a un repositorio."
-      }
-    ]
-  },
-  {
-    "id": "engineering-basics",
-    "title": "Fundamentos de ingeniería",
-    "level": "Beginner",
-    "description": "Los principios que deciden la calidad de un sistema, lo escriba quien lo escriba.",
-    "steps": [
-      {
-        "concept": "programming-paradigms",
-        "why": "Formas de pensar el código."
-      },
-      {
-        "concept": "oop",
-        "why": "Un paradigma muy extendido."
-      },
-      {
-        "concept": "functional-programming",
-        "why": "Una alternativa que se combina bien."
-      },
-      {
-        "concept": "solid",
-        "why": "Principios de diseño."
-      },
-      {
-        "concept": "design-patterns",
-        "why": "Un vocabulario compartido."
-      },
-      {
-        "concept": "unit-testing",
-        "why": "Comprobar lo que se escribe."
-      },
-      {
-        "concept": "ci-cd",
-        "why": "Entregar con frecuencia."
+        "title": "Autonomía",
+        "goal": "Dejar que trabajen solos, con garantías.",
+        "nodes": [
+          { "concept": "parallel-agent-development", "why": "Aplicación a un repositorio." },
+          { "concept": "autonomous-agents", "why": "Menos supervisión, más controles.", "branches": [{ "concept": "agent-evaluation", "why": "Cómo saber si puedes confiar." }] }
+        ]
       }
     ]
   }

@@ -1,0 +1,43 @@
+{
+  "agentRun": {
+    "note": "Simulación ilustrativa, no una sesión real.",
+    "phases": [
+      { "id": "decide", "label": "Decide" },
+      { "id": "act", "label": "Actúa" },
+      { "id": "observe", "label": "Observa" }
+    ],
+    "steps": [
+      { "phase": "goal", "text": "Objetivo: el test de login falla. Arréglalo." },
+      { "phase": "decide", "text": "Primero necesito ver el error." },
+      { "phase": "act", "text": "$ npm test -- login" },
+      { "phase": "observe", "text": "FAIL: email es undefined en validar()" },
+      { "phase": "decide", "text": "Busco dónde se define validar()." },
+      { "phase": "act", "text": "$ grep -rn \"validar(\" src" },
+      { "phase": "observe", "text": "src/auth/validar.js:12" },
+      { "phase": "decide", "text": "No contempla un email vacío. Lo corrijo." },
+      { "phase": "act", "text": "editar src/auth/validar.js" },
+      { "phase": "act", "text": "$ npm test -- login" },
+      { "phase": "observe", "text": "PASS: 1 test superado" },
+      { "phase": "done", "text": "Hecho. Revisa el diff antes de integrarlo." }
+    ]
+  },
+  "contextWindow": {
+    "capacity": 100000,
+    "note": "Todas las cifras son ilustrativas. El tamaño real depende del modelo, de la herramienta y de tu proyecto. Lo que importa son las proporciones y el efecto de cada decisión.",
+    "items": [
+      { "id": "system", "label": "Prompt de sistema", "tokens": 3000, "on": true, "locked": true, "note": "Lo incluye la herramienta en cada llamada.", "concept": "agent-architecture" },
+      { "id": "agents", "label": "AGENTS.md", "tokens": 1500, "on": true, "note": "Se carga siempre: por eso conviene que sea breve.", "concept": "agents-md" },
+      { "id": "skills-meta", "label": "10 skills (solo metadatos)", "tokens": 1000, "on": true, "note": "Unos 100 tokens por skill: casi no ocupan hasta usarlas.", "concept": "skills" },
+      { "id": "skill", "label": "Una skill activada", "tokens": 5000, "on": false, "note": "Al activarse entra todo su SKILL.md.", "concept": "skills" },
+      { "id": "mcp", "label": "Herramientas de 5 servidores MCP", "tokens": 8000, "on": true, "note": "Cada definición ocupa espacio, se use o no.", "concept": "mcp" },
+      { "id": "history", "label": "Historial de la conversación", "tokens": 22000, "on": true, "note": "Crece con cada turno.", "concept": "context-management" },
+      { "id": "files", "label": "Exploración: 40 archivos leídos", "tokens": 30000, "on": false, "note": "Lo que más llena el contexto. ¿Lo necesitas aquí?", "concept": "context-engineering" },
+      { "id": "tests", "label": "Salida larga de los tests", "tokens": 18000, "on": false, "note": "Miles de líneas de las que importan unas pocas.", "concept": "subagents" }
+    ],
+    "actions": [
+      { "id": "delegate", "label": "Delegar en un subagente", "concept": "subagents", "effects": { "files": 1500, "tests": 800 }, "note": "La exploración y los tests pasan a otro contexto, y solo vuelve un resumen." },
+      { "id": "compact", "label": "Compactar la conversación", "concept": "context-compaction", "effects": { "history": 3000 }, "note": "El historial se sustituye por un resumen. Algunos detalles se pierden." },
+      { "id": "trim-mcp", "label": "Dejar solo 1 servidor MCP", "concept": "mcp-servers", "effects": { "mcp": 1600 }, "note": "Menos definiciones, y además al modelo le cuesta menos elegir." }
+    ]
+  }
+}

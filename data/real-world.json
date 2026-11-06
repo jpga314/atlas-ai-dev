@@ -1,0 +1,160 @@
+{
+  "checkedAt": "2026-11-05",
+  "note": "Tamaños y secciones medidos el 5 de noviembre de 2026. Estos archivos cambian con el proyecto: abre el enlace para ver la versión actual. Los resúmenes son nuestros; el contenido pertenece a cada proyecto.",
+  "items": [
+    {
+      "id": "airflow",
+      "type": "AGENTS.md",
+      "project": "Apache Airflow",
+      "tool": "Multi-herramienta",
+      "file": "AGENTS.md",
+      "size": "23 KB",
+      "url": "https://github.com/apache/airflow/blob/main/AGENTS.md",
+      "summary": "Un proyecto grande de código abierto que documenta para agentes sus comandos y su estructura.",
+      "highlights": [
+        "Tiene secciones propias para límites de arquitectura y modelo de seguridad.",
+        "Muestra que en un sistema complejo lo valioso es lo que el código no dice por sí solo."
+      ]
+    },
+    {
+      "id": "openai-agents",
+      "type": "AGENTS.md",
+      "project": "OpenAI Agents SDK (Python)",
+      "tool": "Codex",
+      "file": "AGENTS.md",
+      "size": "38 KB",
+      "url": "https://github.com/openai/openai-agents-python/blob/main/AGENTS.md",
+      "summary": "Guía de contribución extensa, organizada con tabla de contenidos, reglas obligatorias y reglas de revisión.",
+      "highlights": [
+        "Separa las políticas obligatorias de la guía de estructura y de operación.",
+        "Su tamaño supera los 32 KiB que Codex carga por defecto, límite que se puede configurar: buen recordatorio de medir."
+      ]
+    },
+    {
+      "id": "goose",
+      "type": "AGENTS.md",
+      "project": "goose (Block)",
+      "tool": "goose",
+      "file": "AGENTS.md",
+      "size": "6 KB",
+      "url": "https://github.com/block/goose/blob/main/AGENTS.md",
+      "summary": "De un proyecto fundador de la Agentic AI Foundation: instrucciones centradas en cómo trabajar en el repositorio.",
+      "highlights": [
+        "Incluye flujo de contribución, comandos y un bucle de desarrollo con pasos.",
+        "Un tamaño intermedio que se puede leer de un vistazo."
+      ]
+    },
+    {
+      "id": "agents-md-repo",
+      "type": "AGENTS.md",
+      "project": "agents.md",
+      "tool": "Multi-herramienta",
+      "file": "AGENTS.md",
+      "size": "2 KB",
+      "url": "https://github.com/agentsmd/agents.md/blob/main/AGENTS.md",
+      "summary": "El propio sitio del formato usa un archivo breve, con cuatro secciones numeradas.",
+      "highlights": [
+        "Su primera regla es muy concreta: qué comando usar y cuál evitar.",
+        "Prueba de que un proyecto pequeño no necesita más."
+      ]
+    },
+    {
+      "id": "vscode",
+      "type": "Instrucciones",
+      "project": "Visual Studio Code",
+      "tool": "GitHub Copilot",
+      "file": ".github/copilot-instructions.md",
+      "size": "14 KB",
+      "url": "https://github.com/microsoft/vscode/blob/main/.github/copilot-instructions.md",
+      "summary": "Las instrucciones de Copilot de un proyecto enorme, con cómo validar los cambios de TypeScript.",
+      "highlights": [
+        "Tiene una sección dedicada a validar los cambios.",
+        "Incluye una sección de aprendizajes acumulados, una forma simple de memoria versionada."
+      ]
+    },
+    {
+      "id": "gemini-cli",
+      "type": "Instrucciones",
+      "project": "Gemini CLI",
+      "tool": "Gemini CLI",
+      "file": "GEMINI.md",
+      "size": "5 KB",
+      "url": "https://github.com/google-gemini/gemini-cli/blob/main/GEMINI.md",
+      "summary": "El archivo de contexto que usa el propio proyecto de Gemini CLI.",
+      "highlights": [
+        "Estructura clara: visión general, compilación, calidad, convenciones.",
+        "Ver cómo un equipo usa su propio formato es de lo más instructivo."
+      ]
+    },
+    {
+      "id": "cline-rules",
+      "type": "Rules",
+      "project": "Cline",
+      "tool": "Cline",
+      "file": ".clinerules/general.md",
+      "size": "13 KB",
+      "url": "https://github.com/cline/cline/blob/main/.clinerules/general.md",
+      "summary": "Reglas muy específicas, escritas a partir de problemas concretos del propio repositorio.",
+      "highlights": [
+        "Cubre trampas reales, como evitar la salida de compilación al buscar en el código.",
+        "Ilustra cómo cada error repetido se convierte en una regla."
+      ]
+    },
+    {
+      "id": "mcp-builder",
+      "type": "Skill",
+      "project": "anthropics/skills",
+      "tool": "Agent Skills",
+      "file": "skills/mcp-builder/SKILL.md",
+      "size": "11 KB",
+      "url": "https://github.com/anthropics/skills/blob/main/skills/mcp-builder/SKILL.md",
+      "summary": "Skill que guía la creación de servidores MCP, con un flujo por fases y archivos de referencia.",
+      "highlights": [
+        "Buen ejemplo de divulgación progresiva: el detalle está en archivos aparte.",
+        "Comprueba la licencia antes de reutilizarla: varía entre las skills del repositorio."
+      ]
+    },
+    {
+      "id": "webapp-testing",
+      "type": "Skill",
+      "project": "anthropics/skills",
+      "tool": "Agent Skills",
+      "file": "skills/webapp-testing/SKILL.md",
+      "size": "4 KB",
+      "url": "https://github.com/anthropics/skills/blob/main/skills/webapp-testing/SKILL.md",
+      "summary": "Skill breve para probar aplicaciones web, con un árbol de decisión y un patrón de trabajo.",
+      "highlights": [
+        "Usa un árbol de decisión para elegir el enfoque.",
+        "Dedica una sección a un error habitual, lo que evita repetirlo."
+      ]
+    },
+    {
+      "id": "awesome-copilot",
+      "type": "Colección",
+      "project": "github/awesome-copilot",
+      "tool": "GitHub Copilot",
+      "file": "Repositorio",
+      "size": "Colección",
+      "url": "https://github.com/github/awesome-copilot",
+      "summary": "Colección comunitaria con agentes personalizados, instrucciones, skills, hooks y workflows.",
+      "highlights": [
+        "Para comparar muchos enfoques distintos de un mismo formato.",
+        "Es comunitaria: revisa cada elemento antes de usarlo."
+      ]
+    },
+    {
+      "id": "mcp-servers",
+      "type": "MCP",
+      "project": "modelcontextprotocol/servers",
+      "tool": "MCP",
+      "file": "Repositorio",
+      "size": "Colección",
+      "url": "https://github.com/modelcontextprotocol/servers",
+      "summary": "Servidores de referencia del protocolo, útiles para aprender cómo se construye uno.",
+      "highlights": [
+        "Son implementaciones de referencia para aprender, no necesariamente listas para producción.",
+        "Combínalos con MCP Inspector para ver el protocolo en acción."
+      ]
+    }
+  ]
+}
